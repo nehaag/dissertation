@@ -1,0 +1,43 @@
+\vspace{-0.05in}
+\section{Conclusions}
+\vspace{-0.05in}
+\label{conclusions}
+
+In this work, we have examined a pressing problem that the GPU industry is facing on how to best
+handle memory placement for upcoming cache coherent GPU-CPU systems.  While the problem of page
+placement in heterogeneous memories has been examined extensively in the context of CPU-only systems,
+the integration of GPUs
+and CPUs provides several unique challenges.  First, GPUs are extremely sensitive to memory
+bandwidth, whereas traditional memory placement decisions for CPU-only systems have tried to optimize
+latency as their first-order concern.  Second, while traditional SMP workloads have the option
+to migrate the executing computation between identical CPUs, mixed GPU-CPU workloads do not generally have
+that option since the workloads (and programming models) typically dictate the type of core on which to run.
+This leaves data migration as the only option for co-locating data and processing resources.
+Finally, to support increasingly general purpose programming models, where the data the GPU shares a 
+common address space with the CPU and is not necessarily known before the GPU kernel launch, 
+programmer-specified up-front data migration is unlikely to be a viable solution in the future.
+
+We have presented a solution to a limited-scope data placement problem for upcoming GPU-CPU systems
+to enable intelligent migration of data into high bandwidth GPU-attached memory.  
+We identify that demand-based migration alone is unlikely
+to be a viable solution due to both application variability and the need for aggressive prefetching of 
+pages the GPU is likely to touch, but has not touched yet.  The use of range expansion based on virtual 
+address space locality, rather than physical page counters, provides a simple method for exposing 
+application locality while eliminating the need for hardware counters.  Developing a system with 
+minimal hardware support is important in the context of upcoming GPU-CPU systems, where multiple 
+vendors may be supplying components in such a system and relying on specific hardware support on either 
+the GPU or CPU to achieve performant page migration may not be feasible.  Our migration solution
+is able to outperform CC-NUMA access alone by 1.95$\times$, legacy
+application {\tt memcpy} data transfer by 6\%, and come within 28\% of oracular page placement.
+
+These memory migration policies optimize the performance of GPU workloads with little regard for CPU
+performance.  We have
+shown that intelligent use of the high bandwidth memory on the GPU can account for as much as a 5-fold performance
+increase over traditional DDR memory systems.
+While this is appropriate for applications where GPU performance dominates Amdahl's optimization
+space, applications with greater data sharing between the CPU and GPU are likely to evolve. 
+{\color{black}Understanding
+what these sharing patterns look like and balancing the needs of a latency-sensitive CPU
+versus a bandwidth-hungry GPU is an open problem. Additionally, with memory capacities growing ever larger and huge pages becoming
+more commonly used, evaluating the trade-off between reducing TLB shootdowns and longer page copy
+times will be necessary to maintain the high memory bandwidth critical for good GPU performance.}

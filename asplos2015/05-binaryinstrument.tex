@@ -1,0 +1,182 @@
+\section{Application Aware Page Placement}
+\label{binaryinstrument}
+%\vspace{-0.05in}
+
+Figure~\ref{fig:cdfannotation} visually depicts what may be obvious to
+performance-conscious programmers: \emph{certain data structures are accessed
+more frequently than others.} For these programmers, the unbiased nature
+of BW-AWARE page placement is not desirable because all data structures are
+treated equally.  This section describes compiler tool-flow and runtime
+modifications that enable programmers to intelligently steer specific allocations
+towards bandwidth- or capacity-optimized memories and achieve near-oracle
+page placement performance.
+
+To correctly annotate a program to enable intelligent memory placement decisions
+across a range of systems, we need two pieces of information about a program: (1)
+the relative memory access hotness of the data structures, and (2) the size of
+the data structures allocated in the program.  To understand the importance of
+these two factors, let us consider the following scenario. In a program there
+are two data structure allocations with hotness H1 and H2\@.  If the bandwidth-optimized memory
+capacity is large enough for BW-AWARE placement to be used without running into
+capacity constraints, then BW-AWARE page placement should be used irrespective
+of the hotness of the data structures. To make this decision we must know the
+application runtime memory footprint. However, if the application is
+capacity-constrained, then ideally the memory allocation from the hotter data structure should be
+preferentially placed in the BO memory. In this case, we need to know both the
+relative hotness and the size of the data structures to optimally place pages.
+
+\subsection{Profiling Data Structure Accesses in GPU Programs}
+\label{profiler}
+%While GPU programmers have a reputation for deep understanding of their
+%application characteristics, as machines become more complex and programs rely
+While expert programmers may have deep understanding of their
+application characteristics, as machines become more complex and programs rely
+more on GPU accelerated libraries, programmers will have a harder time
+maintaining this intuition about program behavior.  To augment programmer
+intuition about memory access behavior, we developed a new GPU profiler to
+provide information about program memory access behavior.  
+
+In this work we augmented {\tt nvcc} and {\tt ptxas}, NVIDIA's
+production compiler tools for applications written in CUDA~\cite{cuda} (NVIDIA’s
+explicitly parallel programming model), to support data structure access
+profiling.  When profiling is enabled, our compiler's code generator emits
+memory instrumentation code for all loads and stores that enables tracking of
+the relative access counts to virtually addressed data structures within the
+program.  As with the GNU profiler {\tt gprof}~\cite{GPROF}, the developer
+enables a special compiler flag that instruments an application to perform
+profiling.  The developer then runs the instrumented application on a set of
+``representative'' workloads, which aggregates and dumps a profile of the
+application.  
+
+When implementing this GPU memory profiling tool, one of the
+biggest challenges is that {\tt nvcc} essentially generates two
+binaries: a host-side program, and a device-side program (that runs on
+the GPU).  The profiler's instrumentation must track the execution of
+both binaries.  On the host side, the profiler inserts code to track
+all instances and variants of {\tt cudaMalloc}.  The instrumentation
+associates the source code location of the {\tt cudaMalloc} with the
+runtime virtual address range returned by it.  The host side code is
+also instrumented to copy this mapping of line numbers and address
+ranges to the GPU before each kernel launch.  The GPU-side
+code is instrumented by inserting code before each memory operation
+to check if the address falls within any of the
+ranges specified in the map.  
+
+For each address that falls within a
+valid range, a counter associated with the range is incremented, using
+atomic operations because the instrumentation code is highly
+multi-threaded.  At kernel completion, this updated map is
+returned to the host which launched the kernel to aggregate the
+statistics about virtual memory location usage. Our profiler generates
+informative data structure mapping plots, like those shown in
+Figure~\ref{fig:cdfannotation}, which application programmers can use
+to guide their understanding of the relative access frequencies of
+their data structures, one of the two required pieces of information
+to perform intelligent near-optimal placement within an application.
+
+\subsection{Memory Placement APIs for GPUs}
+\label{api}
+
+With a tool that provides programmers a profile of data structure hotness, 
+they are armed with the information required to
+make page placement annotations within their application, but they are
+lacking a mechanism to make use of this information. To enable memory placement hints (which are 
+not a functional requirement) for where data 
+should be placed in a mixed BO-CO memory system, we also provide an alternate method 
+for allocating memory. 
+We introduce an additional argument 
+to the {\tt cudaMalloc} memory allocation functions that specifies in which domain the memory should be
+allocated (BO or CO) or to use BW-AWARE placement (BW). For example:\\
+\vspace{0.1in}
+\hspace{0.25in}{\color{black}{\small {\tt{cudaMalloc(void **devPtr, size\_t size, enum hint)}}}}
+
+This hint is not machine specific and simply indicates if the CUDA memory allocator
+should make a best effort attempt to place memory within a BO or CO optimized memory
+using the underlying OS libNUMA functionality or fall back to the bandwidth-aware allocator. 
+By providing an abstract hint, the CUDA runtime, rather than the programmer, becomes responsible
+for identifying and classifying the machine topology of memories as bandwidth or capacity
+optimized.  While we have assumed bandwidth information is available in our proposed system bandwidth 
+information table, programmatic discovery of memory zone bandwidth is also possible as a fall back
+mechanism~\cite{McCalpin1995}. In our implementation, memory hints are honored unless the memory pool is 
+filled to capacity, in which case the allocator will fall back to the alternate domain. 
+If no placement hint is provided, the CUDA runtime will fall back to using the application 
+agnostic BW-AWARE placement for unannotated memory allocations.
+{\color{black} When a hint is supplied, the {\tt cudaMalloc} routine uses the
+{\tt mbind} system call in Linux to perform placement of the data structure in
+the corresponding memory.}
+%OS support for allocating memory
+%from specific memory zones is already present, e.g., in the form of the {\tt
+%mbind} system call in Linux. Thus, this mechanism does not require any
+%modifications to the OS.}
+
+\subsection{Program Annotation For Data Placement}
+
+Our toolkit now includes a tool for memory profile generation and a mechanism to specify
+abstract memory placement hints. While programmers may choose to use this information
+directly, optimizing for specific machines, making these hints performance portable across a range of machines
+is harder as proper placement depends on application footprint as well as the memory
+capacities of the machine. For performance portability,
+the hotness and allocation size information must be annotated in the program before any heap allocations occur.
+We enable annotation of this information as two arrays of values
+that are linearly correlated with the order of the memory allocations in the program.
+For example Figure~\ref{fig:code} shows the process of hoisting the size
+allocations manually into the {\tt size} array and hotness into the {\tt hotness} array. 
+
+\lstset { %
+    language=C++,
+    basicstyle=\footnotesize,% basic font setting
+    captionpos=b,
+    frame=top,frame=bottom
+}
+\begin{filecontents*}{code.txt}
+// n:input parameter
+cudaMalloc(devPtr1, n*sizeof(int));
+cudaMalloc(devPtr2, n*n);
+cudaMalloc(devPtr3, 1000);
+// n: input parameter
+// size[i]: Size of data structures
+// hotness[i]: Hotness of data structures
+size[0] = n*sizeof(int);
+size[1] = n*n;
+size[2] = 1000;
+hotness[0] = 2;
+hotness[1] = 3;
+hotness[2] = 1;
+
+// hint[i]: Computed data structure placement hints
+hint[] = GetAllocation(size[], hotness[]);
+cudaMalloc(devPtr1, size[0], hint[0]);
+cudaMalloc(devPtr2, size[1], hint[1]);
+cudaMalloc(devPtr3, size[2], hint[2]);
+\end{filecontents*}
+
+\begin{figure}[t]
+    \subfloat[Original code dependent allocations]{\lstinputlisting[lastline=4]{code.txt}}
+    \hfill
+    \subfloat[Final code]{\lstinputlisting[firstline=5,
+lastline=20]{code.txt}\label{c}}
+    \caption{Annotated pseudo-code to do page placement at runtime taking into account
+relative hotness of data structures and data structure sizes}
+    \label{fig:code}
+\end{figure}
+
+We provide a new runtime function {\tt GetAllocation} that then uses these two
+pieces of information, along with the discovered machine bandwidth topology, to
+compute and provide a memory placement hint to each allocation. {\tt
+GetAllocation} determines appropriate memory placement hints by computing the
+ideal (BO or CO) memory location by first calculating the cumulative footprint
+of all data structures and then calculating the total number of identified data
+structures from {\tt[1:N]} that will fit within the bandwidth-optimized memory
+before it exhausts the BO capacity.
+
+It is not critical that programmers provide annotations for all memory
+allocations, only large or performance critical ones. {\color{black}For applications that make
+heavy use of libraries or dynamic decisions about runtime allocations, it may not be
+possible to provide good hinting decisions because determining the size of data structures
+allocated within libraries calls is difficult, if not impossible, in many cases.}.
+While this process may seem impractical to a traditional high level language
+programmer, examining a broad range of GPU compute workloads has shown that in
+almost all GPU-optimized programs, the memory allocation calls are already
+hoisted to the beginning of the GPU compute kernel. The CUDA C Best Practices
+Guide advises the programmer to minimize memory allocation and
+de-allocation in order to achieve the best performance~\cite{CUDAGuide}.

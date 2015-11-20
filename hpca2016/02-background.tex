@@ -1,0 +1,127 @@
+\vspace{-.1in}
+\section{Motivation and Background}
+\label{background}
+
+Heterogeneous CPU--GPU systems have been widely
+adopted by the high performance computing community 
+and are becoming increasingly common in other computing paradigms.  High performance GPUs have 
+developed into stand-alone PCIe-attached accelerators requiring explicit memory 
+management by the programmer to control data transfers into the GPU's 
+high-bandwidth locally attached memory. As GPUs have evolved, the onus of 
+explicit memory management has been addressed by providing a unified shared
+memory address space between the GPU and CPU~\cite{UVM,HSA}.  Whereas a single 
+unified virtual address space improves programmer productivity, discrete GPU and 
+CPU systems still have separate locally attached physical memories, optimized for 
+bandwidth and latency respectively. 
+
+Managing the physical location of data, and guaranteeing that reads access 
+the most up-to-date copies of 
+data in a unified shared memory can be done through the use of page level 
+migration and protection. Such mechanisms move data at the OS page granularity between 
+physical memories~\cite{UVM}.  With the advent of non-PCIe high bandwidth, low latency
+CPU--GPU interconnects, the possibility of performing cache-line, rather than OS-page-granularity, accesses
+becomes feasible.  Without OS level page protection
+mechanisms to support correctness guarantees, however,  the responsibility of coherence
+has typically fallen on hardware cache-coherence implementations.
+
+\ignore{Managing the physical location and coherence guarantee of 
+data in a unified shared memory can be done through the use of page level 
+migration and protection, which moves data at the OS page granularity between 
+physical memories~\cite{UVM}.  With the advent of non-PCIe high bandwidth, low latency,
+CPU--GPU interconnects the possibility of performing cache-line based accesses,
+rather than OS page granularity, becomes feasible.  Without OS level page protection
+mechanisms to support shared memory guarantees however,  the responsibility of coherence
+has typically fallen on hardware cache-coherence implementations.}
+
+\begin{table}[t]
+\begin{center}
+\begin{tabular}{ddd}
+ \hline
+ \multicolumn{1}{l}{Workload} &   \multicolumn{1}{c}{L1 Hit Rate (\%)}  &  \multicolumn{1}{c}{L2 Hit Rate (\%)}  \\
+ \hline
+ \hline
+ \multicolumn{1}{l}{backprop}  &   62.4  &   70.0\\
+ \hline
+ \multicolumn{1}{l}{bfs}  &   19.6  &   58.6  \\
+ \hline
+ \multicolumn{1}{l}{btree}  &   81.8  &   61.8  \\
+ \hline
+ \multicolumn{1}{l}{cns}  &   47.0  &   55.2  \\
+ \hline
+ \multicolumn{1}{l}{comd}  &   62.5  &   97.1  \\
+ \hline
+ \multicolumn{1}{l}{kmeans}  &   5.6  &   29.5  \\
+ \hline
+ \multicolumn{1}{l}{minife}  &   46.7  &   20.4  \\
+ \hline
+ \multicolumn{1}{l}{mummer}  &   60.0  &   30.0  \\
+ \hline
+ \multicolumn{1}{l}{needle}  &   7.0  &   55.7  \\
+ \hline
+ \multicolumn{1}{l}{pathfinder}  &   42.4  &   23.0  \\
+ \hline
+ \multicolumn{1}{l}{srad\_v1}  &   46.9  &   25.9  \\
+ \hline
+ \multicolumn{1}{l}{xsbench}  &   30.7  &   63.0  \\
+ \hline
+ \hline
+ \multicolumn{1}{l}{Arith Mean}  &   44.4  &   51.6  \\
+\hline
+\end{tabular}
+\caption{GPU L1 and L2 cache hit rates (average).}
+\label{tab:gpuhitrate}
+\end{center}
+\vspace{-.25in}
+\end{table}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{hpca2016/figures/cache_bw_latency.png}
+    \caption{GPU performance sensitivity to L1 and L2 latency and bandwidth
+changes.}
+    \label{fig:cache_bw_latency}
+    \vspace{-.1in}
+\end{figure*}
+
+As programming models supporting transparent CPU-GPU sharing become 
+more prevalent and sharing becomes more fine-grain and frequent, the 
+performance gap between page-level coherence and fine-grained hardware cache-coherent
+access will grow~\cite{Agarwal2015,Agarwal2015b,Lim2012}. 
+On-chip caches, and thus HW cache coherence, are widely used in CPUs because they 
+provide substantial memory bandwidth and latency 
+improvements~\cite{Martin2012}.
+Building scalable, high-performance cache coherence requires 
+a holistic system that strikes a balance between directory storage 
+overhead, cache probe bandwidth, and application 
+characteristics~\cite{Power2013,Pugsley2010,Cantin2005,johnson2011,Hong2012,Sanchez2012,Kelm2010}.
+Although relaxed or scoped consistency models allow coherence operations
+to be re-ordered or deferred, hiding latency, they do not obviate the need 
+for HW cache coherence. However, supporting a CPU-like HW coherence model
+in large GPUs, where many applications do not require coherence, is a tax on GPU designers.  Similarly,
+requiring CPUs to relax or change their HW coherence implementations or implement instructions
+enabling software management of the cache hierarchy adds significant system complexity.
+
+Prior work has shown that due to their many threaded design, GPUs are 
+insensitive to off-package memory latency but very sensitive to off-chip memory 
+bandwidth~\cite{Agarwal2015,Agarwal2015b}. Table~\ref{tab:gpuhitrate}
+shows the L1 and L2 cache hit rates across a variety of workloads from the Rodinia 
+and United States Department of Energy application suites~\cite{Che2009,villa2014}.  These low hit 
+rates cause GPUs to also be fairly
+insensitive to small changes in L1 and L2 cache latency and bandwidth, as shown in 
+Figure~\ref{fig:cache_bw_latency}.  This lack of sensitivity raises the question whether GPUs need 
+to uniformly employ on-chip caching of all off-chip memory in order to achieve good performance.  If GPUs do not 
+need or can selectively employ on-chip caching, then CPU--GPU systems can be built that
+present a unified coherent shared memory address space to the CPU, while not requiring a 
+HW cache-coherence implementation within the GPU. 
+
+Avoiding hardware cache coherence benefits GPUs by decoupling them from the coherence protocol 
+implemented within the CPU complex, enables simplified GPU designs, and improves
+compatibility across future systems. It also reduces the scaling load on the 
+existing CPU coherence and directory structures by eliminating the potential addition
+of hundreds of additional caches, all of which may be sharing data. Selective caching does not come without
+a cost however. Some portions of the global memory space will become un-cacheable
+within the GPU\@ and bypassing on-chip caches can place additional load 
+on limited off-chip memory resources.  In the following sections, we show that by leveraging
+memory request coalescing, small CPU-side caches, improved interconnect efficiency, and
+promiscuous read-only caching, selective caching GPUs can perform nearly as well
+as HW cache-coherent CPU--GPU\@ systems.

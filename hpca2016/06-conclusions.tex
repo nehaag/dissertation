@@ -1,0 +1,31 @@
+\section{Conclusions}
+\label{conclusions}
+Introducing globally visible shared memory in future CPU/GPU systems
+improves programmer productivity and significantly reduces the barrier
+to entry of using such systems for many applications. 
+Hardware cache coherence can provide such shared memory and
+extend the benefits of on-chip caching to all memory within the system.
+\ignore{Hardware cache coherence in future CPU/GPU systems would allow the integration
+of the separate CPU and GPU programming paradigms under a single
+uniform model, leveraging the benefits of on-chip caching for all
+memory within the system.}  However, extending hardware cache coherence 
+throughout the GPU places enormous
+scalability demands on the coherence implementation.  Moreover, integrating
+discrete processors, possibly designed by distinct vendors,
+into a single coherence protocol is a prohibitive engineering and
+verification challenge.  
+
+In this work, we demonstrate that CPUs and
+GPUs do not need to be hardware cache-coherent to achieve the
+simultaneous goals of unified shared memory and high GPU performance.  Our
+results show that \textit{selective caching} with request coalescing,
+a CPU-side GPU client cache, variable-sized transfer units
+can perform within 93\% of a
+cache-coherent GPU for applications that do not perform fine
+grained CPU--GPU data sharing and synchronization. We also show that promiscuous
+read-only caching benefits memory latency sensitive applications using
+OS page-protection mechanisms rather than relying on hardware cache coherence.  Selective caching
+does not needlessly force hardware cache coherence into the GPU memory system,
+allowing decoupled designs that can maximize CPU and GPU performance, while
+still maintaining the CPU's traditional view of\ignore{ a hardware coherent} the
+memory system.\newpage
