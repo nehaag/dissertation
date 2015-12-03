@@ -1,41 +1,40 @@
-\subsection{Related Work}
-\label{related_work}
-%\vspace{-0.05in}
-With the introduction of symmetric multiprocessors, significant work has examined optimal placement of processes and memory
-in CC-NUMA systems~\cite{Wilson2001,Bolosky1989,Brecht1993,LaRowe1992,Verghese1996,Iyer1998}.
-While much of this early work focused on placing processes and data in
-close proximity to each other,  more recent work has recognized that
-sharing patterns, interconnect congestion, and even queuing
-delay within the memory controller are important metrics to consider when
-designing page and process placement policies~\cite{AUTONUMA,Dashti2013,Tam2007,Zhuravlev2010,Knauerhase2008,Blagodurov2011,awasthinellans10}.
-Nearly all of these works focus on improving traditional CPU throughput
-where reduced memory latency is the primary driver of memory system performance.
-Recent work from Gerofi et al.~\cite{Gerofi2014} examines TLB replacement policies for the Xeon Phi
-co-processor with a focus on highly parallel applications with large data
-footprints.
+With the introduction of symmetric multiprocessors, significant work has
+examined optimal placement of processes and memory in CC-NUMA
+systems~\cite{Wilson2001,Bolosky1989,Brecht1993,LaRowe1992,Verghese1996,Iyer1998}.
+While much of this early work focused on placing processes and data in close
+proximity to each other,  more recent work has recognized that sharing patterns,
+interconnect congestion, and even queuing delay within the memory controller are
+important metrics to consider when designing page and process placement
+policies~\cite{AUTONUMA,Dashti2013,Tam2007,Zhuravlev2010,Knauerhase2008,Blagodurov2011,awasthinellans10}.
+Nearly all of these works focus on improving traditional CPU throughput where
+reduced memory latency is the primary driver of memory system performance.
+Recent work from Gerofi et al.~\cite{Gerofi2014} examines TLB replacement
+policies for the Xeon Phi co-processor with a focus on highly parallel
+applications with large data footprints.
 
-Using non-DRAM technologies or mixed DRAM technologies for main memory systems to improve power
-consumption on traditional CPUs has also been
-explored by several groups~\cite{Kultursay2013,Phadke11mlpaware2011,Mogul2009,Bheda2011,Ramos2011,Nil2012,pavlovic2013}.  
-Much of this work has focused on overcoming the performance
-peculiarities that future non-volatile memory (NVM) technologies may have compared to existing DRAM designs.
-In addition to mixed technology off-package memories, upcoming on-package memories provide opportunities
-for latency reduction by increasing the number of banks available to the application~\cite{Dong2010}
-and may one day be configurable to balance bandwidth application needs with power
-consumption~\cite{Zhao2012}.
-An alternative to treating heterogeneous memory systems as a flat
-memory space is to use one technology as a cache for the other~\cite{jiang2011,Meza2012}.  While this
-approach has the advantage of being transparent to the programmer, 
-{\color{black}OS, and runtime systems}, 
-few implementations~\cite{Sim2012} take advantage of the additive bandwidth available
-when using heterogeneous memory.
+Using non-DRAM technologies or mixed DRAM technologies for main memory systems
+to improve power consumption on traditional CPUs has also been explored by
+several
+groups~\cite{Kultursay2013,Phadke11mlpaware2011,Mogul2009,Bheda2011,Ramos2011,Nil2012,pavlovic2013}.
+Much of this work has focused on overcoming the performance peculiarities that
+future non-volatile memory (NVM) technologies may have compared to existing DRAM
+designs.  In addition to mixed technology off-package memories, upcoming
+on-package memories provide opportunities for latency reduction by increasing
+the number of banks available to the application~\cite{Dong2010} and may one day
+be configurable to balance bandwidth application needs with power
+consumption~\cite{Zhao2012}.  An alternative to treating heterogeneous memory
+systems as a flat memory space is to use one technology as a cache for the
+other~\cite{jiang2011,Meza2012}.  While this approach has the advantage of being
+transparent to the programmer, OS, and runtime systems, few
+implementations~\cite{Sim2012} take advantage of the additive bandwidth
+available when using heterogeneous memory.
 
-In the GPU space, Zhao et al.~\cite{zhao2013} have explored the affect 
-of hybrid DRAM-NVM systems on GPU compute workloads, making the observation that modern GPU designs are very
-good at hiding variable memory system latency. Wang et al.~\cite{Wang2013} explore a mixed NVM-DRAM
-system that uses compiler analysis to identify near-optimal data placement across kernel invocations
-for their heterogeneous memory system. While their system 
-does not significantly improve performance, it offers improved power 
-efficiency through use of NVM memory and shows that software based page 
-placement, rather than hardware caching, can be a viable 
-alternative to managing heterogeneous memory for use with GPUs.
+In the GPU space, Zhao et al.~\cite{zhao2013} have explored the affect of hybrid
+DRAM-NVM systems on GPU compute workloads, making the observation that modern
+GPU designs are very good at hiding variable memory system latency. Wang et
+al.~\cite{Wang2013} explore a mixed NVM-DRAM system that uses compiler analysis
+to identify near-optimal data placement across kernel invocations for their
+heterogeneous memory system. While their system does not significantly improve
+performance, it offers improved power efficiency through use of NVM memory and
+shows that software based page placement, rather than hardware caching, can be a
+viable alternative to managing heterogeneous memory for use with GPUs.

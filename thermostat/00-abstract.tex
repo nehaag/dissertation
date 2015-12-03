@@ -1,0 +1,15 @@
+\begin{abstract}
+The advent of denser/cheaper memory technologies has renewed interest in
+two-tiered main memory schemes, where cold data are shifted to slow memory to
+enable greater capacity or reduce cost.  Past research on two-tiered main memory
+has assumed a 4KB page size.  However, our recent work demonstrates that 2MB
+(transparent) huge pages are performance critical in Cloud applications.  We
+propose to develop a transparent huge-page-aware two-tiered memory solution,
+targeting virtualized cloud applications, which integrates support for dynamic
+page migration and transparent huge pages, achieving both the capacity/cost
+advantages of two-tiered memory and performance advantages of huge pages. Hot
+regions within otherwise cold huge pages present a central challenge to our
+objective. We propose translation facades, a 4KB translation that remaps a
+portion of a 2MB mapping with an alternate physical address or permissions, to
+facilitate remapping hot portions of cold huge pages.
+\end{abstract}

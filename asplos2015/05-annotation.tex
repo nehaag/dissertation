@@ -4,7 +4,8 @@
 %\vspace{-0.05in}
 
 \begin{figure}[t]
-    \includegraphics[width=\columnwidth]{asplos2015/figures/cdf.png} 
+    \centering
+    \includegraphics[width=0.9\columnwidth]{asplos2015/figures/cdf.png} 
     \caption{Data bandwidth cumulative distribution function with pages sorted from hot (most memory accesses) to cold (least memory accesses).}
     \label{fig:cdf}
 \end{figure}
@@ -50,48 +51,55 @@ of GPU workloads which are capacity constrained by increasing the traffic to the
 memory. However, for applications which have linear CDFs, there is little headroom for 
 improved page placement over BW-AWARE placement.
 
-%\begin{figure}[t]
-%    \includegraphics[width=\columnwidth]{figures/cdf.png} 
-%    \caption{Data bandwidth cumulative distribution function with pages sorted from hot (most memory accesses) to cold (least memory accesses).}
-%    \label{fig:cdf}
-%\end{figure}
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\columnwidth]{asplos2015/figures/bfsannotated.png}
+    \caption{{\tt bfs}: CDF of data footprint versus virtual address data layout.}
+    \label{fig:cdfannotation-bfs}
+\end{figure}
 
 Figure~\ref{fig:cdf} also shows that some workloads have sharp inflection points
-within the CDF, indicating that distinct 
-ranges of physical addresses appear to be clustered as hot or cold. To determine if these inflection points 
-could be correlated to specific memory allocations within the application, we plotted the virtual addresses 
-that correspond to application pages in the CDF, and then reverse-mapped those
-address ranges to memory allocations for program-level data structures, 
-with the results shown in Figure~\ref{fig:cdfannotation}\@. 
+within the CDF, indicating that distinct ranges of physical addresses appear to
+be clustered as hot or cold. To determine if these inflection points could be
+correlated to specific memory allocations within the application, we plotted the
+virtual addresses that correspond to application pages in the CDF, and then
+reverse-mapped those address ranges to memory allocations for program-level data
+structures, with the results shown in
+Figure~\ref{fig:cdfannotation-bfs},~\ref{fig:cdfannotation-muumergpu},~\ref{fig:cdfannotation-needle}\@.
 {\color{black} The x-axis shows the fraction of pages allocated by the
 application, where pages are sorted from greatest to least number of accesses.
 The primary y-axis (shown figure left) represents the CDF of memory bandwidth
-among the pages allocated by the application (also shown in Figure~\ref{fig:cdf}).
-Each point on the secondary scatter plot (shown figure right) shows the virtual
-address of the corresponding page on the x-axis. The points (pages) are colored
-according to different data structures they were allocated from in the program source.}
+among the pages allocated by the application (also shown in
+Figure~\ref{fig:cdf}).  Each point on the secondary scatter plot (shown figure
+right) shows the virtual address of the corresponding page on the x-axis. The
+points (pages) are colored according to different data structures they were
+allocated from in the program source.}
 
-{\color{black} We analyze three example applications, {\tt bfs,
-mummergpu}, and {\tt needle}} which show different 
-memory access patterns. For {\tt bfs},
-we can see three data structures: {\tt d\_graph\_visited}, \\
-{\tt d\_updating\_graph\_mask}, and {\tt d\_cost} consume {\color{black}$\approx80\%$ of the total application
-bandwidth while accounting for $\approx20\%$} of the memory footprint. 
-However for {\tt mummergpu}, the memory hotness does not seem to be strongly
-correlated to any specific application data structures. Several sub-structures
-have similar degrees of hotness and some virtual address ranges (10,000-19,000
-and 29,000-37,000) are allocated but never never accessed. In {\tt needle}, which has a 
-fairly linear CDF, the degree of memory hotness actually varies within the 
-same data structure. While we examined all applications with this analysis, 
-we summarize our two key observations.
-
-\begin{figure}[]
+\begin{figure}[t]
     \centering
-    \subfloat[{\tt bfs}]{\includegraphics[width=.95\columnwidth]{asplos2015/figures/bfsannotated.png}}\\
-    \subfloat[{\tt mummergpu}]{\includegraphics[width=0.95\columnwidth]{asplos2015/figures/mummerannotated.png}}\\
-    \subfloat[{\tt needle}]{\includegraphics[width=0.95\columnwidth]{asplos2015/figures/needleannotated.png}}\\
-    \caption{Application CDF of data footprint versus virtual address data layout.}
-    \label{fig:cdfannotation}
+    \includegraphics[width=0.9\columnwidth]{asplos2015/figures/mummerannotated.png}
+    \caption{{\tt mummergpu}: CDF of data footprint versus virtual address data layout.}
+    \label{fig:cdfannotation-muumergpu}
+\end{figure}
+
+We analyze three example applications, {\tt bfs, mummergpu}, and
+{\tt needle} which show different memory access patterns. For {\tt bfs}, we can
+see three data structures: {\tt d\_graph\_visited}, {\tt
+d\_updating\_graph\_mask}, and {\tt d\_cost} consume {\color{black}$\approx80\%$
+of the total application bandwidth while accounting for $\approx20\%$} of the
+memory footprint.  However for {\tt mummergpu}, the memory hotness does not seem
+to be strongly correlated to any specific application data structures. Several
+sub-structures have similar degrees of hotness and some virtual address ranges
+(10,000-19,000 and 29,000-37,000) are allocated but never never accessed. In
+{\tt needle}, which has a fairly linear CDF, the degree of memory hotness
+actually varies within the same data structure. While we examined all
+applications with this analysis, we summarize our two key observations.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\columnwidth]{asplos2015/figures/needleannotated.png}
+    \caption{{\tt needle}: CDF of data footprint versus virtual address data layout.}
+    \label{fig:cdfannotation-needle}
 \end{figure}
 
 \emph{Individual pages can and often do have different degrees of hotness}.

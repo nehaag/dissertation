@@ -1,3 +1,11 @@
+{\color{red}
+- how does OS manage memory\\
+- page tables\\
+- GPU page tables\\
+- how does migration happen\\
+- GPU programming and CUDA\\
+}
+
 Systems using heterogeneous CPU and GPU computing resources have been widely
 used for several years.
 %Until recently, the GPU has been managed as a separate
@@ -22,13 +30,14 @@ respectively.
 
 
 \begin{figure}[t]
+    \centering
     \subfloat[Bandwidth sensitivity] {
-        \includegraphics[width=\columnwidth]{asplos2015/figures/bandwidth-1.png}
+        \includegraphics[width=0.8\columnwidth]{asplos2015/figures/bandwidth-1.png}
         \label{fig:bandwidth}
     }
     \\
     \subfloat[Latency sensitivity] {
-        \includegraphics[width=\columnwidth]{asplos2015/figures/latency-1.png}
+        \includegraphics[width=0.8\columnwidth]{asplos2015/figures/latency-1.png}
         \label{fig:latency}
     }
     \caption{GPU performance sensitivity to bandwidth and latency changes.}
@@ -36,6 +45,8 @@ respectively.
 \end{figure}
 
 \section{Bandwidth Hungry Charateristics of GPUs}
+%\subsection{{Heterogeneous CC-NUMA Systems}}
+\label{heterogeneous_background}
 %While some heterogeneous CPU/GPU systems share a single unified physical
 %memory~\cite{AMDAPU}, discrete GPUs are already using specialized DRAM optimized
 %to meet their high bandwidth demands.
@@ -147,7 +158,7 @@ which processor(s) their application will be running on while writing their
 application.
 
 With the advent of heterogeneous memory systems, the assumptions that operating
-system NUMA zones will be symmetric in bandwidth, latency, and power
+system NUMA zones will be symmetric in bandwidth and power
 characteristics break down.  The addition of heterogeneous GPU and CPU computing
 resources further stresses the page placement policies since processes may not
 necessarily be migrated to help mitigate performance imbalance, as certain
@@ -157,7 +168,8 @@ bandwidth-asymmetric memories can have significant impact on GPU, and possibly
 CPU, performance.
 
 \begin{figure}[t]
-        \includegraphics[width=\columnwidth]{hpca2015/figures/motivation.png}
+    \centering
+    \includegraphics[width=0.7\columnwidth]{hpca2015/figures/motivation.png}
     \caption{GPU performance sensitivity to memory subsystem performance where GDDR provides 
     200GB/s, DDR provides 80GB/s, and {\tt memcpy} bandwidth is 80GB/s.}
     \label{fig:motivation}

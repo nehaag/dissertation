@@ -1,1 +1,99 @@
-hsdbsdfb
+Current OS page placement policies are optimized for both homogeneous memory and
+latency sensitive systems. With the emergenece of shared virtual address CPU-GPU
+systems and new memory technologies like Intel 3D XPoint memory management
+policies need to account for difference in bandwidth, coherence domains, cost
+per dollar of different memory technologies, deployed to use concurrently by the
+computing agents.
+
+In this thesis we have examined a pressing problem that the GPU industry is
+facing on how to best handle memory placement for upcoming cache coherent
+GPU-CPU systems.  While the problem of page placement in heterogeneous memories
+has been examined extensively in the context of CPU-only systems, the
+integration of GPUs and CPUs provides several unique challenges.  First, GPUs
+are extremely sensitive to memory bandwidth, whereas traditional memory
+placement decisions for CPU-only systems have tried to optimize latency as their
+first-order concern.  Second, while traditional SMP workloads have the option to
+migrate the executing computation between identical CPUs, mixed GPU-CPU
+workloads do not generally have that option since the workloads (and programming
+models) typically dictate the type of core on which to run.  
+%This leaves data migration as the only option for co-locating data and
+%processing resources.
+Finally, to support increasingly general purpose programming models, where the
+data the GPU shares a common address space with the CPU and is not necessarily
+known before the GPU kernel launch, programmer-specified up-front data migration
+is unlikely to be a viable solution in the future.
+
+We propose a new BW-AWARE page placement policy that uses memory system
+information about heterogeneous CPU-GPU memory system characteristics to place
+data appropriately, achieving 35\% performance improvement on average over
+existing policies without requiring any application awareness.
+%In future CC-NUMA systems, BW-AWARE placement improves the performance optimal
+%capacity by better using all system resources.  But some applications may wish
+%to size their problems based on total capacity rather than performance. In such
+%cases, In cases where application does not entirely fit the desirable
+%performance optimal capacity, we provide insight into how to optimize data
+%placement by using the CDF of the application in combination with application
+%annotations enabling intelligent runtime controlled page placement decisions.
+%We propose a profile-driven application annotation scheme that enables improved
+%placement without requiring any runtime page migration. While only the
+%beginning of a fully automated optimization system for memory placement, we
+%believe that the performance gap between the current best OS INTERLEAVE policy
+%and the annotated performance (min 1\%, avg 20\%, max 2x) is enough that
+%further work in this area is warranted as mobile, desktop, and HPC memory
+%systems all move towards mixed CPU-GPU CC-NUMA heterogeneous memory systems.
+%
+%We have presented a solution to a limited-scope data placement problem for
+%upcoming GPU-CPU systems to enable intelligent migration of data into high
+%bandwidth GPU-attached memory.  
+%
+We also present a intelligent dynamic page migration solution that maximizes the
+bandwdith utilization of different memory technologies in heterogeneous CPU-GPU
+memory system.  We identify that demand-based migration alone is unlikely to be
+a viable solution due to both application variability and the need for
+aggressive prefetching of pages the GPU is likely to touch, but has not touched
+yet.  The use of range expansion based on virtual address space locality, rather
+than physical page counters, provides a simple method for exposing application
+locality while eliminating the need for hardware counters exploiting the memory
+access pattern of GPU computer applications.  Developing a system with minimal
+hardware support is important in the context of upcoming CPU-GPU systems, where
+multiple vendors may be supplying components in such a system and relying on
+specific hardware support on either the GPU or CPU to achieve performant page
+migration may not be feasible.  Our migration solution is able to outperform
+CC-NUMA access alone by 1.95$\times$, legacy application {\tt memcpy} data
+transfer by 6\%, and come within 28\% of oracular page placement.
+
+These memory migration policies optimize the performance of GPU workloads with
+little regard for CPU performance.  We have shown that intelligent use of the
+high bandwidth memory on the GPU can account for as much as a 5-fold performance
+increase over traditional DDR memory systems.  While this is appropriate for
+applications where GPU performance dominates Amdahl's optimization space,
+applications with greater data sharing between the CPU and GPU are likely to
+evolve.  Understanding what these sharing patterns look like and
+balancing the needs of a latency-sensitive CPU versus a bandwidth-hungry GPU is
+an open problem. Additionally, with memory capacities growing ever larger and
+huge pages becoming more commonly used, evaluating the trade-off between
+reducing TLB shootdowns and longer page copy times will be necessary to maintain
+the high memory bandwidth critical for good GPU performance.
+
+Introducing globally visible shared memory in future CPU/GPU systems improves
+programmer productivity and significantly reduces the barrier to entry of using
+such systems for many applications.  Hardware cache coherence can provide such
+shared memory and extend the benefits of on-chip caching to all memory within
+the system.  However, extending hardware cache coherence throughout the GPU
+places enormous scalability demands on the coherence implementation.  Moreover,
+integrating discrete processors, possibly designed by distinct vendors, into a
+single coherence protocol is a prohibitive engineering and verification
+challenge.  
+
+In this thesis, we demonstrate that CPUs and GPUs do not need to be hardware
+cache-coherent to achieve the simultaneous goals of unified shared memory and
+high GPU performance.  Our results show that \textit{selective caching} with
+request coalescing, a CPU-side GPU client cache, variable-sized transfer units
+can perform within 93\% of a cache-coherent GPU for applications that do not
+perform fine grained CPU--GPU data sharing and synchronization. We also show
+that promiscuous read-only caching benefits memory latency sensitive
+applications using OS page-protection mechanisms rather than relying on hardware
+cache coherence.  Selective caching does not needlessly force hardware cache
+coherence into the GPU memory system, allowing decoupled designs that can
+maximize CPU and GPU performance, while still maintaining the CPU's traditional
+view of the memory system.

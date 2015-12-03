@@ -1,0 +1,80 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This is the template for submission to ISCA 2016
+% The cls file is a modified from  'sig-alternate.cls'
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass{sig-alternate} 
+\usepackage{mathptmx} % This is Times font
+
+\newcommand{\ignore}[1]{}
+\usepackage{fancyhdr}
+\usepackage[normalem]{ulem}
+\usepackage[hyphens]{url}
+\usepackage{hyperref}
+
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{breakurl}
+\usepackage{tabularx}
+\usepackage[nocompress]{cite}
+\usepackage{subfig}
+\usepackage{hyphenat}
+\usepackage{xcolor}
+\usepackage{dcolumn}
+\newcolumntype{d}{D{.}{.}{2.1}}
+\usepackage{flushend}
+ \usepackage{pifont}
+\newcommand*\mycirc[1]{{\large \ding{\numexpr201+#1\relax}}}
+
+% required to break long URLS sanely
+\PassOptionsToPackage{hyphens}{url} \usepackage{hyperref}
+\expandafter\def\expandafter\UrlBreaks\expandafter{\UrlBreaks% save the current one 
+\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j% 
+\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t% 
+\do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D% 
+\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N% 
+\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X% 
+\do\Y\do\Z\do\*\do\-\do\~\do\'\do\"\do\-}%
+
+%%%%%%%%%%%---SETME-----%%%%%%%%%%%%%
+\newcommand{\hpcasubmissionnumber}{18}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\fancypagestyle{firstpage}{
+  \fancyhf{}
+\setlength{\headheight}{50pt}
+\renewcommand{\headrulewidth}{0pt}
+  \fancyhead[C]{\normalsize{ISCA 2016 Submission
+      \textbf{\#\hpcasubmissionnumber} \\ Confidential Draft: DO NOT DISTRIBUTE}} 
+  \pagenumbering{arabic}
+}  
+
+%%%%%%%%%%%---SETME-----%%%%%%%%%%%%%
+\title{Thermostat} 
+%\title{Managing Huge Pages In Two-Tiered Main Memory} 
+\author{}
+%\author{Neha Agarwal, Thomas F. Wenisch\\University of Michigan}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+\thispagestyle{firstpage}
+\pagestyle{plain}
+
+\input{00-abstract.tex}
+\input{01-introduction.tex}
+\input{02-background.tex}
+\input{03-proposal.tex}
+\input{04-methodology.tex}
+\input{05-results.tex}
+\input{06-related.tex}
+\input{07-conclusion.tex}
+
+%%%%%%% -- PAPER CONTENT ENDS -- %%%%%%%%
+
+%%%%%%%%% -- BIB STYLE AND FILE -- %%%%%%%%
+\bibliographystyle{ieeetr}
+\bibliography{ref}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

@@ -1,1 +1,124 @@
-djbcasjdc
+\section{Page Placement And Migration}
+Using mixed DRAM technologies or DRAM in conjunction with non-volatile memories
+to improve power consumption on CPUs has been explored by several groups
+~\cite{Kultursay2013,Phadke11mlpaware2011,Mogul2009,Bheda2011,Ramos2011}.  The
+majority of this work attempts to overcome the performance reductions introduced
+by non-DDR technologies to improve capacity, power consumption, or both.  In
+CC-NUMA systems, there has been a long tradition of examining where to place
+memory pages and processes for optimal performance, typically focusing on
+reducing memory
+latency~\cite{Wilson2001,Bolosky1989,Brecht1993,LaRowe1992,Verghese1996,Iyer1998}.
+Whereas CPUs are highly sensitive to memory latency, GPUs can cover a much
+larger latency through the use of multi-threading.  More recent work on page
+placement and
+migration~\cite{AUTONUMA,Dashti2013,Tam2007,Zhuravlev2010,Knauerhase2008,Blagodurov2011,awasthinellans10}
+has considered data sharing characteristics, interconnect utilization, and
+memory controller queuing delays in the context of CPU page placement. However,
+the primary improvements in many of these works, reducing average memory
+latency, will not directly apply in a GPU optimized memory system.
+
+Several recent papers have explored hybrid DRAM-NVM GPU attached memory
+subsystems~\cite{zhao2013,Wang2013}.  Both of these works consider a traditional
+GPU model where the availability of low latency, high bandwidth access to
+CPU-attached memory is not considered, nor are the overheads of moving data from
+the host CPU onto the GPU considered.  Several papers propose using a limited
+capacity, high bandwidth memory as a cache for a larger slower
+memory~\cite{jiang2011,Meza2012}, but such designs incur a high engineering
+overhead and would require close collaboration between GPU and CPU vendors that
+often do not have identically aligned visions of future computing systems.
+
+When designing page migration policies, the impact of TLB shootdown overheads
+and page table updates is a constant issue.  Though most details about GPU TLBs
+are not public, several recent papers have provided proposals about how to
+efficiently implement general purpose TLBs that are, or could be, optimized for
+a GPU's needs~\cite{Pichai2014,Villavieja2011,Power2014}. Others have recently
+looked at improving TLB reach by exploiting locality within the virtual to
+physical memory remapping, or avoiding this layer
+completely~\cite{swansonstoller98,Pham2014,Basu2013}.  Finally, Gerofi et
+al.~\cite{Gerofi2014} recently examined TLB performance of the Xeon Phi for
+applications with large footprints, while McCurdy et al.~\cite{McCurdy2008}
+investigated the effect of superpages and TLB coverage for HPC applications in
+the context of CPUs.
+
+\section{Cache Coherence}
+Cache coherence for CPUs has received great attention in the literature.  Recent
+proposals have started to explore intra-GPU and CPU--GPU cache coherence.
+
+\textbf{CPU Systems:} Scalable cache coherence has been studied extensively for
+CPU-based multicore systems. Kelm et al. show that scaling up coherence to
+hundreds or thousands of cores will be difficult without moving away from pure
+hardware-based coherence~\cite{Kelm2009,Hill92}, due to high directory storage
+overheads and coherence traffic~\cite{Lebeck95,Cheng06}.  Whereas some groups
+have evaluated software shared memory implementations~\cite{Falsafi94,Hill92},
+Martin et al. argue that hardware cache coherence for mainstream processors is
+here to stay, because shifting away from it simply shifts the burden of
+correctness into software instead of hardware~\cite{Martin2012}. Nevertheless,
+disciplined programming models coupled with efficient hardware implementations
+are still being pursued~\cite{choi2011,Sung2013,Sung2015}.
+
+Self-invalidation protocols have been proposed to reduce invalidation traffic
+and reduce coherence miss latency~\cite{Lebeck95,Lai2000}. Our cacheless request
+coalescing scheme uses a similar idea, discarding a block immediately after
+fulfilling requests pending at the MSHR.  Other proposals have classified data
+into private, shared, and instruction pages and have devised techniques to
+curtail coherence transactions for private
+data~\cite{Pugsley2010,Hardavellas2009,Cuesta2011,Ros2012}. We instead classify
+pages into read-only versus read-write and exploit the fact that read-only data
+can be safely cached in incoherent caches.
+
+Ros and Kaxiras~\cite{Ros2012} have proposed a
+directory\hyp{}less\slash{}broadcast\hyp{}less coherence protocol where all
+shared data is self\hyp{}invalidated at synchronization points. In this scheme,
+at each synchronization point (e.g., lock acquire/release, memory barrier) all
+caches need to be searched for shared lines and those lines have to be
+flushed---an expensive operation to implement across hundreds of GPU caches with
+data shared across thousands of concurrent threads.
+
+\textbf{Heterogeneous Systems and GPUs:} With the widespread adoption of GPUs as
+a primary computing platform, the integration of CPU and GPU systems has
+resulted in multiple works assuming that CPUs and GPUs will eventually become
+hardware cache-coherent with shared page
+tables~\cite{Power2014,Pichai2014,Agarwal2015,Agarwal2015b}.  CPU--GPU coherence
+mechanisms have been investigated, revisiting many ideas from distributed shared
+memory and coherence
+verification~\cite{Gelado2010,Power2013,wu2014,Kaxiras2013}. Power et
+al.~\cite{Power2013} target a hardware cache-coherent CPU--GPU system by
+exploiting the idea of region
+coherence~\cite{Cantin2005,Alisafaee2012,Moshovos2005,Zebchuk2007}. They treat
+the CPU and the GPU as separate regions and mitigate the effects of coherence
+traffic by replacing a standard directory with a region directory.  In contrast,
+we identify that CPUs and GPUs need not be cache-coherent; the benefits of
+unified shared memory with correctness guarantees can also be achieved via
+selective caching, which has lower implementation complexity.
+
+Mixing incoherent and coherent shared address spaces has been explored before in
+the context of CPU-only systems~\cite{Huh04} and the appropriate memory model
+for mixed CPU--GPU systems is still up for
+debate~\cite{Lim2012,Hechtman2014,Hower2014,Gaster2015}.  Hechtman et
+al.~propose a consistency model for GPUs based on release consistency, which
+allows coherence to be enforced only at release operations.  They propose a
+write-through no-write-allocate write-combining cache that tracks dirty data at
+byte granularity.  Writes must be flushed (invalidating other cached copies)
+only at release operations.  Under such a consistency model, our selective
+caching scheme can be used to avoid the need to implement hardware support for
+these invalidations between the CPU and GPU.
+
+Cache coherence for GPU-only systems has been studied by Singh et
+al.~\cite{Singh2013}, where they propose a timestamp-based hardware
+cache-coherence protocol to self-invalidate cache lines. Their scheme targets
+single-chip systems and would require synchronized timers across multiple chips
+when implemented in multi-chip CPU-GPU environments.  Kumar et
+al.~\cite{Kumar2015} examine CPUs and fixed-function accelerator coherence,
+balancing coherence and DMA transfers to prevent data ping-pong.  Suh et
+al.~\cite{Suh2004} propose integrating different coherence protocols in separate
+domains (such as MESI in one domain and MEI in another).  However, this approach
+requires invasive changes to the coherence protocols implemented in both domains
+and requires significant implementation effort by both CPU and GPU vendors.
+
+\textbf{Bloom Filters:} Bloom Filters~\cite{Bloom1970} and Cuckoo
+Filters~\cite{Pagh2004,fan2014} have been used by several
+architects~\cite{Strauss2006,Zebchuk2009,Hongzhou2011} in the past. Fusion
+coherence~\cite{wu2014} uses a cuckoo directory to optimize for power and area
+in a CMP system. JETTY filters~\cite{Moshovos2001} have been proposed for
+reducing the energy spent on snoops in an SMP system. We use a cuckoo filter to
+implement the GPU remote directory.

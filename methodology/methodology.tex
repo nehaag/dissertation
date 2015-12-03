@@ -1,0 +1,72 @@
+\section{Overall framework for Heterogeneous CPU-GPU Systems}
+To evaluate BW-AWARE page placement, we simulated a heterogeneous memory system
+attached to a GPU comprised of both bandwidth-optimized GDDR and
+cost/capacity-optimized DDR where the GDDR memory is attached directly to the
+GPU\@.  {\color{black} No contemporary GPU system is available which supports
+cache-coherent access to heterogeneous memories.  Commonly available
+PCIe-attached GPUs are constrained by interconnect bandwidth and lack of
+cache-coherence; while cache-coherent GPU systems, such as AMD's Kaveri, do not
+ship with heterogeneous memory. 
+
+Our simulation environment is based on GPGPU-Sim~\cite{gpgpusimIspass09} which
+has been validated against NVIDIA's Fermi class GPUs and is reported to match
+hardware performance with up to 98.3\% accuracy~\cite{gpgpusimManual}}.  We
+modified GPGPU-Sim to support a heterogeneous GDDR5-DDR4 memory system with the
+simulation parameters listed in Table~\ref{tab:methodology}.  We made several
+changes to the baseline GTX-480 model to bring our configuration in-line with
+the resources available in more modern GPUs, including a larger number of MSHRs
+and higher clock frequency.
+
+As noted in Section~\ref{heterogeneous_background}, attaching the
+capacity-optimized memory directly to the GPU is functionally equivalent to
+remote CPU attached memory, but with different latency parameters.  To simulate
+an additional interconnect hop to remote CPU-attached memory, we model a fixed,
+pessimistic, additional 100 cycle latency to access the DDR4 memory from the
+GPU\@. This overhead is derived from the single additional interconnect hop
+latency found in SMP CPU-only designs such as the Intel XEON~\cite{INTELXEON}\@.
+Our heterogeneous memory model contains the same number of MSHRs per memory
+channel as the baseline memory configuration.  The number of MSHRs in the
+baseline configuration is sufficient to effectively hide the additional
+interconnect latency to the DDR memory in Figure~\ref{fig:latency}. Should MSHR
+quantity become an issue when supporting two level memories, previous work has
+shown that several techniques can efficiently increase MSHRs with only modest
+cost~\cite{ref:tuck:scalablemisshandling, ref:minikin:prefetch}.
+
+\begin{table}[t]
+\begin{center}
+%\begin{small}
+\begin{tabular}{|l|l|}
+\hline
+Simulator & GPGPU-Sim 3.x\\
+\hline
+GPU Arch & NVIDIA GTX-480 Fermi-like\\
+\hline
+GPU Cores& 15 {\color{black}SMs} @ 1.4Ghz\\
+\hline
+L1 Caches & 16kB/SM, 3 cycle latecy \\
+\hline
+L1 MSHRs & 64 Entries/L1\\
+\hline
+L2 Caches & 128kB/Channel, 120 cycle lat.\\
+\hline
+L2 MSHRs & 128 Entries/L2 Slice\\
+\hline
+%\hline
+%\multicolumn{2}{|c|}{Memory system}\\
+%\hline
+%GPU-Local GDDR5 & 8-channels, 200GB/sec aggregate\\
+%\hline
+%GPU-Remote DDR4& 4-channels, 80GB/sec aggregate\\
+%\hline
+%DRAM Timings & \multicolumn{1}{|l|}{RCD=RP=12,RC=40,CL=WR=12}\\
+%\hline
+%GPU-CPU &  100 GPU core cycles\\
+%Interconnect Latency & \\
+%\hline
+\end{tabular}
+\caption{Simulation environment for heterogeneous CPU-GPU memory system.}
+\label{tab:methodology}
+%\end{small}
+\end{center}
+\vspace{-0.15in}
+\end{table}

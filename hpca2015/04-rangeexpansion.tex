@@ -26,7 +26,7 @@ to the nearest, to provide the maximum prefetching affect based on spatial local
 We then vary this range expansion amount \emph{N} from 0--128 and discuss the results in Section~\ref{rangeexpansionresults}.
 
 The motivation for migrating (virtually) contiguous pages can be seen in
-Figure~\ref{fig:cdfannotation}. The figure shows virtual page addresses that are
+Figure~\ref{fig:cdfannotation-bfs},~\ref{fig:cdfannotation-xsbench},~\ref{fig:cdfannotation-needle}. The figure shows virtual page addresses that are
 touched by the GPU for three applications in our benchmark set.
 The X-axis shows the fraction of the application footprint when
 sampled, after on-chip caches, at 4KB page granularity and sorted from
@@ -47,14 +47,14 @@ have not yet been accessed on the GPU}\@.  By migrating these pages before they 
 expansion effectively prefetches pages to the higher bandwidth memory on the GPU, 
 improving the timeliness and effectiveness of page migrations.  
 
-\begin{figure}[pth]
+\begin{figure}[t]
     \centering
-    \subfloat[bfs]{\includegraphics[width=\columnwidth]{hpca2015/figures/bfsannotated.png}}\\
-    \subfloat[xsbench]{\includegraphics[width=\columnwidth]{hpca2015/figures/xsbenchannotated.png}}\\
-    \subfloat[needle]{\includegraphics[width=\columnwidth]{hpca2015/figures/needleannotated.png}}\\
+%    \subfloat[bfs]{\includegraphics[width=\columnwidth]{hpca2015/figures/bfsannotated.png}}\\
+    \includegraphics[width=0.9\columnwidth]{hpca2015/figures/xsbenchannotated.png}
+%    \subfloat[needle]{\includegraphics[width=\columnwidth]{hpca2015/figures/needleannotated.png}}\\
     \caption{Cumulative distribution of memory bandwidth versus application footprint.  Secondary axis
-    shows virtual page address of pages touched when sorted by access frequency.}
-    \label{fig:cdfannotation}
+    shows virtual page address of pages touched when sorted by access frequency. ({\tt xsbench})}
+    \label{fig:cdfannotation-xsbench}
 \end{figure}
 
 In the case that range expansion

@@ -3,9 +3,10 @@
 \label{methodology}
 
 We evaluate selective caching via simulation on a system containing discrete CPUs and GPUs with
-DDR4 and GDDR5 memories attached to the CPU and GPU, respectively.  Our simulation environment is based on
-GPGPU-Sim~\cite{gpgpusim_ispass09}, which we modify to support a heterogeneous
-memory system with simulation parameters shown in Table~\ref{tab:methodology}.
+DDR4 and GDDR5 memories attached to the CPU and GPU, respectively.  We discuss
+our simulation environment in Chapter~\ref{chap:methodology}.
+To implement various architectural components we modify our framework 
+with simulation parameters shown in Table~\ref{tab:sc-methodology}.
 We use bandwidth-aware page placement for all simulations as it has been
 shown to be the best page placement strategy without requiring
 any application profiling or program modification~\cite{Agarwal2015}. 
@@ -14,47 +15,48 @@ GPU workload data being placed within the CPU-attached memory with 80\% residing
 memory.  
 
 In our system, the CPU is connected to the GPU via a full duplex CPU--GPU
-interconnect. The interconnect has peak bandwidth of 90GB/s using
-16B flits for both data and control messages with each data payload of up to
-128B requiring a single header flit.  Thus, for example, a 32B data
-message will require sending 1 header flit + 2 data flits = 3 flits in total.
-To simulate an additional interconnect hop to remote CPU memory, we model an
-additional fixed, pessimistic, 100 cycle interconnect latency to access the DDR4 memory from
-the GPU\@. This overhead is derived from the single additional interconnect hop
-latency found in SMP CPU-only designs, such as the Intel Xeon~\cite{INTELXEONE5V3}.
-When simulating request coalescing within the GPU, we use the same number of MSHRs as
-the baseline configuration but allow the MSHRs to have their own local return value storage in
-the cacheless request coalescing case. 
-The CPU-side GPU client cache is modeled as an 8-way set 
-associative, write-through, no write-allocate cache with 128B line size of varying capacities
-shown later in Section~\ref{mccache}. The client cache latency is 200
-cycles, comprising 100 cycles of interconnect and 100 cycles of cache access latency.
-To support synchronization operations between CPU and GPU, we augment the GPU 
-MSHRs to support atomic operations to data homed in either physical memory; we assume
-the CPU similarly can issue atomic accesses to either memory.
+interconnect. The interconnect has peak bandwidth of 90GB/s using 16B flits for
+both data and control messages with each data payload of up to 128B requiring a
+single header flit.  Thus, for example, a 32B data message will require sending
+1 header flit + 2 data flits = 3 flits in total.
+%To simulate an additional interconnect hop to remote CPU memory, we model an
+%additional fixed, pessimistic, 100 cycle interconnect latency to access the
+%DDR4 memory from the GPU\@. This overhead is derived from the single additional
+%interconnect hop latency found in SMP CPU-only designs, such as the Intel
+%Xeon~\cite{INTELXEONE5V3}.
+When simulating request coalescing within the GPU, we use the same number of
+MSHRs as the baseline configuration but allow the MSHRs to have their own local
+return value storage in the cacheless request coalescing case.  The CPU-side GPU
+client cache is modeled as an 8-way set associative, write-through, no
+write-allocate cache with 128B line size of varying capacities shown later in
+Section~\ref{mccache}. The client cache latency is 200 cycles, comprising 100
+cycles of interconnect and 100 cycles of cache access latency.  To support
+synchronization operations between CPU and GPU, we augment the GPU MSHRs to
+support atomic operations to data homed in either physical memory; we assume the
+CPU similarly can issue atomic accesses to either memory.
 
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{|l|l|}
-\hline
-Simulator & GPGPU-Sim 3.x\\
-\hline
-GPU Arch & NVIDIA GTX-480 Fermi-like\\
-\hline
-GPU Cores& 15 SMs @ 1.4Ghz\\
-\hline
-L1 Caches & 16kB/SM, 3 cycle latency\\
-\hline
-L1 MSHRs & 64 Entries/L1\\
-\hline
-L2 Caches & 128kB/Channel, 120 cycle lat.\\
-\hline
-L2 MSHRs & 128 Entries/L2 Slice\\
-\hline
-CPU Client Cache & 512KB, 200 cycle latency\\
-\hline
+%\hline
+%Simulator & GPGPU-Sim 3.x\\
+%\hline
+%GPU Arch & NVIDIA GTX-480 Fermi-like\\
+%\hline
+%GPU Cores& 15 SMs @ 1.4Ghz\\
+%\hline
+%L1 Caches & 16kB/SM, 3 cycle latency\\
+%\hline
+%L1 MSHRs & 64 Entries/L1\\
+%\hline
+%L2 Caches & 128kB/Channel, 120 cycle lat.\\
+%\hline
+%L2 MSHRs & 128 Entries/L2 Slice\\
+%\hline
 \hline
 \multicolumn{2}{|c|}{Memory System}\\
+\hline
+CPU Client Cache & 512KB, 200 cycle latency\\
 \hline
 GPU GDDR5 & 8-channels, 336GB/sec aggregate\\
 \hline
@@ -82,28 +84,26 @@ Req. Efficiency& 32B=66\%, 64B=80\%, 128B=88\%\\
 \vspace{-.1in}
 \end{table}
 
-To model promiscuous read-only caching, we initially mark all the pages (4kB
-in our system) in DDR as read-only upon GPU kernel launch. When the first 
-write is issued to each DDR page, the ensuing
-protection fault invalidates the TLB entry for the page at the GPU. 
-When the faulting memory operation is replayed, the updated 
-PTE is loaded, indicating that the page is uncacheable.  Subsequent accesses
-to the page are issued over the CPU--GPU interconnect.
-Pages marked read-write are never re-marked
-read-only during GPU kernel execution. Using the page placement policy described
-earlier in this section, the GPU is able to cache 80\% of the application footprint residing
-in GPU memory. We vary our assumption for the remote protection fault latency from
-20-40us and assume support for up to 16 pending software
-page protection faults per SM; a seventeenth fault blocks the SM from making forward
-progress on any warp.
+To model promiscuous read-only caching, we initially mark all the pages (4kB in
+our system) in DDR as read-only upon GPU kernel launch. When the first write is
+issued to each DDR page, the ensuing protection fault invalidates the TLB entry
+for the page at the GPU.  When the faulting memory operation is replayed, the
+updated PTE is loaded, indicating that the page is uncacheable.  Subsequent
+accesses to the page are issued over the CPU--GPU interconnect.  Pages marked
+read-write are never re-marked read-only during GPU kernel execution. Using the
+page placement policy described earlier in this section, the GPU is able to
+cache 80\% of the application footprint residing in GPU memory. We vary our
+assumption for the remote protection fault latency from 20-40us and assume
+support for up to 16 pending software page protection faults per SM; a
+seventeenth fault blocks the SM from making forward progress on any warp.
 
 We evaluate results using the Rodinia and United States Department of Energy
 benchmark suites. We execute the applications under the CUDA 6.0 weak
-consistency memory model. 
-While we did evaluate workloads from the Parboil~\cite{Parboil} suite, we found that these applications
-have uncharacteristically high cache miss rates, hence even in the hardware 
-cache-coherent case, most memory
-accesses go to the DRAM. As such, we have chosen to omit these results because 
-they would unfairly indicate that selective caching is performance equivalent to
-a theoretical hardware cache-coherent GPU.  In Section~\ref{results} we report GPU performance as application throughput, which is inversely 
-proportional to workload execution time.
+consistency memory model.  While we did evaluate workloads from the
+Parboil~\cite{Parboil} suite, we found that these applications have
+uncharacteristically high cache miss rates, hence even in the hardware
+cache-coherent case, most memory accesses go to the DRAM. As such, we have
+chosen to omit these results because they would unfairly indicate that selective
+caching is performance equivalent to a theoretical hardware cache-coherent GPU.
+In Section~\ref{results} we report GPU performance as application throughput,
+which is inversely proportional to workload execution time.

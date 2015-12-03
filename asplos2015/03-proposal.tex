@@ -70,21 +70,21 @@ system today. We will re-visit the assumption of uniform page access later in Se
 
 \begin{table}[t]
 \begin{center}
-%\begin{small}
+\begin{small}
 \begin{tabular}{|l|l|}
-\hline
-Simulator & GPGPU-Sim 3.x\\
-\hline
-GPU Arch & NVIDIA GTX-480 Fermi-like\\
-\hline
-GPU Cores& 15 {\color{black}SMs} @ 1.4Ghz\\
-\hline
-L1 Caches & 16kB/SM \\
-\hline
-L2 Caches & Memory Side 128kB/DRAM Channel\\
-\hline
-L2 MSHRs & 128 Entries/L2 Slice\\
-\hline
+%\hline
+%Simulator & GPGPU-Sim 3.x\\
+%\hline
+%GPU Arch & NVIDIA GTX-480 Fermi-like\\
+%\hline
+%GPU Cores& 15 {\color{black}SMs} @ 1.4Ghz\\
+%\hline
+%L1 Caches & 16kB/SM \\
+%\hline
+%L2 Caches & Memory Side 128kB/DRAM Channel\\
+%\hline
+%L2 MSHRs & 128 Entries/L2 Slice\\
+%\hline
 \hline
 \multicolumn{2}{|c|}{Memory system}\\
 \hline
@@ -98,9 +98,9 @@ GPU-CPU &  100 GPU core cycles\\
 Interconnect Latency & \\
 \hline
 \end{tabular}
-\caption{Simulation environment and system configuration for mixed memory GPU/CPU system.}
-\label{tab:methodology}
-%\end{small}
+\caption{Memory system configuration for heterogeneous CPU-GPU system.}
+\label{tab:bw-methodology}
+\end{small}
 \end{center}
 \vspace{-0.15in}
 \end{table}
@@ -121,76 +121,61 @@ page placement improvements.
 
 %\vspace{0.05in}
 \subsubsection{Methodology\\}
-To evaluate BW-AWARE page placement, we simulated a heterogeneous 
-memory system attached to a GPU comprised of both bandwidth-optimized GDDR and cost/capacity-optimized
-DDR where the GDDR memory is attached directly to the GPU\@.
-{\color{black} No contemporary GPU
-system is available which supports cache-coherent access to heterogeneous memories.
-Commonly available PCIe-attached GPUs are constrained by interconnect bandwidth 
-and lack of cache-coherence; while cache-coherent GPU systems, such as AMD's Kaveri, do not ship 
-with heterogeneous memory. 
+To evaluate BW-AWARE page placement, we simulated a heterogeneous memory system
+attached to a GPU comprised of both bandwidth-optimized GDDR and
+cost/capacity-optimized DDR where the GDDR memory is attached directly to the
+GPU\@.  We discuss our baseline simulation environment in~\ref{chap:methodology}.
+%No contemporary GPU system is available which supports cache-coherent access to
+%heterogeneous memories.  Commonly available PCIe-attached GPUs are constrained
+%by interconnect bandwidth and lack of cache-coherence; while cache-coherent GPU
+%systems, such as AMD's Kaveri, do not ship with heterogeneous memory.
+%Our simulation environment is based on GPGPU-Sim~\cite{gpgpusimIspass09} which
+%has been validated against NVIDIA's Fermi class GPUs and is reported to match
+%hardware performance with up to 98.3\% accuracy~\cite{gpgpusimManual}.  We
+%modified GPGPU-Sim to support a heterogeneous GDDR5-DDR4 memory system with the
+%simulation parameters listed in Table~\ref{tab:methodology}.
+We model a baseline system with 200GB/s of GPU-attached
+memory bandwidth and 80GB/s of CPU-attached memory
+bandwidth, providing a bandwidth ratio of $2.5\times$\@~\ref{tab:bw-methodology}.
+%We made several changes to the baseline GTX-480 model to bring our
+%configuration in-line with the resources available in more modern GPUs,
+%including a larger number of MSHRs and higher clock frequency.
+With a focus on memory system performance, we evaluate GPU workloads which are
+sensitive to memory bandwidth or latency from three benchmark suites:
+Rodinia~\cite{Che2009}, Parboil~\cite{Parboil} and recent
+HPC~\cite{comd,cns,minife,xsbench} workloads; those which are compute-bound see
+little change in performance due to changes made to the memory system.  For the
+remainder of the evaluation in this chapter we show results for 19 benchmarks,
+17 of which are sensitive to memory bandwidth while also providing {\tt comd}
+and {\tt sgemm} results to represent applications which are memory insensitive
+and latency sensitive respectively.
 
-Our simulation environment is based on GPGPU-Sim~\cite{gpgpusimIspass09}
-which has been validated against NVIDIA's Fermi class GPUs and is reported to match
-hardware performance with up to 98.3\% accuracy~\cite{gpgpusimManual}}.
-We modified GPGPU-Sim to support a heterogeneous GDDR5-DDR4
-memory system with the simulation parameters listed in
-Table~\ref{tab:methodology}.  We model a baseline system with 200GB/s
-of GPU-attached memory bandwidth and 80GB/s of CPU-attached memory bandwidth, providing a
-bandwidth ratio of $2.5\times$\@. {\color{black} We made several changes to the baseline GTX-480 model 
-to bring our configuration in-line with the resources available in 
-more modern GPUs, including a larger number of MSHRs and higher clock frequency.}
-With a focus on memory system performance, we evaluate GPU workloads which are sensitive to memory 
-bandwidth or latency from three benchmark suites: Rodinia~\cite{Che2009},
-Parboil~\cite{Parboil} and recent HPC~\cite{comd,cns,minife,xsbench} workloads; those which are compute-bound 
-see little change in performance due to changes made to the memory system.
-{\color{black}For the
-remainder of the paper we show results for 19 benchmarks, 17 of which are sensitive
-to memory bandwidth while also providing {\tt comd} and {\tt sgemm} results to represent applications
-which are memory insensitive and latency sensitive respectively.}
+%As noted in Section~\ref{heterogeneous_background}, attaching the capacity-optimized memory
+%directly to the GPU is functionally equivalent to remote CPU attached memory,
+%but with different latency parameters.  To simulate an additional interconnect hop
+%to remote CPU-attached memory, we model a fixed, pessimistic, additional 100 cycle latency to access
+%the DDR4 memory from the GPU\@. This overhead is derived from the single additional interconnect
+%hop latency found in SMP CPU-only designs such as the Intel XEON~\cite{INTELXEON}\@.
 
-As noted in Section~\ref{heterogeneous_background}, attaching the capacity-optimized memory
-directly to the GPU is functionally equivalent to remote CPU attached memory,
-but with different latency parameters.  To simulate an additional interconnect hop
-to remote CPU-attached memory, we model a fixed, pessimistic, additional 100 cycle latency to access
-the DDR4 memory from the GPU\@. This overhead is derived from the single additional interconnect
-hop latency found in SMP CPU-only designs such as the Intel XEON~\cite{INTELXEON}\@.
-% of accessing
-% 
-% {\color{red}latency on the cost of a single additional interconnect hop accessed
-% at a last level cache-line granularity}, derived from interconnect latency of SMP CPU-only
-% designs 
-%Modern GPUs are
-%designed with enough MSHR resources to cover the large bandwidth-delay product
-%to their memory.  
-{\color{black}Our heterogeneous
-memory model contains the same number of MSHRs per memory channel as the baseline
-memory configuration.  The number of MSHRs in the
-baseline configuration is sufficient to effectively hide the additional interconnect
-latency to the DDR memory in Figure~\ref{fig:latency}. Should MSHR quantity become an issue
-when supporting two level memories, previous work has shown that several techniques
-can efficiently increase MSHRs with only modest cost~\cite{ref:tuck:scalablemisshandling, ref:minikin:prefetch}.}
-%Figure~\ref{fig:bwlatencysensitivity} shows that increasing
-%memory latency by 100 cycles without changing the
-%number of MSHRs does not significantly impair performance.
-
-%{\color{red} In Figure~\ref{fig:latency} we have shown that
-%this additional latency has little performance impact on most of the
-%applications except {\tt sgemm} from Parboil~\cite{parboil}.}
-%and variation of its exact value has minimal impact on the conclusions we
-%draw from this work.
+%Our heterogeneous memory model contains the same number of MSHRs per memory
+%channel as the baseline memory configuration.  The number of MSHRs in the
+%baseline configuration is sufficient to effectively hide the additional
+%interconnect latency to the DDR memory in Figure~\ref{fig:latency}. Should MSHR
+%quantity become an issue when supporting two level memories, previous work has
+%shown that several techniques can efficiently increase MSHRs with only modest
+%cost~\cite{ref:tuck:scalablemisshandling, ref:minikin:prefetch}.
 
 %Paging model talk
-{\color{black}
 Implementing a BW-AWARE placement policy requires adding another mode ({\tt
-MPOL\_BWAWARE}) to the {\tt
-set\_mempolicy()} system call in Linux\@. When a process uses this mode, the Linux
-kernel will allocate pages from the two memory zones in the ratio of their
-bandwidths.  These bandwidth ratios may be obtained from future ACPI resources or dynamically
-determined by the GPU runtime at execution time.}
+MPOL\_BWAWARE}) to the {\tt set\_mempolicy()} system call in Linux\@. When a
+process uses this mode, the Linux kernel will allocate pages from the two memory
+zones in the ratio of their bandwidths.  These bandwidth ratios may be obtained
+from future ACPI resources or dynamically determined by the GPU runtime at
+execution time.
 
 \begin{figure}[t]
-    \includegraphics[width=\columnwidth]{asplos2015/figures/bw-aware-2.png} 
+    \centering
+    \includegraphics[width=0.9\columnwidth]{asplos2015/figures/bw-aware-2.png} 
     \caption{GPU workload performance with different page placement policies.
 $xC$-$yB$ policy represents $x:y$ data transfer ratio from CO and BO memory respectively.}
     \label{fig:baseline}
@@ -250,7 +235,8 @@ to become the default placement policy for GPU-based applications.}
 % and using the LOCAL page placement policy may still be preferred.
 
 \begin{figure}[t]
-    \includegraphics[width=\columnwidth]{asplos2015/figures/bwaware-capacity.png}
+    \centering
+    \includegraphics[width=0.9\columnwidth]{asplos2015/figures/bwaware-capacity.png}
     \caption{Performance of BW-AWARE placement as application footprint exceeds
 available high-bandwidth
     memory capacity.}
@@ -282,7 +268,8 @@ match 100\% of ideal because the actual ratio of bandwidth in our system is
 $28C$-$72B$ not $30C$-$70B$.
 
 \begin{figure}[t]
-    \includegraphics[width=\columnwidth]{asplos2015/figures/sensitivitytobwratio.png}
+    \centering
+    \includegraphics[width=0.9\columnwidth]{asplos2015/figures/sensitivitytobwratio.png}
     \caption{Performance comparison between BW-AWARE, INTERLEAVE, and LOCAL page placement
 policies while varying the memory bandwidth ratio.}
     \label{fig:sensitivitytobwratio}

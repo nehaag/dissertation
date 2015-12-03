@@ -1,0 +1,38 @@
+\section{Results}
+\label{results}
+
+\subsection{Thermostat Performance Evaluation}
+All-DRAM with 4KB\\
+All-DRAM with THP\\
+2-level memory at 4KB with kstaled doing page placement\\
+2-level memory with THP with kstaled doing page placement\\ 
+2-level memory with our design\\
+
+\subsection{DRAM Cost Analysis}
+
+Once the Thermostat controller has been built, we propose to perform the
+following experiments. First, we will study the impact on application
+performance of employing slow-mem on several cloud-computing
+applications~\cite{Perfkitbenchmarker}. Satisfying SLAs is compulsory for these
+applications as it directly impacts businesses they are deployed in. We will
+design our mechanism so that SLAs are not violated in all of these benchmarks.
+
+Second, we will perform a sensitivity study of different policies that Thermostat
+controller employs and estimate the corresponding TCO savings. The goal of
+employing Thermostat controller is to reduce main memory TCO. However, Thermostat is
+expected to increase the CPU usage as well, which will add to the TCO cost. We
+will investigate this trade-off of plausible main memory TCO reduction and extra
+CPU usage cost.
+
+Finally, we will do a trade-off analysis of performance and TCO with Thermostat.
+Looking at only performance (throughput or latency) or TCO can lead one to wrong
+conclusions. We will analyze all possible potential impacts of Thermostat on TCO,
+including, e.g., cost and power consumption of new memory technologies, power
+consumption of Thermostat controller on CPU, additional provisioning that may be
+necessary because of lower throughput at SLA etc. One of our end goals is
+to come up with a detailed analysis of when using such memory technologies can
+be beneficial and drive the adoption of such technologies by internet giants.
+
+\subsection{Discussion}
+Varibale that this design will influence in other parts of the system, CPU,
+power analysis

@@ -7,15 +7,15 @@ reduces the number of TLB shootdowns at the GPU, reducing the performance overhe
 page migration.  These policies implemented together, however, will continue migrating pages
 indefinitely from their initial locations within DDR memory towards the GPU-attached GDDR memory.
 
-\begin{figure}[thp]
+\begin{figure}[t]
 \centering
-    \subfloat[bfs]{\includegraphics[width=\columnwidth]{hpca2015/figures/bfs-bw-ratio.png}}\\
-    \subfloat[xsbench]{\includegraphics[width=\columnwidth]{hpca2015/figures/xsbench-bw-ratio.png}}\\
-    \subfloat[needle]{\includegraphics[width=\columnwidth]{hpca2015/figures/needle-bw-ratio.png}}\\
-    \caption{Fraction of total bandwidth serviced by GDDR during application
+    \includegraphics[width=0.9\columnwidth]{hpca2015/figures/bfs-bw-ratio.png}
+%    \subfloat[xsbench]{\includegraphics[width=\columnwidth]{hpca2015/figures/xsbench-bw-ratio.png}}\\
+%    \subfloat[needle]{\includegraphics[width=\columnwidth]{hpca2015/figures/needle-bw-ratio.png}}\\
+    \caption{{\tt bfs}: Fraction of total bandwidth serviced by GDDR during application
 runtime when when using thresholding alone (TH), then adding range expansion
 (TH+RE) and bandwidth aware migration (TH+RE+BWB).}
-    \label{fig:migrationlimiting}
+    \label{fig:migrationlimiting-bfs}
 \end{figure}
 
 As shown in Figure~\ref{fig:threshold}, however, rather than migrating all pages into the GPU memory,
@@ -30,6 +30,28 @@ We implement a simple bandwidth balancing policy based on a sampled moving avera
 application's bandwidth needs to each memory type.  We assume that the ideal bandwidth ratio in the system can be known either
 via runtime discovery of the system bandwidth capabilities (using an application like stream~\cite{stream_benchmark})
 or through ACPI bandwidth information tables, much like memory latency information can be discovered today.
+
+\begin{figure}[t]
+\centering
+%    \subfloat[bfs]{\includegraphics[width=\columnwidth]{hpca2015/figures/bfs-bw-ratio.png}}\\
+    \includegraphics[width=0.9\columnwidth]{hpca2015/figures/xsbench-bw-ratio.png}
+%    \subfloat[needle]{\includegraphics[width=\columnwidth]{hpca2015/figures/needle-bw-ratio.png}}\\
+    \caption{{\tt xsbench}: Fraction of total bandwidth serviced by GDDR during application
+runtime when when using thresholding alone (TH), then adding range expansion
+(TH+RE) and bandwidth aware migration (TH+RE+BWB).}
+    \label{fig:migrationlimiting-xsbench}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+%    \subfloat[bfs]{\includegraphics[width=\columnwidth]{hpca2015/figures/bfs-bw-ratio.png}}\\
+%    \subfloat[xsbench]{\includegraphics[width=\columnwidth]{hpca2015/figures/xsbench-bw-ratio.png}}\\
+    \includegraphics[width=0.9\columnwidth]{hpca2015/figures/needle-bw-ratio.png}
+    \caption{{\tt needle}: Fraction of total bandwidth serviced by GDDR during application
+runtime when when using thresholding alone (TH), then adding range expansion
+(TH+RE) and bandwidth aware migration (TH+RE+BWB).}
+    \label{fig:migrationlimiting-needle}
+\end{figure}
 
 Given the bandwidth capability of each interface, we can calculate the ideal fractional ratio, $GDDR / (DDR + GDDR)$, of traffic that should 
 target GDDR using the methodology defined by Agarwal et al.~\cite{Agarwal2015}. For the configuration described in Table~\ref{tab:methodology},
@@ -48,7 +70,8 @@ we reduce the rate of page migrations by 1/2.  If the measured ratio exceeds the
 \end{figure*}
 
 \subsection{Results}
-For three example applications, Figure~\ref{fig:migrationlimiting} 
+For three example applications,
+Figure~\ref{fig:migrationlimiting},~\ref{fig:migrationlimiting-xsbench},~\ref{fig:migrationlimiting-needle}
 shows the bandwidth utilization of the GDDR versus total bandwidth of the application sampled over time
 in 1\% increments.  The $TH$ series provides a view of how migration using single page
 migration with a static threshold of one (first touch) performs, while $TH+RE$ shows the static threshold with the range expansion
