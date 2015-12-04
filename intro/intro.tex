@@ -1,22 +1,21 @@
-
-{\color{red}
-\begin{itemize}
-\item New memory technologies
-\item Why is virtual address shared space is a challenge with the advent of
-these new technologies
-
-\item How is CPU--GPU space changing in terms
-of high bandwidth but lower latency interconnects
-\item Present opportunities and challenges
-\item Combine intro of first 3 GPU papers
-
-\item Google Proposal
-\item How cheaper but slower mem technologies can lead to boosting perf/dollar
-in data-centers
-\item Present opportunities and challenges
-\end{itemize}
-}
-
+%{\color{red}
+%\begin{itemize}
+%\item New memory technologies
+%\item Why is virtual address shared space is a challenge with the advent of
+%these new technologies
+%
+%\item How is CPU--GPU space changing in terms
+%of high bandwidth but lower latency interconnects
+%\item Present opportunities and challenges
+%\item Combine intro of first 3 GPU papers
+%
+%\item Google Proposal
+%\item How cheaper but slower mem technologies can lead to boosting perf/dollar
+%in data-centers
+%\item Present opportunities and challenges
+%\end{itemize}
+%}
+%
 The emergence of {\it heterogeneous memory systems} has resulted in a need for
 new memory management policies that are able to fully exploit these systems.
 While traditional memory management techniques largely assume a ``homogeneous''
@@ -30,41 +29,43 @@ cheaper and large capacity non-volatile memory (NVRAM) along with a regular DRAM
 based memory attached to the same CPU node.  There are several aspects of such
 memory technologies that have not been studied before:
 
-a) {\it Different bandwidths:} Different memory technologies will typically have
-huge differences in their bandwidths, e.g., a GPU connected to on-board GDDR and
-host-side DDR memories can have a bandwidth differential of $\approx$ 2 -- 8
-$\times$ between the two memory technologies. Since GPUs are very sensitive to
-main memory bandwidth, the metric to optimize for in such systems is the total
-available bandwidth to the GPU from the two memory sources. While prior
-work on Non-Uniform Memory Access (NUMA) has closely looked at data placement
-strategies to optimize the total memory {\it access latency} in the presence of
-different memory banks with different access latencies, we show that such
-policies are not suited to optimizing the total memory {\it bandwidth}. Instead,
-we propose {\it Bandwidth-Aware Placement} (BW-AWARE), which directly maximizes
-the overall bandwidth, and show that it can significantly increase application
-throughput for several GPU applications.
+a) \textbf{Different bandwidths:}
+Different memory technologies will typically have huge differences in their
+bandwidths, e.g., a GPU connected to on-board GDDR and host-side DDR memories
+can have a bandwidth differential of $\approx$ 2 -- 8 $\times$ between the two
+memory technologies. Since GPUs are very sensitive to main memory bandwidth, the
+metric to optimize for in such systems is the total available bandwidth to the
+GPU from the two memory sources. While prior work on Non-Uniform Memory Access
+(NUMA) has closely looked at data placement strategies to optimize the total
+memory {\it access latency} in the presence of different memory banks with
+different access latencies, we show that such policies are not suited to
+optimizing the total memory {\it bandwidth}. Instead, we propose {\it
+Bandwidth-Aware Placement} (BW-AWARE), which directly maximizes the overall
+bandwidth, and show that it can significantly increase application throughput
+for several GPU applications.
 
-b) {\it Different coherency domains:} 
+b) \textbf{Different coherency domains:} 
 In a heterogeneous CPU-GPU memory system, implementing hardware cache coherence
 between the CPU and the GPU can lead to a significant challenges because of
 design and verification involved particularly if the two domains are designed by
-separate vendors. We introduce {\it Selective Caching}, a coherence policy
-that disallows GPU caching of any memory that would require coherence updates to
+separate vendors. We introduce {\it Selective Caching}, a coherence policy that
+disallows GPU caching of any memory that would require coherence updates to
 propagate across the two domains. This approach decouples the cache-coherence
 protocols in CPUs and GPUs, thus improving cross-vendor design cycle time.
 
-c) {\it Different cost/bit:} Different memory technologies have different costs.
-For example, recently announced non-volatile memory technology~\cite{xpoint} is
-projected to be significantly cheaper than regular DRAM, while also being
-significantly higher latency. Their lower cost/bit makes them a good candidate
-for use in data-centers, where main memory cost can be up to $\approx$ 30\% of
-the total cost of operation (TCO). However, their low speed means that only {\it
-cold}, i.e., infrequently accessed data can be placed in such memories.  Placing
-more cold data in the slower memories conflicts with efficient virtual memory
-usage by transparent huge page (THP) -- which can provide 10-15\% performance
-gains in large memory footprint data-center applications, and we study how to
-reap the benefits of huge pages while also placing as much data in slow memory
-as possible.
+c) \textbf{Different costs per bit:}
+Different memory technologies can have different costs.  For example, recently
+announced non-volatile memory technology~\cite{xpoint} is projected to be
+significantly cheaper than regular DRAM, while also being significantly higher
+latency. Their lower cost per bit makes them a good candidate for use in
+data-centers, where main memory cost can be up to $\approx$ 30\% of the total
+cost of ownership (TCO). However, their low speed means that only {\it cold},
+i.e., infrequently accessed data can be placed in such memories.  Placing more
+cold data in the slower memories conflicts with efficient virtual memory usage
+by transparent huge page (THP), which can provide 10-15\% performance gains in
+large memory footprint data-center applications. We study how to reap the
+benefits of huge pages while also placing as much data in slow memory as
+possible, to improve performance per dollar at data-center scale.
 
 Below, we describe each of these three problems in detail and give a brief
 sketch of our proposed solution to these problems.
@@ -72,12 +73,12 @@ sketch of our proposed solution to these problems.
 \section{Bandwidth-asymmetric Systems}
 To date, GPU-attached Bandwidth-Optimized (BO) memory has been allocated and
 managed primarily as the result of explicit, programmer-directed function calls.
-To make best use of the bandwidth available to GPU programs programmers manually
-copy the data over the relatively slow PCIe bus to the GPU memory, and -- only
-then -- launch their GPU kernels.  This up-front data allocation and transfer
-has been necessary since transferring data over the PCIe bus is a high overhead
-operation, and a bulk transfer of data amortizes this overhead. This data
-manipulation overhead also results in significant porting challenges when
+To make best use of the bandwidth available to GPU programs, programmers
+manually copy the data over the relatively slow PCIe bus to the GPU memory, and
+-- only then -- launch their GPU kernels.  This up-front data allocation and
+transfer has been necessary since transferring data over the PCIe bus is a high
+overhead operation, and a bulk transfer of data amortizes this overhead. This
+data manipulation overhead also results in significant porting challenges when
 retargeting existing applications to GPUs, particularly for high-level languages
 that make use of libraries and dynamic memory allocation during application
 execution.
@@ -86,33 +87,33 @@ execution.
     \centering
     \includegraphics[width=0.7\columnwidth]{hpca2015/figures/architecture.eps}
     \caption{System architectures for legacy, current, and future mixed GPU-CPU systems.}
-    \label{fig:arch}
+    \label{fig:arch-hpca2015}
 \end{figure}
 
 Recognizing the obstacle this programming model poses to the wider adoption of
 GPUs in more parallel applications, programming systems like NVIDIA's CUDA,
 OpenCL, and OpenACC are evolving to shared virtual address space between CPU and
-GPU. Concurrently, GPU-CPU architectures are evolving to have unified globally
+GPU. Concurrently, CPU-GPU architectures are evolving to have unified globally
 addressable memory systems in which both the GPU and CPU can access any portion
 of memory at any time, regardless of its physical location.  Today this unified
 view of memory is layered on top of legacy hardware designs by implementing
 software-based runtimes that dynamically copy data on demand between the GPU and
-CPU~\cite{cuda}. As depicted in Figure~\ref{fig:arch}, over the next several
-years it is expected that GPU and CPU systems will move away from the PCIe
-interface to a fully cache coherent (CC) interface ~\cite{AMDHSA}. These systems
-will provide high bandwidth and low latency between the non-uniform memory
-access (NUMA) pools attached to discrete processors by layering coherence
+CPU~\cite{cuda}. As depicted in Figure~\ref{fig:arch-hpca2015}, over the next
+several years it is expected that GPU and CPU systems will move away from the
+PCIe interface to a fully cache coherent (CC) interface ~\cite{AMDHSA}. These
+systems will provide high bandwidth and low latency between the non-uniform
+memory access (NUMA) pools attached to discrete processors by layering coherence
 protocols on top of physical link technologies such as NVLink~\cite{NVLINK},
-Hypertransport~\cite{AMDHT}, or QPI~\cite{INTELQPI}.   CC-NUMA access to host
-memory from the GPU makes the software page migration used today an optional
-feature thanks to the improved bandwidth, latency, and access granularity that
-cache coherence can provides.
+Hypertransport~\cite{AMDHT}, or QPI~\cite{INTELQPI}.   CC-NUMA access to
+CPU-attached memory from the GPU makes the software page migration used today an
+optional feature thanks to the improved bandwidth, latency, and access
+granularity that cache coherence can provides.
 
-As heterogeneous GPU/CPU systems move to a transparent unified memory system,
+As heterogeneous CPU-GPU systems move to a transparent unified memory system,
 the OS and runtime systems need information about other aspects of memory zones
 such as their bandwidths instead of only the access latency information that is
 exposed today via Advanced Configuration and Power Interface (ACPI). In CC-NUMA
-systems latency information alone is adequate as CPUs are generally more
+systems today, latency information alone is adequate as CPUs are generally more
 performance sensitive to memory system latency rather than other memory
 characteristics. In contrast, massively parallel GPUs and their highly-threaded
 programming models have been designed to gracefully handle long memory
@@ -120,8 +121,8 @@ latencies, instead demanding high bandwidth. Unfortunately, differences in
 bandwidth capabilities, read versus write performance, and access energy are not
 exposed to software; making it difficult for the operating system, runtime, or
 programmer to make good decisions about memory placement in these GPU-equipped
-systems. This thesis explores the effect on GPU performance of exposing memory
-system bandwidth information to the operating system/runtime and user
+systems. In this thesis we investigate the effect on GPU performance of exposing
+memory system bandwidth information to the operating system/runtime and user
 applications to improve the quality of dynamic page placement and migration
 decisions.
 
@@ -175,7 +176,7 @@ is challenging when multiple vendors wish to integrate existing CPU and GPU
 designs in a timely manner.
 
 Due to the significant challenges associated with building such cache-coherent
-systems, in this work, we architect a GPU \textit{selective caching} mechanism.
+systems, in this thesis, we architect a GPU \textit{selective caching} mechanism.
 This mechanism provides the conceptual simplicity of CPU-GPU hardware cache
 coherence and maintains a high level of GPU performance, but does not actually
 implement hardware cache coherence within the GPU, or between the CPU and GPU.
@@ -188,16 +189,16 @@ implement hardware cache coherence within the GPU, or between the CPU and GPU.
 
 \section{Proposal: Cheaper Memory Technologies}
 Upcoming memory technologies, such as Intel's recently-announced XPoint-3D
-memory, are projected to be denser and cheaper per bit than DRAM while providing
-the byte-addressable load-store interface of conventional main memory.  Improved
-capacity and cost per bit comes at the price of higher access latency, projected
-to fall somewhere in the range of 500ns to several microseconds~\cite{xpoint}.
-The impending commercial availability of such devices has renewed interest in
-two-tiered physical memory, wherein part of a system's physical address space is
-implemented with the slower, cheaper memory technology.  Slow memory can result
-in a net TCO win if the cost savings of replaced DRAM outweigh cost increase due
-to reduced program performance or by enabling a higher peak memory capacity per
-server than is economically viable with DRAM alone.  
+memory~\cite{xpoint}, are projected to be denser and cheaper per bit than DRAM
+while providing the byte-addressable load-store interface of conventional main
+memory.  Improved capacity and cost per bit comes at the price of higher access
+latency, projected to fall somewhere in the range of 500ns to several
+microseconds.  The impending commercial availability of such devices has renewed
+interest in two-tiered physical memory, wherein part of a system's physical
+address space is implemented with the slower, cheaper memory technology.  Slow
+memory can result in a net TCO win if the cost savings of replaced DRAM outweigh
+cost increase due to reduced program performance or by enabling a higher peak
+memory capacity per server than is economically viable with DRAM alone.  
 
 %Our preliminary results indicate that over half of the memory footprint of
 %representative cloud applications (e.g., Cassandra) are identified as cold by
@@ -217,25 +218,26 @@ server than is economically viable with DRAM alone.
 %It's an unsolved problem
 Prior academic work on two-tiered memory has assumed migration/paging at 4KB
 page granularity.  Huge pages, implemented via Linux's Transparent Huge Page
-(THP) mechanism, are now ubiquitous and critical for data-center applications.
-Recent work~\cite{JeffPaper} has demonstrated that 2MB huge pages are particularly
-performance-critical under virtualization.  
+(THP) mechanism, are now ubiquitous and critical for data-center applications,
+boosting application performance by 10-15\%.
+%Recent work~\cite{JeffPaper} has demonstrated that 2MB huge pages are particularly
+%performance-critical under virtualization.  
 %For example, our study demonstrates a 20\% throughput improvement for Hadoop and
 %a 40\% speedup on random memory probes when using huge pages under
 %virtualization.  
 However, huge pages thwart prior two-tiered memory proposals for two reasons:
 (1) it is too expensive to frequently migrate pages at 2MB granularity, and (2)
-hot regions occur within otherwise cold 2MB huge pages. 
+hot regions occur within otherwise cold 2MB huge pages can hurt performance if
+placed in the slower memory. 
 
 %Here is my idea
-We propose to develop a transparent huge-page-aware two-tiered
-memory solution that integrates support for dynamic page migration and
-transparent huge pages, achieving both the capacity/cost advantages of
-two-tiered memory and performance advantages of huge pages.  Our focus is on
-cloud computing scenarios where a high-memory-footprint application, such as
-Cassandra, Aerospike, or MySQL, runs under virtualization and may co-run with
-other, competing applications.
-Hot regions within otherwise cold huge pages present a central challenge to our
+We propose to develop a transparent huge-page-aware two-tiered memory solution
+that integrates support for dynamic page migration and transparent huge pages,
+achieving both the capacity/cost advantages of two-tiered memory and performance
+advantages of huge pages.  Our focus is on cloud computing scenarios where a
+high-memory-footprint application, such as Cassandra, Aerospike, or MySQL, runs
+under virtualization and may co-run with other, competing applications.  Hot
+regions within otherwise cold huge pages present a central challenge to our
 objective; existing x86-Linux provides no mechanism to carve out a 4KB hot
 region within a 2MB cold page.
 
@@ -253,7 +255,10 @@ region within a 2MB cold page.
 %exploited to emulate hardware support for translation facades.
 
 %Bulleted list of contributions
-We propose to develop a Linux prototype that will perform following functions.
+We propose to develop a Linux prototype that will perform following functions:
+{\color {red} Should we keep the description on how to do each of these in
+short?}
+
 (1) We will measure hot
 and cold memory fractions at 4KB granularity and within 2MB huge pages to
 measure two-tiered memory opportunity and demonstrate the need for translation
@@ -262,6 +267,7 @@ facades.
 %tracks pages that have not been accessed over a fixed time interval) and
 %BadgerTrap [4] (a tool to intercept soft page faults) to facilitate this
 %characterization. 
+
 (2) We will develop methods to track hot and cold memory
 regions at run-time. 
 %A key challenge lies in efficiently tracking hot regions
@@ -269,6 +275,7 @@ regions at run-time.
 %granularity.  We propose to investigate sampling methods, e.g., by
 %probabilistically demoting huge pages or leveraging performance counter
 %infrastructure. 
+
 (3) We will develop an online migration mechanism that can shift
 data between fast and slow memory tiers while the application is concurrently
 executing.
@@ -277,6 +284,7 @@ executing.
 %(4) We will develop translation facades (using BadgerTrap to emulate
 %performance) and investigate novel page table and TLB organizations to support
 %facades.
+
 (4) We will develop and investigate a mechanism that remaps a portion of a
 2MB mapping with an alternate physical address or permissions.  
 
@@ -288,7 +296,7 @@ In this thesis we make following contributions:
 We show that existing CPU-oriented page placement policies are not only 
 sub-optimal for placement in GPU-based systems, but simply do not have the 
 appropriate information available to make informed decisions when optimizing for 
-bandwidth-asymmetric memory.  Exposing additional bandwidth information 
+bandwidth-asymmetric memory systems. Exposing additional bandwidth information 
 to the OS, as is done for latency today, will be required for optimized decision 
 making.
 

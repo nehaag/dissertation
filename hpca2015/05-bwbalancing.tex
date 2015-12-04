@@ -53,15 +53,20 @@ runtime when when using thresholding alone (TH), then adding range expansion
     \label{fig:migrationlimiting-needle}
 \end{figure}
 
-Given the bandwidth capability of each interface, we can calculate the ideal fractional ratio, $GDDR / (DDR + GDDR)$, of traffic that should 
-target GDDR using the methodology defined by Agarwal et al.~\cite{Agarwal2015}. For the configuration described in Table~\ref{tab:methodology},
-this fraction is 71.4\%.  We currently ignore command overhead
-variance between the memory interfaces and assume that it is either the same for technologies in use or that
-the optimal bandwidth ratio discovered or presented by ACPI will have taken that into account.  Using this target,
-our software page migration samples a bandwidth accumulator present for all memory channels every 10,000 
-GPU cycles and calculates the average bandwidth utilization of the GDDR and DDR in the system.  If this utilization
-is below the ideal threshold minus 5\% we continue migrating pages at full-rate.  If the measured ratio approaches within 5\% of the target
-we reduce the rate of page migrations by 1/2.  If the measured ratio exceeds the target, we suspend further migrations.
+Given the bandwidth capability of each interface, we can calculate the ideal
+fractional ratio, $GDDR / (DDR + GDDR)$, of traffic that should target GDDR
+using the methodology defined by Agarwal et al.~\cite{Agarwal2015}.  For the
+configuration described in Table~\ref{tab:mig-methodology}, this fraction is
+71.4\%.  We currently ignore command overhead variance between the memory
+interfaces and assume that it is either the same for technologies in use or that
+the optimal bandwidth ratio discovered or presented by ACPI will have taken that
+into account.  Using this target, our software page migration samples a
+bandwidth accumulator present for all memory channels every 10,000 GPU cycles
+and calculates the average bandwidth utilization of the GDDR and DDR in the
+system.  If this utilization is below the ideal threshold minus 5\% we continue
+migrating pages at full-rate.  If the measured ratio approaches within 5\% of
+the target we reduce the rate of page migrations by 1/2.  If the measured ratio
+exceeds the target, we suspend further migrations.
 
 \begin{figure*}[thp]
     \includegraphics[width=\textwidth]{hpca2015/figures/final.png}
@@ -71,7 +76,7 @@ we reduce the rate of page migrations by 1/2.  If the measured ratio exceeds the
 
 \subsection{Results}
 For three example applications,
-Figure~\ref{fig:migrationlimiting},~\ref{fig:migrationlimiting-xsbench},~\ref{fig:migrationlimiting-needle}
+Figure~\ref{fig:migrationlimiting-bfs},~\ref{fig:migrationlimiting-xsbench},~\ref{fig:migrationlimiting-needle}
 shows the bandwidth utilization of the GDDR versus total bandwidth of the application sampled over time
 in 1\% increments.  The $TH$ series provides a view of how migration using single page
 migration with a static threshold of one (first touch) performs, while $TH+RE$ shows the static threshold with the range expansion

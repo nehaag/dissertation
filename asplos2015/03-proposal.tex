@@ -120,23 +120,24 @@ Without a suitable real system to experiment on, we turned to simulation to eval
 page placement improvements.
 
 %\vspace{0.05in}
-\subsubsection{Methodology\\}
+\subsubsection{Methodology}
 To evaluate BW-AWARE page placement, we simulated a heterogeneous memory system
 attached to a GPU comprised of both bandwidth-optimized GDDR and
 cost/capacity-optimized DDR where the GDDR memory is attached directly to the
-GPU\@.  We discuss our baseline simulation environment in~\ref{chap:methodology}.
+GPU\@.  We discuss our baseline simulation environment in
+Chapter~\ref{chap:methodology}.
 %No contemporary GPU system is available which supports cache-coherent access to
 %heterogeneous memories.  Commonly available PCIe-attached GPUs are constrained
 %by interconnect bandwidth and lack of cache-coherence; while cache-coherent GPU
-%systems, such as AMD's Kaveri, do not ship with heterogeneous memory.
-%Our simulation environment is based on GPGPU-Sim~\cite{gpgpusimIspass09} which
-%has been validated against NVIDIA's Fermi class GPUs and is reported to match
+%systems, such as AMD's Kaveri, do not ship with heterogeneous memory.  Our
+%simulation environment is based on GPGPU-Sim~\cite{gpgpusimIspass09} which has
+%been validated against NVIDIA's Fermi class GPUs and is reported to match
 %hardware performance with up to 98.3\% accuracy~\cite{gpgpusimManual}.  We
 %modified GPGPU-Sim to support a heterogeneous GDDR5-DDR4 memory system with the
 %simulation parameters listed in Table~\ref{tab:methodology}.
-We model a baseline system with 200GB/s of GPU-attached
-memory bandwidth and 80GB/s of CPU-attached memory
-bandwidth, providing a bandwidth ratio of $2.5\times$\@~\ref{tab:bw-methodology}.
+We model a baseline system with 200GB/s of GPU-attached memory bandwidth and
+80GB/s of CPU-attached memory bandwidth, providing a bandwidth ratio of
+$2.5\times$\@ as shown in Table~\ref{tab:bw-methodology}.
 %We made several changes to the baseline GTX-480 model to bring our
 %configuration in-line with the resources available in more modern GPUs,
 %including a larger number of MSHRs and higher clock frequency.
@@ -182,7 +183,7 @@ $xC$-$yB$ policy represents $x:y$ data transfer ratio from CO and BO memory resp
 \end{figure}
 
 %\vspace{0.05in}
-\subsubsection{BW-AWARE Performance\\}
+\subsubsection{BW-AWARE Performance}
 We define our BW-AWARE page placement policy $xC$-$yB$, where $x$ and $y$ denote the
 percentage of pages placed in a given memory technology, $C$ stands for capacity-optimized
 memory and $B$ stands for bandwidth-optimized memory. By definition $x+y=100$. For our baseline
@@ -207,7 +208,6 @@ software fast-path for memory allocation.
 
 Figure~\ref{fig:baseline} shows the application performance as we vary the ratio of pages placed in 
 each type of memory from 100\% BO to 100\% CO\@. 
-{\color{black}
 For all bandwidth-sensitive applications, the maximum performance is
 achieved when using the correct BW-AWARE $30C$-$70B$ placement ratio.  We
 find that, on average, a BW-AWARE policy performs 18\% better than the Linux
@@ -229,7 +229,7 @@ DRAM $50C$-$50B$ memory technology pairing, we believe a BW-AWARE placement poli
 replace the current Linux INTERLEAVE policy without having significant negative side
 affects on existing CPU or GPU workloads.  Because maximizing bandwidth is more important
 than minimizing latency for GPU applications, BW-AWARE placement may be a good candidate
-to become the default placement policy for GPU-based applications.}
+to become the default placement policy for GPU-based applications.
 % It is worth noting that there are some GPU applications that are known to be
 % sensitive to DRAM latency {\color{red}({\tt sgemm} in our case)}, 
 % and using the LOCAL page placement policy may still be preferred.
@@ -244,26 +244,29 @@ available high-bandwidth
 \end{figure}
 
 %\vspace{0.05in}
-\subsubsection{Effective Improvement in Problem Sizing\\}
-Figure~\ref{fig:capacityconstrained} shows the application throughput as we reduce the 
-capacity of our bandwidth-optimized memory pool as a fraction of the total application footprint. 
-BW-AWARE placement is able to
-achieve near peak performance even when only 70\% of the application footprint
-fits within the BO memory because BW-AWARE placement places only 70\% of pages in BO memory, with the other 30\% 
-is placed in the less expensive capacity-optimized memory.
-Thus, GPU programmers who today tune their application footprint to fit entirely in the GPU-attached BO memory could
-gain an extra 30\% effective memory capacity by exploiting the CPU-attached CO memory with a BW-AWARE
-placement policy.
-However, as the bandwidth-optimized memory capacity drops to less than 70\% of application footprint,
-performance begins to fall off. This effect is due to the ratio of bandwidth service from the two memory
-pools no longer matching the optimal ratio of $30C$-$70B$, with more data being serviced from the capacity
-optimized ratio than is ideal. {\color{black}Applications which are insensitive to memory bandwidth 
-(shown as having little change in Figure~\ref{fig:baseline}), tend to maintain their performance at reduced capacity points 
-(shown as having little change in Figure~\ref{fig:capacityconstrained}), because the average bandwidth reduction does not strongly affect
-their performance.  Conversely, those applications with strong BW-performance scaling tend to see larger performance 
-reduction as the average bandwidth available is reduced, due to capacity constraints forcing a disproportionate
-number of memory accesses to the lower bandwidth CO memory.}
-The performance at 70\% memory capacity does not exactly
+\subsubsection{Effective Improvement in Problem Sizing}
+Figure~\ref{fig:capacityconstrained} shows the application throughput as we
+reduce the capacity of our bandwidth-optimized memory pool as a fraction of the
+total application footprint.  BW-AWARE placement is able to achieve near peak
+performance even when only 70\% of the application footprint fits within the BO
+memory because BW-AWARE placement places only 70\% of pages in BO memory, with
+the other 30\% is placed in the less expensive capacity-optimized memory.  Thus,
+GPU programmers who today tune their application footprint to fit entirely in
+the GPU-attached BO memory could gain an extra 30\% effective memory capacity by
+exploiting the CPU-attached CO memory with a BW-AWARE placement policy.
+However, as the bandwidth-optimized memory capacity drops to less than 70\% of
+application footprint, performance begins to fall off. This effect is due to the
+ratio of bandwidth service from the two memory pools no longer matching the
+optimal ratio of $30C$-$70B$, with more data being serviced from the capacity
+optimized ratio than is ideal. Applications which are insensitive to memory
+bandwidth (shown as having little change in Figure~\ref{fig:baseline}), tend to
+maintain their performance at reduced capacity points (shown as having little
+change in Figure~\ref{fig:capacityconstrained}), because the average bandwidth
+reduction does not strongly affect their performance.  Conversely, those
+applications with strong BW-performance scaling tend to see larger performance
+reduction as the average bandwidth available is reduced, due to capacity
+constraints forcing a disproportionate number of memory accesses to the lower
+bandwidth CO memory.  The performance at 70\% memory capacity does not exactly
 match 100\% of ideal because the actual ratio of bandwidth in our system is
 $28C$-$72B$ not $30C$-$70B$.
 
@@ -276,19 +279,18 @@ policies while varying the memory bandwidth ratio.}
 \end{figure}
 
 %\vspace{0.05in}
-\subsubsection{Sensitivity to NUMA BW-Ratios\\} 
+\subsubsection{Sensitivity to NUMA BW-Ratios} 
 Heterogeneous memory systems are likely to come in a variety of configurations.
-For example, future mobile products may pair energy efficient
-and bandwidth-optimized Wide-IO2 memory with cost-efficient and higher capacity
-LPDDR4 memory.  Using the mobile bandwidths shown in Figure~\ref{fig:arch},
-{\color{black}this configuration} provides
-an additional 31\% in memory bandwidth to the GPU versus using the bandwidth-optimized memory alone. 
-Similarly, HPC systems may contain GPUs with as many as 4 on-package
-bandwidth-optimized HBM stacks and 
-high speed serial interfaces to bulk capacity cost/capacity-optimized DDR memory expanders
-providing just 8\% additional memory bandwidth.  While we have explored BW-AWARE
-placement in a desktop-like use case, BW-AWARE page placement can apply 
-to all of these configurations.  
+For example, future mobile products may pair energy efficient and
+bandwidth-optimized Wide-IO2 memory with cost-efficient and higher capacity
+LPDDR4 memory.  Using the mobile bandwidths shown in
+Figure~\ref{fig:arch-asplos2015}, this configuration provides an additional 31\%
+in memory bandwidth to the GPU versus using the bandwidth-optimized memory
+alone.  Similarly, HPC systems may contain GPUs with as many as 4 on-package
+bandwidth-optimized HBM stacks and high speed serial interfaces to bulk capacity
+cost/capacity-optimized DDR memory expanders providing just 8\% additional
+memory bandwidth.  While we have explored BW-AWARE placement in a desktop-like
+use case, BW-AWARE page placement can apply to all of these configurations.  
 
 Figure~\ref{fig:sensitivitytobwratio} shows the average performance of BW-AWARE, INTERLEAVE, and LOCAL
 placement policies as we vary the additional bandwidth available from the

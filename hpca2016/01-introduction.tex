@@ -40,43 +40,44 @@ high speed off-chip interconnects has led both academic groups and vendors like 
 to investigate how future GPUs may integrate into existing OS controlled 
 unified shared memory regimes used by CPUs~\cite{Pichai2014,Power2014,Agarwal2015,Agarwal2015b}.
 
-Current CPUs have up to 18 cores per socket~\cite{INTELXEONE5V3} but GPUs are
-expected to have hundreds of streaming multiprocessors (SMs) each with its own
-cache(s) within the next few years. Hence, extending traditional hardware
-cache-coherency into a multi-chip CPU-GPU memory system requires coherence
-messages to be exchanged not just within the GPU but over the CPU--GPU
-interconnect. Keeping these hundreds of caches coherent with a traditional HW
-coherence protocol, as shown in Figure~\ref{fig:motivation}, potentially
-requires large state and interconnect bandwidth~\cite{Kelm2010,johnson2011}.
-Some recent proposals call for data-race-free GPU programming models, which
-allow relaxed or scoped memory consistency to reduce the frequency or hide the
-latency of enforcing coherence~\cite{Hechtman2014}.  However, irrespective of
-memory ordering requirements, such approaches still rely on hardware
-cache-coherence mechanisms to  avoid the need for software to explicitly track
-and flush modified cache lines to an appropriate scope at each synchronization
-point. Techniques like region coherence~\cite{Power2013} seek to scale coherence
-protocols for heterogeneous systems, but require pervasive changes throughout
-the CPU and GPU memory systems. Such approaches also incur highly coordinated
-design and verification effort by both CPU and GPU vendors~\cite{Hong2012} that
-is challenging when multiple vendors wish to integrate existing CPU and GPU
-designs in a timely manner.
-
-Upcoming GPUs are expected to have hundreds of streaming multiprocessors (SMs),
-making the design and verification of hardware cache coherence challenging.
-Coherence messages will have to be exchanged across the CPU-GPU interconnect
-requiring large states and interconnect bandwidth~\cite{Kelm2010,johnson2011}.
-In the past, NVIDIA has investigated extending hardware cache-coherence
-mechanisms to multi-chip CPU--GPU memory systems. In this chapter we explore the
-techniques to simplify the implementation of shared virtual address space in
-heterogeneous CPU-GPU systems by providing the programmers with the hardware
-cache coherence while still maintaining performance. We architect a GPU
-\textit{selective caching} mechanism, wherein
-%Due to the significant challenges associated with building such systems, in this
-%work, we architect a GPU \textit{selective caching} mechanism. This mechanism
-%provides the conceptual simplicity of CPU--GPU hardware cache coherence and
-%maintains a high level of GPU performance, but does not actually implement
-%hardware cache coherence within the GPU, or between the CPU and GPU. In our
-%proposed selective caching GPU, 
+%Current CPUs have up to 18 cores per socket~\cite{INTELXEONE5V3} but GPUs are
+%expected to have hundreds of streaming multiprocessors (SMs) each with its own
+%cache(s) within the next few years. Hence, extending traditional hardware
+%cache-coherency into a multi-chip CPU-GPU memory system requires coherence
+%messages to be exchanged not just within the GPU but over the CPU--GPU
+%interconnect. Keeping these hundreds of caches coherent with a traditional HW
+%coherence protocol, as shown in Figure~\ref{fig:motivation}, potentially
+%requires large state and interconnect bandwidth~\cite{Kelm2010,johnson2011}.
+%Some recent proposals call for data-race-free GPU programming models, which
+%allow relaxed or scoped memory consistency to reduce the frequency or hide the
+%latency of enforcing coherence~\cite{Hechtman2014}.  However, irrespective of
+%memory ordering requirements, such approaches still rely on hardware
+%cache-coherence mechanisms to  avoid the need for software to explicitly track
+%and flush modified cache lines to an appropriate scope at each synchronization
+%point. Techniques like region coherence~\cite{Power2013} seek to scale coherence
+%protocols for heterogeneous systems, but require pervasive changes throughout
+%the CPU and GPU memory systems. Such approaches also incur highly coordinated
+%design and verification effort by both CPU and GPU vendors~\cite{Hong2012} that
+%is challenging when multiple vendors wish to integrate existing CPU and GPU
+%designs in a timely manner.
+%
+Upcoming GPUs are expected to have hundreds of streaming multiprocessors (SMs)
+-- as shown in Figure~\ref{fig:motivation} -- making the design of hardware
+cache coherence challenging.  Coherence messages will have to be exchanged
+across the CPU-GPU interconnect requiring large states and interconnect
+bandwidth~\cite{Kelm2010,johnson2011}.  In the past, NVIDIA has investigated
+extending hardware cache-coherence mechanisms to multi-chip CPU--GPU memory
+systems. In this chapter we explore the techniques to simplify the
+implementation of shared virtual address space in heterogeneous CPU-GPU systems
+by providing the programmers with the hardware cache coherence while still
+maintaining performance. We architect a GPU \textit{selective caching}
+mechanism, wherein
+%Due to the significant challenges associated with building such systems, in
+%this work, we architect a GPU \textit{selective caching} mechanism. This
+%mechanism provides the conceptual simplicity of CPU--GPU hardware cache
+%coherence and maintains a high level of GPU performance, but does not actually
+%implement hardware cache coherence within the GPU, or between the CPU and GPU.
+%In our proposed selective caching GPU, 
 the GPU does not cache data that resides in CPU physical memory, nor does it
 cache data that resides in the GPU memory that is actively in-use by the CPU
 on-chip caches. This approach is orthogonal to the memory consistency model and

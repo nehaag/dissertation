@@ -1,6 +1,6 @@
-{\color{red}
+{\color{red} 
 - how does OS manage memory\\
-- page tables\\
+- page tablesi and hugepages (take it from Jeff's paper)\\
 - GPU page tables\\
 - how does migration happen\\
 - GPU programming and CUDA\\
@@ -172,7 +172,7 @@ CPU, performance.
     \includegraphics[width=0.7\columnwidth]{hpca2015/figures/motivation.png}
     \caption{GPU performance sensitivity to memory subsystem performance where GDDR provides 
     200GB/s, DDR provides 80GB/s, and {\tt memcpy} bandwidth is 80GB/s.}
-    \label{fig:motivation}
+    \label{fig:motivation-hpca2015}
 \end{figure}
 
 %A by-product of the GPU's many-threaded design is that it is able to maintain a
@@ -188,7 +188,7 @@ CPU, performance.
 \section{Memory Copy Overhead in GPUs}
 In current CPU/GPU designs, GPU and CPU memory systems are private and require
 explicit copying to the GPU before the application can execute.
-Figure~\ref{fig:motivation} shows the effect of this copy overhead on
+Figure~\ref{fig:motivation-hpca2015} shows the effect of this copy overhead on
 application performance by comparing GDDR to GDDR+{\tt memcpy} performance which
 includes the cost of the programmer manually copying data from the DDR to the
 GDDR before launching the GPU kernels.  While this copy overhead varies from
@@ -213,7 +213,7 @@ The key advancement expected to enable performance is the introduction of
 CC-NUMA GPU and CPU systems.  Using cache coherence layered upon NVLink, HT, or
 QPI, GPUs will likely be able to access CPU memory in hundreds of nanoseconds at
 bandwidths up to 128GB/s by bringing cache lines directly into GPU caches.
-Figure~\ref{fig:motivation} shows the upper bound (labeled ORACLE) on
+Figure~\ref{fig:motivation-hpca2015} shows the upper bound (labeled ORACLE) on
 performance that could be achieved if both the system DDR memory and GPU GDDR
 memory were used concurrently, assuming data had been optimally placed in both
 technologies.  In this work, we define oracle placement to be \emph{a priori}

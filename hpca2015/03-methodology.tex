@@ -47,9 +47,9 @@ migration strategy against more selective strategies that try to target only hot
 pages.
 
 \subsection{Methodology}
-To evaluate page migration strategies, we model a GPU with a heterogeneous 
-memory system comprising both  GDDR and DDR memories. We discuss the details of
-the simulation framework in~\ref{chap:methodology}.
+To evaluate page migration strategies, we model a GPU with a heterogeneous
+memory system comprising both  GDDR and DDR memories. We discuss our baseline
+simulation framework in Chpater~\ref{chap:methodology}.
 %The GDDR memory is directly attached and addressable by the GPU, as in existing
 %systems.  We assume DDR memory may be accessed by the GPU via a
 %cache-line-granularity coherent interface at an additional 100 GPU cycle
@@ -61,15 +61,14 @@ the simulation framework in~\ref{chap:methodology}.
 %suite of applications we study, the mean performance degradation due to
 %interconnect latency is 3\%, and at worst 10\%.
 %
-%We extend GPGPU-Sim~\cite{gpgpusim_ispass09} with a model of this GDDR5-DDR4 
+%We extend GPGPU-Sim~\cite{gpgpusim_ispass09} with a model of this GDDR5-DDR4
 %heterogeneous memory.
 Table~\ref{tab:mig-methodology} lists memory configuration of our simulation
 framework.
-%We make several additional enhancements to the baseline GTX-480 
-%model to better match the bandwidth requirements of future GPUs (e.g., 
-%increasing the number of miss status handling registers, increasing clock 
-%frequency, etc).  We assume a GDDR bandwidth of 200GB/s and a DDR bandwidth of 80 
-%GB/s.
+%We make several additional enhancements to the baseline GTX-480 model to better
+%match the bandwidth requirements of future GPUs (e.g., increasing the number of
+%miss status handling registers, increasing clock frequency, etc).  We assume a
+%GDDR bandwidth of 200GB/s and a DDR bandwidth of 80 GB/s.
 
 \begin{table}[t]
 \begin{center}

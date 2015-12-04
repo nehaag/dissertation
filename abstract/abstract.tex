@@ -1,15 +1,15 @@
 Systems from smartphones, data-centers to supercomputers are increasingly
-heterogeneous, being composed of different memory technologies. To maximize
+heterogeneous, being composed of different memory technologies and core types. To maximize
 performance per dollar, these systems will increasingly use globally-addressable
 heterogeneous memory systems, making decisions about memory management critical
 to performance. Heterogeneous memory systems pose multi-fold challenges on
-system programmability, design and verification. Memory management is a
+system programmability and design. Memory management is a
 challenging problem as choices about data placement, movement have to be made at
-application runtime desirable in an application-transparent manner, while also
+application runtime -- preferable in an application-transparent manner -- while also
 considering different bandwidths, latencies, and costs-per-bit of different
-memory technologies. In this thesis we tackle memory management of broadly two
-categories of heterogeneous systems: a) CPU-GPU systems with unified virtual
-address space, b) Cloud computing platforms that will have deploy cheaper but
+memory technologies. In this thesis we tackle memory management of two
+categories of heterogeneous systems: a) CPU-GPU systems with a unified virtual
+address space, b) Cloud computing platforms that will deploy cheaper but
 slower memory technologies along with DRAMs.
 %We discuss the challenges presented by upcoming heterogeneous CPU-GPU memory
 %systems and propose solutions to enable their adoption by simplifying the
@@ -55,7 +55,7 @@ maximize performance.
 %both CPU and GPU memory bandwidth, and comes within 28\% of oracular page
 %placement, all while maintaining the relaxed memory semantics of modern GPUs.
 %
-To address the design and verification challenges of implementing hardware cache
+To address the design challenges of implementing hardware cache
 coherence in heterogeneous CPU-GPU systems 
 %Cache coherence is ubiquitous in shared memory multi\hyp{}processors because it
 %provides a simple, high performance memory abstraction to programmers.  Recent

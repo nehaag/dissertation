@@ -12,7 +12,7 @@ Our simulation environment is based on GPGPU-Sim~\cite{gpgpusimIspass09} which
 has been validated against NVIDIA's Fermi class GPUs and is reported to match
 hardware performance with up to 98.3\% accuracy~\cite{gpgpusimManual}}.  We
 modified GPGPU-Sim to support a heterogeneous GDDR5-DDR4 memory system with the
-simulation parameters listed in Table~\ref{tab:methodology}.  We made several
+simulation parameters listed in Table~\ref{tab:methodology-basic}.  We made several
 changes to the baseline GTX-480 model to bring our configuration in-line with
 the resources available in more modern GPUs, including a larger number of MSHRs
 and higher clock frequency.
@@ -65,7 +65,7 @@ L2 MSHRs & 128 Entries/L2 Slice\\
 %\hline
 \end{tabular}
 \caption{Simulation environment for heterogeneous CPU-GPU memory system.}
-\label{tab:methodology}
+\label{tab:methodology-basic}
 %\end{small}
 \end{center}
 \vspace{-0.15in}
