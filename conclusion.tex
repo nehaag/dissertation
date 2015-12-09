@@ -1,5 +1,5 @@
 Current OS page placement policies are optimized for both homogeneous memory and
-latency sensitive systems. With the emergenece of shared virtual address CPU-GPU
+latency sensitive systems. With the emergence of shared virtual address CPU-GPU
 systems and new memory technologies like Intel 3D XPoint memory management
 policies need to account for difference in bandwidth, coherence domains, cost
 per dollar of different memory technologies, deployed to use concurrently by the
@@ -46,8 +46,8 @@ existing policies without requiring any application awareness.
 %upcoming GPU-CPU systems to enable intelligent migration of data into high
 %bandwidth GPU-attached memory.  
 %
-We also present a intelligent dynamic page migration solution that maximizes the
-bandwdith utilization of different memory technologies in heterogeneous CPU-GPU
+We also present an intelligent dynamic page migration solution that maximizes the
+bandwidth utilization of different memory technologies in heterogeneous CPU-GPU
 memory system.  We identify that demand-based migration alone is unlikely to be
 a viable solution due to both application variability and the need for
 aggressive prefetching of pages the GPU is likely to touch, but has not touched
@@ -58,9 +58,10 @@ access pattern of GPU computer applications.  Developing a system with minimal
 hardware support is important in the context of upcoming CPU-GPU systems, where
 multiple vendors may be supplying components in such a system and relying on
 specific hardware support on either the GPU or CPU to achieve performant page
-migration may not be feasible.  Our migration solution is able to outperform
-CC-NUMA access alone by 1.95$\times$, legacy application {\tt memcpy} data
-transfer by 6\%, and come within 28\% of oracular page placement.
+migration may not be feasible. 
+%Our migration solution is able to outperform
+%CC-NUMA access alone by 1.95$\times$, legacy application {\tt memcpy} data
+%transfer by 6\%, and come within 28\% of oracular page placement.
 
 These memory migration policies optimize the performance of GPU workloads with
 little regard for CPU performance.  We have shown that intelligent use of the
@@ -85,15 +86,25 @@ integrating discrete processors, possibly designed by distinct vendors, into a
 single coherence protocol is a prohibitive engineering and verification
 challenge.  
 
-In this thesis, we demonstrate that CPUs and GPUs do not need to be hardware
-cache-coherent to achieve the simultaneous goals of unified shared memory and
-high GPU performance.  Our results show that \textit{selective caching} with
-request coalescing, a CPU-side GPU client cache, variable-sized transfer units
-can perform within 93\% of a cache-coherent GPU for applications that do not
-perform fine grained CPU--GPU data sharing and synchronization. We also show
-that promiscuous read-only caching benefits memory latency sensitive
-applications using OS page-protection mechanisms rather than relying on hardware
-cache coherence.  Selective caching does not needlessly force hardware cache
-coherence into the GPU memory system, allowing decoupled designs that can
-maximize CPU and GPU performance, while still maintaining the CPU's traditional
-view of the memory system.
+In this thesis we also explore the problem of CPU-GPU coherence. Despite its
+programmability benefits, cache coherence between CPU and GPU can be a daunting
+design challenge due to coordination required between different vendors to
+implement such a solution. To mitigate this problem, we propose Selective
+Caching, a technique that disallows GPU caching of memory touched by CPU so as
+to maintain coherence without requiring cache coherence. We show that Selective
+Caching coupled with request coalescing, a CPU side GPU client cache, and
+variable sized transfer units can reach 93\% of the performance of a
+cache-coherent system.
+%
+%In this thesis we demonstrate that CPUs and GPUs do not need to be hardware
+%cache-coherent to achieve the simultaneous goals of unified shared memory and
+%high GPU performance.  Our results show that \textit{selective caching} with
+%request coalescing, a CPU-side GPU client cache, variable-sized transfer units
+%can perform within 93\% of a cache-coherent GPU for applications that do not
+%perform fine grained CPU--GPU data sharing and synchronization. We also show
+%that promiscuous read-only caching benefits memory latency sensitive
+%applications using OS page-protection mechanisms rather than relying on
+%hardware cache coherence.  Selective caching does not needlessly force hardware
+%cache coherence into the GPU memory system, allowing decoupled designs that can
+%maximize CPU and GPU performance, while still maintaining the CPU's traditional
+%view of the memory system.

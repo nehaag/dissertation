@@ -27,9 +27,9 @@
 
 As the size of main memory has grown, the overheads of virtual memory systems
 have grown as well.  The hierarchical Linux page table for the x86-64
-architecture, shown in Figure~\ref{fig:linuxpgtable}, addresses up to 128 terabytes of
-memory and is four levels---and thus may incur up to four extra memory
-operations to perform a single translation \cite{pgtable}.
+architecture, shown in Figure~\ref{fig:linuxpgtable}, 
+is four levels -- and thus may incur up to four extra main memory
+accesses to walk the page table in~\cite{pgtable}.
 %\fixme{This text is a candidate to cut to save space: Translation begins with
 %the page global directory (PGD), pointed to by the CR3 register, which is
 %preloaded with the PGD base address upon a context switch.  Bits 39-46 of the
@@ -42,7 +42,8 @@ operations to perform a single translation \cite{pgtable}.
 %physical page number.  Throughout this process, as many as four extra memory
 %operations may be performed purely as an overhead of the virtual memory
 %translation system.}
-Moreover, execution in virtualized environments can sextuple translation costs
+Moreover, execution in virtualized environments can increase number of memory
+accesses to 24, a $6x$ increase from the non-virtualized case 
 \cite{amdnested,intelept,bhargava:2008:atp}.  As a result, the Translation
 Lookaside Buffer (TLB), which acts as a cache for virtual-to-physical mappings,
 has become increasingly important to mollify the effects of virtual memory
@@ -51,23 +52,23 @@ translation overhead.
 In most architectures, TLB accesses lie on the critical path of memory accesses,
 hence hardware timing constraints limit the number of TLB entries that can be
 searched on each access.  As memory capacities grow while page sizes remain
-constant, TLB coverage---the portion of main memory that can be represented by
-the contents of the TLB at any given time---necessarily decreases.  This reduced
+constant, TLB coverage -- the fraction of main memory that can be represented by
+the contents of the TLB at any given time -- necessarily decreases.  This reduced
 coverage hampers the performance of programs with large working sets and/or
 instruction footprints because it increases the number of TLB misses they
 exhibit, and thus the number of page table walks that must be performed.  What's
-more, as working set sizes---and, correspondingly, page table sizes---grow, the
+more, as working set sizes -- and, correspondingly, page table sizes -- grow, the
 fraction of translation data that can fit in the cache is reduced, leading to
 more severe TLB miss penalties.
 
-Recognizing the high cost of TLB misses in cloud applications, a number of
-recent research efforts have sought hardware solutions to mitigate their penalty
-(e.g., \cite{bhattacharjee:2011:slt, srikantaiah:2010:sth, barr:2011:sms,
-pham:2012:ccl, basu:2013:evm, gandhi:2014:emv}.
-Whereas these techniques reduce or hide TLB miss stalls, they do not address the
-cost of managing numerous page tables entries or the cache capacity occupied by
-them.
-
+%Recognizing the high cost of TLB misses in cloud applications, a number of
+%recent research efforts have sought hardware solutions to mitigate their penalty
+%(e.g., \cite{bhattacharjee:2011:slt, srikantaiah:2010:sth, barr:2011:sms,
+%pham:2012:ccl, basu:2013:evm, gandhi:2014:emv}).
+%Whereas these techniques reduce or hide TLB miss stalls, they do not address the
+%cost of managing numerous page tables entries or the cache capacity occupied by
+%them.
+%
 %One line of work seeks architectural solutions to improve the reach of TLBs,
 %for example, through 2-level TLBs .  These mechanisms can improve TLB hit
 %rates, but require hardware changes and do not address the cost of managing
@@ -85,8 +86,8 @@ Huge pages directly address the costs of fine-grain page management.
 %dedicated entries or support for multiple-sized lookups), but this support is
 %ubiquitous in existing architectures (e.g., Intel's Haswell processor
 %provisions 32 entries for huge pages in its L1 data TLBs).
-They effectively increase TLB coverage---one huge page TLB entry covers the area
-of a large number of regular page entries---thus reducing page faults, and they
+They effectively increase TLB coverage -- one huge page TLB entry covers the area
+of a large number of regular page entries -- thus reducing page faults, and they
 reduce the size of the page table structure, leading to both fewer memory
 accesses upon a TLB miss and increased cache-ability of translation data.
 %on a TLB miss they can reduce the number of page table accesses necessary to
@@ -106,7 +107,7 @@ accesses upon a TLB miss and increased cache-ability of translation data.
 %
 %\input{fig.ahppgtable}
 
-\subsection{Background: Transparent Huge Pages} \label{sec:thp_bg}
+\subsection{Transparent Huge Pages} \label{sec:thp_bg}
 %\fixme{This paragraph strongly duplicates the intro.  We should say this in
 %only one place.  My suggestion is to cut down the intro and leave the details
 %here. --- Jeff: fixed}
@@ -125,7 +126,7 @@ requirements to ensure ideal performance.
 Recent versions of the Linux kernel instead exploit huge pages through THP.
 With THP, the kernel attempts to invisibly (i.e., without the knowledge of the
 user) allocate huge pages to back large regions of contiguous virtual memory.
-Transparent allocation is advantageous because it allows existing codebases to
+Transparent allocation is advantageous because it allows existing code bases to
 reap the rewards of huge pages without modification and doesn't require changing
 the interfaces and invariants of system calls and functions that require
 consideration of page size, such as \texttt{mmap()}.  However, the kernel may

@@ -98,8 +98,8 @@
 %
 Upcoming memory technologies such as Intel 3D-XPoint~\cite{xpoint} are an
 attractive candidate for reducing main memory costs (both in terms of CapEx and
-OpEx) in datacenters, which is pegged at 30\% of TCO by recent
-estimates~\cite{XXX}. Such memory technologies have two defining characteristics
+OpEx) in data-centers, which is pegged at 30\% of TCO by recent
+estimates. Such memory technologies have two defining characteristics
 that set them apart from commodity DRAMs: a) they are much cheaper per unit
 capacity than DRAM, with current estimates putting them at $50\%$ cheaper
 than DRAM, and, b) they are much slower than DRAM technology. Whereas
@@ -113,7 +113,7 @@ Figure~/ref{fig:motivation} indicate that over half of the memory footprint of
 representative cloud applications (e.g., Cassandra) are identified as cold by
 Linux’s kstaled mechanism, indicating that the corresponding pages have an
 inter-access interval exceeding 120s.  Analytic modeling suggests these pages
-could be shifted to a memory with a 3us access time with negligible (<3\%)
+could be shifted to a memory with a 3us access time with negligible ($<$ 3\%)
 performance degradation.
 
 %It has been shown
@@ -123,7 +123,7 @@ performance degradation.
 
 Placing such data in slow memories does not degrade the application throughput
 or latency significantly, while also reducing the amount of costly DRAM required
-in datacenters by a significant margin. In order to perform such placement in a
+in data-centers by a significant margin. In order to perform such placement in a
 application-transparent fashion, the identification of cold data is done at an
 OS page granularity, where a page is deemed to be a ``hot page'' if any of the
 data present in that page is hot.
@@ -134,19 +134,19 @@ pages is classified as ``cold''. This is because the presence of even a {\it
 single} hot data item in an otherwise cold page will result in the entire page
 being classified as hot. Using a smaller page size could have identified the
 locations of the hot data more precisely, and thereby resulted in a larger
-fraction of cold pages. Such a ``hotspot'' distribution of hot data is common in
-datacenter applications, and according to our estimates, using 2MB sized pages
+fraction of cold pages. Such a ``hotSpot'' distribution of hot data is common in
+data-center applications, and according to our estimates, using 2MB sized pages
 reduces the fraction of cold pages by $\approx$2-3$\times$. Thus, using larger
-page sizes cause sub-optimal usage of cheap memory technologies in datacenters.
+page sizes cause sub-optimal usage of cheap memory technologies in data-centers.
 
 However, usage of large page sizes, typically done in Linux through {\it
-Transparent Huge Pages (THP)}, is ubiquitous in modern datacenter applications.
+Transparent Huge Pages (THP)}, is ubiquitous in modern data-center applications.
 THP is a mechanism available in the Linux kernel whereby applications can
 transparently use large (2MB) or huge (1GB) sized pages without any source code
 change. Larger page sizes has been shown to reduce page faults and thereby
-improve throughput and latency in datacenter applications significantly.  Recent
-work~\cite{JeffPaper} has demonstrated that 2MB huge pages are particularly
-performance-critical under virtualization.  For example, our study demonstrates
+improve throughput and latency in data-center applications significantly. Our
+studies demonstrate that 2MB huge pages are particularly
+performance-critical under virtualization.  For example, we observe 
 a 20\% throughput improvement for Hadoop and a 40\% speedup on random memory
 probes when using huge pages under virtualization.  However, huge pages pose two
 challenges to prior two-tiered memory proposal: (1) migrating pages at 2MB
@@ -167,8 +167,10 @@ because TLB entries are replaced independently, hence, an uncached 4KB facade to
 a cached 2MB translation could lead to a mis-translation. We will pursue
 implementations of translation facades along two paths. (1) Hardware support: we
 will extend x86 page table and TLB design to support facades. (2)
-Virtualization: Our existing study of huge pages under virtualization
-demonstrate that a majority of the benefit can be obtained if host pages are 2MB
-even if guest pages are 4KB.  We will investigate if the two-level translation
+Virtualization:
+%Our existing study of huge pages under virtualization
+%demonstrate that a majority of the benefit can be obtained if host pages are 2MB
+%even if guest pages are 4KB.
+We will investigate if the two-level translation
 from guest to host to machine addresses can be exploited to emulate hardware
 support for translation facades.

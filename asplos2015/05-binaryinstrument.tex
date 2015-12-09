@@ -2,39 +2,40 @@
 \label{binaryinstrument}
 %\vspace{-0.05in}
 
-Figure~\ref{fig:cdfannotation} visually depicts what may be obvious to
-performance-conscious programmers: \emph{certain data structures are accessed
-more frequently than others.} For these programmers, the unbiased nature
-of BW-AWARE page placement is not desirable because all data structures are
-treated equally.  This section describes compiler tool-flow and runtime
-modifications that enable programmers to intelligently steer specific allocations
-towards bandwidth- or capacity-optimized memories and achieve near-oracle
-page placement performance.
+Figure~\ref{fig:cdfannotation-bfs},~\ref{fig:cdfannotation-muumergpu},~\ref{fig:cdfannotation-needle} 
+visually depicts what may be obvious to performance-conscious programmers:
+\emph{certain data structures are accessed more frequently than others.} For
+these programmers, the unbiased nature of BW-AWARE page placement is not
+desirable because all data structures are treated equally.  This section
+describes compiler tool-flow and runtime modifications that enable programmers
+to intelligently steer specific allocations towards bandwidth- or
+capacity-optimized memories and achieve near-oracle page placement performance.
 
 To correctly annotate a program to enable intelligent memory placement decisions
-across a range of systems, we need two pieces of information about a program: (1)
-the relative memory access hotness of the data structures, and (2) the size of
-the data structures allocated in the program.  To understand the importance of
-these two factors, let us consider the following scenario. In a program there
-are two data structure allocations with hotness H1 and H2\@.  If the bandwidth-optimized memory
-capacity is large enough for BW-AWARE placement to be used without running into
-capacity constraints, then BW-AWARE page placement should be used irrespective
-of the hotness of the data structures. To make this decision we must know the
-application runtime memory footprint. However, if the application is
-capacity-constrained, then ideally the memory allocation from the hotter data structure should be
-preferentially placed in the BO memory. In this case, we need to know both the
-relative hotness and the size of the data structures to optimally place pages.
+across a range of systems, we need two pieces of information about a program:
+(1) the relative memory access hotness of the data structures, and (2) the size
+of the data structures allocated in the program.  To understand the importance
+of these two factors, let us consider the following scenario. In a program there
+are two data structure allocations with hotness H1 and H2\@.  If the
+bandwidth-optimized memory capacity is large enough for BW-AWARE placement to be
+used without running into capacity constraints, then BW-AWARE page placement
+should be used irrespective of the hotness of the data structures. To make this
+decision we must know the application runtime memory footprint. However, if the
+application is capacity-constrained, then ideally the memory allocation from the
+hotter data structure should be preferentially placed in the BO memory. In this
+case, we need to know both the relative hotness and the size of the data
+structures to optimally place pages.
 
 \subsection{Profiling Data Structure Accesses in GPU Programs}
 \label{profiler}
 %While GPU programmers have a reputation for deep understanding of their
 %application characteristics, as machines become more complex and programs rely
-While expert programmers may have deep understanding of their
-application characteristics, as machines become more complex and programs rely
-more on GPU accelerated libraries, programmers will have a harder time
-maintaining this intuition about program behavior.  To augment programmer
-intuition about memory access behavior, we developed a new GPU profiler to
-provide information about program memory access behavior.  
+While expert programmers may have deep understanding of their application
+characteristics, as machines become more complex and programs rely more on GPU
+accelerated libraries, programmers will have a harder time maintaining this
+intuition about program behavior.  To augment programmer intuition about memory
+access behavior, we developed a new GPU profiler to provide information about
+program memory access behavior.  
 
 In this work we augmented {\tt nvcc} and {\tt ptxas}, NVIDIA's
 production compiler tools for applications written in CUDA~\cite{cuda} (NVIDIA’s
@@ -69,10 +70,12 @@ multi-threaded.  At kernel completion, this updated map is
 returned to the host which launched the kernel to aggregate the
 statistics about virtual memory location usage. Our profiler generates
 informative data structure mapping plots, like those shown in
-Figure~\ref{fig:cdfannotation}, which application programmers can use
-to guide their understanding of the relative access frequencies of
-their data structures, one of the two required pieces of information
-to perform intelligent near-optimal placement within an application.
+
+Figure~\ref{fig:cdfannotation-bfs},~\ref{fig:cdfannotation-muumergpu},~\ref{fig:cdfannotation-needle},
+which application programmers can use to guide their understanding of the
+relative access frequencies of their data structures, one of the two required
+pieces of information to perform intelligent near-optimal placement within an
+application.
 
 \subsection{Memory Placement APIs for GPUs}
 \label{api}

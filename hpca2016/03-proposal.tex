@@ -200,19 +200,19 @@ CPU coherence protocol much like any other
 coherent cache on the CPU die, however lines are allocated in this cache only upon 
 request by an off-chip processor, such as the GPU\@.
 
-This single new cache does not introduce the 
-coherence and interconnect scaling challenges of GPU-side caches,
-but still provides some latency and bandwidth filtering advantages
-for GPU accesses. One might consider an alternative where GPU-requested lines are instead injected into
-the existing last-level cache (LLC) at the CPU.  In contrast to an injection approach, our
-dedicated client cache avoids thrashing the CPU LLC 
-when the GPU streams data from CPU memory (a common access pattern).
-By placing this client cache on the CPU-side rather than the GPU-side of the CPU--GPU 
-interconnect, we decouple the need to extend the CPU's hardware cache coherence protocol into even one on-die GPU cache.
-However, because the GPU client cache is located at the CPU-side of the CPU--GPU interconnect,
-it provides less bandwidth than a GPU-side on-die cache. As described in Section~\ref{background} and 
-Figure~\ref{fig:cache_bw_latency} shows, this bandwidth loss may not be performance
-critical.
+This single new cache does not introduce the coherence and interconnect scaling
+challenges of GPU-side caches, but still provides some latency and bandwidth
+filtering advantages for GPU accesses. One might consider an alternative where
+GPU-requested lines are instead injected into the existing last-level cache
+(LLC) at the CPU.  In contrast to an injection approach, our dedicated client
+cache avoids thrashing the CPU LLC when the GPU streams data from CPU memory (a
+common access pattern).  By placing this client cache on the CPU-side rather
+than the GPU-side of the CPU--GPU interconnect, we decouple the need to extend
+the CPU's hardware cache coherence protocol into even one on-die GPU cache.
+However, because the GPU client cache is located at the CPU-side of the CPU--GPU
+interconnect, it provides less bandwidth than a GPU-side on-die cache. As
+described in Chapter~\ref{chap:background} and Figure~\ref{fig:cache_bw_latency}
+shows, this bandwidth loss may not be performance critical.
 
 \subsubsection{Variable-size Link Transfers}
 \label{variablesizing}

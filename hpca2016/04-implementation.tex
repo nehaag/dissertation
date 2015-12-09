@@ -2,17 +2,17 @@
 \section{Methodology}
 \label{methodology}
 
-We evaluate selective caching via simulation on a system containing discrete CPUs and GPUs with
-DDR4 and GDDR5 memories attached to the CPU and GPU, respectively.  We discuss
-our baseline simulation environment in Chapter~\ref{chap:methodology}.
-To implement various architectural components we modify our framework 
-with simulation parameters shown in Table~\ref{tab:sc-methodology}.
-We use bandwidth-aware page placement for all simulations as it has been
-shown to be the best page placement strategy without requiring
-any application profiling or program modification~\cite{Agarwal2015}. 
-In our simulated system, this page placement results in 20\% of the
-GPU workload data being placed within the CPU-attached memory with 80\% residing in the GPU-attached
-memory.  
+We evaluate selective caching via simulation on a system containing discrete
+CPUs and GPUs with DDR4 and GDDR5 memories attached to the CPU and GPU,
+respectively.  We discuss our baseline simulation environment in
+Chapter~\ref{chap:methodology}.  To implement various architectural components
+we modify our framework with simulation parameters shown in
+Table~\ref{tab:sc-methodology}.  We use bandwidth-aware page placement for all
+simulations as it has been shown to be the best page placement strategy without
+requiring any application profiling or program modification~\cite{Agarwal2015}.
+In our simulated system, this page placement results in 20\% of the GPU workload
+data being placed within the CPU-attached memory with 80\% residing in the
+GPU-attached memory.  
 
 In our system, the CPU is connected to the GPU via a full duplex CPU--GPU
 interconnect. The interconnect has peak bandwidth of 90GB/s using 16B flits for
@@ -79,7 +79,7 @@ Req. Efficiency& 32B=66\%, 64B=80\%, 128B=88\%\\
 \hline
 \end{tabular}
 \caption{Parameters for experimental GPGPU based simulation environment.}
-\label{tab:methodology}
+\label{tab:sc-methodology}
 \end{center}
 \vspace{-.1in}
 \end{table}

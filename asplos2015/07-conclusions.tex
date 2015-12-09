@@ -1,18 +1,19 @@
+\section{Conclusion}
 Current OS page placement policies are optimized for both homogeneous memory and
 latency sensitive systems.  We propose a new BW-AWARE page placement policy that
-uses memory system information about heterogeneous memory system characteristics to place data
-appropriately, achieving 35\% performance improvement on average over existing
-policies without requiring any application awareness.  In future CC-NUMA
-systems,
-BW-AWARE placement improves the performance optimal capacity by better using
-all system resources. But some applications may wish to size their problems
-based on total capacity rather than performance. In such cases, we provide insight into
-how to optimize data placement by using the CDF of the application in
-combination with application annotations enabling intelligent runtime
-controlled page placement decisions.  We propose a profile-driven application
-annotation scheme that enables improved placement without requiring any
-runtime page migration. While only the beginning of a fully automated
-optimization system for memory placement, we believe that the performance gap between the current
-best OS INTERLEAVE policy and the annotated performance (min 1\%, avg 20\%, max
-2x) is enough that further work in this area is warranted as mobile, desktop,
-and HPC memory systems all move towards mixed CPU-GPU CC-NUMA heterogeneous memory systems.
+uses memory system information about heterogeneous memory system characteristics
+to place data appropriately, achieving 35\% performance improvement on average
+over existing policies without requiring any application awareness.  In future
+CC-NUMA systems, BW-AWARE placement improves the performance optimal capacity by
+better using all system resources. But some applications may wish to size their
+problems based on total capacity rather than performance. In such cases, we
+provide insight into how to optimize data placement by using the CDF of the
+application in combination with application annotations enabling intelligent
+runtime controlled page placement decisions.  We propose a profile-driven
+application annotation scheme that enables improved placement without requiring
+any runtime page migration. While only the beginning of a fully automated
+optimization system for memory placement, we believe that the performance gap
+between the current best OS INTERLEAVE policy and the annotated performance (min
+1\%, avg 20\%, max 2x) is enough that further work in this area is warranted as
+mobile, desktop, and HPC memory systems all move towards mixed CPU-GPU CC-NUMA
+heterogeneous memory systems.

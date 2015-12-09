@@ -49,7 +49,7 @@ pages.
 \subsection{Methodology}
 To evaluate page migration strategies, we model a GPU with a heterogeneous
 memory system comprising both  GDDR and DDR memories. We discuss our baseline
-simulation framework in Chpater~\ref{chap:methodology}.
+simulation framework in Chapter~\ref{chap:methodology}.
 %The GDDR memory is directly attached and addressable by the GPU, as in existing
 %systems.  We assume DDR memory may be accessed by the GPU via a
 %cache-line-granularity coherent interface at an additional 100 GPU cycle
@@ -99,7 +99,7 @@ GPU-CPU &  100 GPU core cycles\\
 Interconnect Latency & \\
 \hline
 \end{tabular}
-\caption{Memory system configuration for heterogenous CPU-GPU system.}
+\caption{Memory system configuration for heterogeneous CPU-GPU system.}
 \label{tab:mig-methodology}
 \end{center}
 \end{table}
@@ -114,7 +114,7 @@ migration using the standard Linux {\tt move\_pages} system call.
 As in a CPU, the GPU TLB must be updated to reflect the virtual address changes
 that result from migrations.  We assume a conventional x86-like TLB shootdown
 model where the entire GPU is treated like a single CPU using traditional
-interprocessor interrupt shootdown.  In future systems, an IOMMU performing
+inter-processor interrupt shootdown.  In future systems, an IOMMU performing
 address translations on behalf of the GPU cores is likely to hide the specific
 implementation details of how it chooses to track which GPU pipelines must be
 stalled and flushed during any given TLB shootdown.  For this work, we make a
