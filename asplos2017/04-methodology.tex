@@ -1,0 +1,196 @@
+\section{Methodology}
+\label{section:methodology}
+
+\subsection{System Configuration}
+We study Thermostat on  a 36-core (72 hardware thread) dual-socket
+x86 server, Intel Xeon E5-2699 v3, with 512 GB RAM running Linux 4.5.
+Each socket has 45MB LLC. There is a 64-entry TLB per core and a shared 1024
+entry L2 TLB. Several of our benchmark applications perform frequent I/O and are
+highly sensitive to OS page cache performance.
+To improve the page cache, we install {\tt hugetmpfs}, a mechanism that
+enables use of huge pages for the {\tt tmpfs}~\cite{hughd-hugetmpfs} filesystem. 
+We place all files accessed by the benchmarks in {\tt tmpfs}. In the future, we expect
+that Linux may natively support huge pages in the page cache for other file
+systems.
+
+We run the benchmarks inside virtual machines using the Kernel-based Virtual
+Machine (KVM) virtualization platform.  Client threads, which generate traffic to the
+servers, are run outside the virtual machine, on the host OS. We run the client threads 
+and server VM on the same system and use a bridge network with virtio between host 
+and guest so that network performance is not a bottleneck.
+We isolate the CPU and
+memory of the guest VM and client threads on separate sockets using 
+Linux's control group mechanism~\cite{cgroups} to avoid performance interference.  
+The benchmark VM is allocated 8 CPU cores, a typical medium-sized cloud 
+instance.
+We set the Linux frequency governor to ``performance'' to
+disable dynamic CPU frequency changes during application runs. 
+
+\subsection{Emulating slow memory: BadgerTrap}
+\label{slow-memory}
+Dual-technology main memory, in particular Intel's 3D XPoint memory, 
+is not yet available.  
+Hence, we use a software technique to emulate slow memory while placing all
+data in conventional DRAM.
+
+Each cache miss to slow memory should incur an access latency that is a multiple 
+of the DRAM latency (e.g., 400ns slow memory~\cite{ref:Dulloor:datatiering} vs. 
+50ns DRAM latency).
+There is no easy mechanism to trap to software on all cache misses. Instead,
+we introduce extra latency by inducing page faults upon translation misses (TLB misses) 
+to cold pages by using BadgerTrap~\cite{ref:badgertrap}. 
+%This mechanism is similar to 
+%how Thermostat measures page access frequency.
+
+The software fault mechanism is an approximation of an actual slow memory device.
+The BadgerTrap fault latency (about 1us in our kernel) is higher than some authors
+predict the 3D XPoint memory read latency will be~\cite{ref:Dulloor:datatiering}.  Furthermore, the poisoned PTE
+will induce a fault even if the accessed memory location is present in the hardware 
+caches. In these two respects, our approach over-estimates the penalty of slow 
+memory accesses.  However, once BadgerTrap installs a (temporary) translation, 
+further accesses to other cache blocks on the same slow-memory page will not 
+induce additional faults, potentially under-estimating impact. Our testing with micro benchmarks
+indicates our approach yields an average access latency to slow memory in the 
+desired range, in part, because slow-page accesses are sufficiently infrequent that
+they nearly always result in both cache and TLB misses anyway, as we discuss in
+Section~\ref{section:access-counting}.
+%On balance, we expect the differences between
+%TLB and cache misses to have little impact because, by design, Thermostat places
+%only rarely accessed pages in cold memory.
+
+%We validate that BadgerTrap provides a reasonable approximation of slow memory
+%by measuring the TLB and cache miss rates for our benchmark suite using hardware
+%performance counters.  The TLB miss rate induced by BadgerTrap is typically higher 
+%(but always within a factor of two) than the last-level cache miss rate measured 
+%without BadgerTrap, indicating that our performance estimates are conservative.
+%\fixme{Neha: Verify this number for all the new benchmarks.}
+
+One important detail of our test setup is that we must install BadgerTrap (for the purpose 
+of emulating slow memory latency) within
+the guest VM rather than the host OS.  Thermostat communicates with the guest-OS 
+BadgerTrap instance to emulate migration to slow memory.  We must install
+BadgerTrap within the guest because, otherwise, each BadgerTrap fault would 
+result in a {\tt vmexit}.  In addition to drastically higher fault latency, {\tt vmexit} operations
+have the side-effect of changing the Virtual Processor ID (VPID) to 0. Since KVM
+uses VPIDs to tag TLB entries of its guests, installing a TLB entry with the
+correct VPID would entail complexity and incur even higher emulation latency.
+% than
+%involve a significantly complex operation of re-entering the
+%VM, performing a single memory operation and jumping back, which would incur
+%even more emulation latency.
+Since BadgerTrap on the guest entails a latency of
+$\approx$ 1$\mu$s, which is already higher than projected slow-memory latencies~\cite{ref:Dulloor:datatiering},
+we did not want to incur additional slowdown by emulating slow memory in the
+host OS.
+
+
+%To ensure that this approach is
+%reasonable, we obtained the TLB and cache miss rates for the applications under
+%study by {\tt perf}. We observed that in Cassandra and MySQL-TPCC the TLB miss
+%rate (resulting into page walks)
+%was 2$\times$ higher than the last level cache miss rate, meaning that we will only be
+%overestimating the performance impact. In Redis, however, the TLB miss rate is
+%2$\times$ lower than the cache miss rate. 
+
+%{\textbf{Why not Badgertrap on the host?}
+
+
+\subsection{Benchmarks}
+\label{benchmarks}
+We evaluate Thermostat with applications from Google's Perfkit Benchkmarker and the Cloudsuite
+benchmarks~\cite{perfkitbenchmarker, cloudsuite}. These applications are representative server workloads that have
+large memory footprints and are commonly run in virtualized cloud environments.
+
+{\bf TPCC on MySQL:} TPCC is a widely-used database benchmark, which aims to measure
+the transaction processing throughput of a relational database~\cite{tpcc}. We 
+execute TPCC on top of MySQL, one of the most popular open-source database 
+engines, which is often deployed in the cloud.  We use the open-source
+TPCC implementation from OLTP-Bench~\cite{oltpbench} (available at
+\url{https://github.com/oltpbenchmark/oltpbench}). We use a scale factor of
+320, and run the benchmark for 600 seconds after warming up for 600 seconds.
+MySQL makes frequent I/O requests and hence benefits markedly from our use
+of {\tt hugetmpfs} to enable huge pages for the OS page cache.
+%We observe 380
+%transactions/sec throughput for our baseline system with all pages in DRAM as
+%huge pages.
+
+{\bf NoSQL databases:} Aerospike, Cassandra, and Redis are popular NoSQL
+databases~\cite{aerospike, cassandra, redis}.
+Cassandra is a wide-column database designed to offer a variable number of fields
+(or columns) per key, while Redis and Aerospike are simpler key-value databases 
+that have higher peak throughput. Redis is single-threaded whereas Aerospike is
+multi-threaded.
+Cassandra performs substantial file I/O as it periodically compacts its SSTable
+data structure on disk~\cite{ref:sstable}. So, Cassandra also benefits substantially
+from {\tt hugetmpfs}. Redis performs no file I/O after it loads its dataset into memory.
+
+We tune Aerospike, Cassandra, and Redis based on the settings provided by
+Google's Perfkit Benchkmarker for measuring cloud
+offerings~\cite{perfkitbenchmarker}.  We use the YCSB traffic generator to drive
+both these NoSQL databases~\cite{ycsb}. For Aerospike we use 200M operations
+and for Cassandra we use 50M operations on 5M keys with 20 fields each with a
+Zipfian distribution.
+For both of these application, we evaluate two workload mixes: a read heavy load
+with 95:5 read/write ratio and a write heavy load with 5:95 read/write ratio. For Redis, we
+access keys with a hotspot distribution, wherein 0.01\% of the keys account for
+90\% of the traffic. We vary value sizes according to the
+distribution reported in~\cite{facebook-key-value}. We observe 176K
+and 215K operations/sec for read-heavy and write-heavy workloads for Aerospike,
+and 21K and 45K operations/sec for read-heavy and write-heavy workloads for
+Cassandra. For Redis we observe 188K
+operations/sec for our baseline system with all pages in
+DRAM as huge pages.
+
+{\bf In-memory analytics:} We evaluate Thermostat on in-memory analytics
+benchmarks from Cloudsuite~\cite{cloudsuite}. In-memory analytics runs a
+collaborative filtering algorithm on a dataset of user-movie ratings.  It uses
+the Apache Spark framework to perform data analytics. We set both executor and driver
+memory to be 6GB to execute the benchmark entirely in memory. We run the benchmark to
+completion, which takes 317 seconds for our baseline system with all pages in
+DRAM as huge pages.
+
+{\bf Web search:} Cloudsuite's web search uses the Apache Solr search engine
+framework. We run client threads on host and index nodes within the virtual
+machine. We set steady state time to be 300 seconds and keep default values for all
+the other parameters on the client machine. As specified by the benchmark,
+target response time requires 99\% of the requests to be serviced in 200ms. For
+our baseline system with all pages in DRAM as huge pages, we observe 50
+operations/sec with $\approx$ 85ms 99th percentile latency.
+%{\bf Tomcat:} Tomcat is a popular web server frontend. We use the {\tt wrk}
+%(available at \url{https://github.com/wg/wrk}) tool to generate XXX requests to
+%the webpage \texttt{XXX.XXX} using XXX parallel clients. Our installation runs
+%at the peak throughput at this load. 
+
+\subsection{Runtime overhead of Thermostat Sampling}
+We measure the runtime overhead of Thermostat to ensure that application 
+throughput is not degraded by Thermostat's page sampling mechanism.
+For sampling periods of 10s or higher, we observe negligible CPU activity
+from Thermostat and no measurable application slowdown ($<$ 1\%).
+
+
+\begin{table}[t]
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+& Resident Set Size& File-mapped\\
+\hline
+Aerospike & 12.3GB & 5MB\\
+\hline
+Cassandra & 8GB & 4GB\\
+\hline
+MySQL-TPCC & 6GB & 3.5GB\\
+\hline
+Redis & 17.2GB & 1MB\\
+\hline
+%Graph-analytics & 16.6GB & 1MB\\
+%\hline
+In-memory-analytics & 6.2GB & 1MB\\
+\hline
+Web-search & 2.28GB & 86MB\\
+\hline
+\end{tabular}
+%\vspace{0.05in}
+\caption{Application memory footprints: resident set size and file-mapped pages.}
+\label{tab:memory-footprint}
+\end{center}
+\end{table}

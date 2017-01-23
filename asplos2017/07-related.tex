@@ -1,0 +1,118 @@
+\section{Related Work}
+\label{related}
+
+\textbf{Application-guided two-level memory}: Dulloor et al.~\cite{ref:Dulloor:datatiering} propose X-Mem, a profiling based
+technique to identify data structures in applications that can be placed in
+NVM. To use X-Mem, the application has to be modified to use special {\tt
+xmalloc} and {\tt xfree} calls instead of {\tt malloc} and {\tt free} and
+annotate the data structures using these calls. Subsequently, the X-Mem profiler
+collects a memory access trace of the application via PinTool~\cite{ref:pin},
+which is then post-processed to obtain access frequencies for each data
+structure. Using this information, the X-Mem system places each data structure
+in either fast or slow memory.
+
+Such an approach works well when: (1) an overwhelming majority of the application
+memory consumption is allocated by the application itself, (2) modifiable
+application source code is available along with a deep knowledge of the
+application data structures, and (3) a representative profile run of an
+application can be performed.
+Most cloud-computing software violates some, or all, of these criteria. As we
+show in Section~\ref{results}, NoSQL databases interact heavily with the OS page cache, 
+which accounts for a significant fraction of their memory consumption. Source code for cloud
+applications is not always available.
+Moreover, even when source code is available, there is
+often significant variation in hotness within data structures, e.g., due to hot
+keys in a key-value store.
+Obtaining representative profile runs is difficult due to high variability in
+application usage patterns~\cite{facebook-key-value}. 
+In contrast, Thermostat is application transparent, can dynamically 
+identify hot and cold regions in applications at a page granularity (as opposed 
+to data structure granularity),
+and can be deployed seamlessly in multi-tenant host systems.
+
+Lin et al. present a user-level API for memory migration and an OS service to perform
+asynchronous, hardware-accelerated memory moves\cite{ref:memif:Lin:2016}.
+However, Thermostat is able to avoid excessive page migrations by
+accurately profiling and identifying hot and cold pages, and hence can rely on 
+Linux's existing page migration mechanism without suffering undue throughput
+degradation.  Agarwal et
+al.~\cite{ref:agarwal:asplos2015, ref:agarwal:hpca2015} demonstrate the throughput advantages of profile
+guided data placement for GPU applications. Chen et al.~\cite{ref:chen:porple}
+present a portable data placement engine directed towards GPUs. Both of these
+proposals seek to maximize bandwidth utilization across memory sub-systems
+with disparate peak bandwidth capability.  They focus on bandwidth- rather than
+latency-sensitive applications and do not seek to reduce system cost.
+
+Linux provides the {\tt madvise} API for applications to provide hints about application memory usage. 
+Jang et al. propose an abstraction for
+\textit{page coloring} to enable communication between applications and the OS
+to indicate which physical page should be used to back a particular virtual page.
+Our approach, however, is application transparent and does not rely on hints,
+eliminating the programmer burden of rewriting applications to exploit dual-technology
+memory systems.
+
+\textbf{Software-managed two-level memory}: AutoNUMA~\cite{AUTONUMA} is an automatic
+placement/migration mechanism for co-locating processes and their memory on the
+same NUMA node to optimize memory access latency. AutoNUMA relies on CPU-page
+access affinity to make placement decisions.  In contrast, Thermostat makes its
+decisions based on the page access rate, irrespective of which CPU issued 
+the accesses.
+
+\textbf{Hardware-managed two-level memory}: Several
+researchers~\cite{ref:ekman:costeffective,qureshi:twolm} have proposed hybrid
+dual technology memory organizations with hardware enhancements. In such 
+approaches, DRAM is typically used as a transparent cache for a slower memory technology.
+Such designs require extensive changes to the hardware memory hierarchy;  Thermostat 
+can place comparable fractions of the application footprint in slower memory without
+any special hardware support in the processor or caches.
+
+\textbf{Disaggregated memory}: Lim et al.~\cite{Lim2009, Lim2012} propose a
+disaggregated memory architecture in which a central pool of memory is accessed
+by several nodes over a fast network. This approach reduces DRAM provisioning
+requirements significantly. However, due to the high latency of network links, performing
+remote accesses at cache-line level granularity is not fruitful, leading Lim to advocate
+a remote paging interface. For the latency range that Lim assumed (12-15us), our 
+experience confirms that application slowdowns are prohibitive.  However,
+for the expected sub-microsecond access latency of near-future cheap memory
+technologies, our work shows that direct cache-line-grain access to slow memory
+can lead to substantial cost savings.
+
+\textbf{Cold data detection}: Cold/stale data detection has been extensively
+studied in the past, mainly in the context of paging policies and disk page
+caching policies, including mechanisms like {\tt kstaled}~\cite{kstaled,
+vmware-mm, Zhou:2004:DTP:1024393.1024415}. 
+Our work differs from such efforts in that
+we study the impact of huge pages on cold data detection, and show a
+low-overhead method to detect and place cold data in slow memory without significant
+throughput degradation. Baskakov et al.~\cite{baskakov_identification_2016} and
+Guo et al.~\cite{ref:Guo:2015:PBL:2731186.2731187} propose a cold data detection
+scheme by breaking 2MB pages into 4KB pages so as to detect cold-spots in large
+2MB pages and utilizing PTE ``Accessed'' bits. However, as we have shown in
+Section~\ref{analytic-model}, obtaining performance degradation estimates from
+Accessed bits is difficult. Thus, we instead use finer grain access frequency
+information obtained through page poisoning.
+%\todo{~\cite{ref:Guo:2015:PBL:2731186.2731187, baskakov_identification_2016}
+%Write about them}
+
+\textbf{NVM/Disks}: Several upcoming memory technologies are non-volatile, as well
+as slower and cheaper than DRAM. The non-volatility of such devices has been exploited 
+by works like PMFS~\cite{ref:Dulloor:PMFS} and pVM~\cite{ref:Kannan:pVM}. These works shift a
+significant fraction of persistent data from disks to non-volatile memories (NVMs), and obtain significant
+performance benefits due to the much faster speed of NVMs as compared to disks.
+Our work explores placing volatile data in cheaper memory to reduce cost, and as such is
+complementary to such approaches.
+
+\textbf{Hardware modifications for performance modeling}: Li et
+al.~\cite{li2015managing} propose a set of hardware modifications for gauging
+the impact of moving a given page to DRAM from NVM based on its access
+frequency, row buffer locality and memory level parallelism. The most impactful
+pages are then moved to DRAM. In a
+similar vein, Azimi
+et al.~\cite{azimi2007path} propose hardware structures to gather LRU stack and miss rate
+curve information online. However, unlike our work, these techniques require
+several modifications to the processor and memory controller architecture. 
+Existing performance counter and PEBS support has been utilized by 
+prior works~\cite{walsh2009generating,Eranian:2008:PCM:1353522.1353531} to
+gather information related to the memory subsystem. However, gathering page
+granularity access information at higher frequency from the PEBS subsystem
+requires a high overhead and so is not desirable.
