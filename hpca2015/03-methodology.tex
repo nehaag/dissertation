@@ -49,7 +49,7 @@ pages.
 \subsection{Methodology}
 To evaluate page migration strategies, we model a GPU with a heterogeneous
 memory system comprising both  GDDR and DDR memories. We discuss our baseline
-simulation framework in Chapter~\ref{chap:methodology}.
+simulation framework in Chapter~\ref{chap:asplos2015:baseline-methodology}.
 %The GDDR memory is directly attached and addressable by the GPU, as in existing
 %systems.  We assume DDR memory may be accessed by the GPU via a
 %cache-line-granularity coherent interface at an additional 100 GPU cycle
@@ -63,46 +63,46 @@ simulation framework in Chapter~\ref{chap:methodology}.
 %
 %We extend GPGPU-Sim~\cite{gpgpusim_ispass09} with a model of this GDDR5-DDR4
 %heterogeneous memory.
-Table~\ref{tab:mig-methodology} lists memory configuration of our simulation
+Table~\ref{tab:asplos2015:bw-methodology} lists memory configuration of our simulation
 framework.
 %We make several additional enhancements to the baseline GTX-480 model to better
 %match the bandwidth requirements of future GPUs (e.g., increasing the number of
 %miss status handling registers, increasing clock frequency, etc).  We assume a
 %GDDR bandwidth of 200GB/s and a DDR bandwidth of 80 GB/s.
 
-\begin{table}[t]
-\begin{center}
-\begin{tabular}{|l|l|}
+%\begin{table}[t]
+%\begin{center}
+%\begin{tabular}{|l|l|}
+%%\hline
+%%Simulator & GPGPU-Sim 3.x\\
+%%\hline
+%%GPU Arch & NVIDIA GTX-480 Fermi-like\\
+%%\hline
+%%GPU Cores& 15 {\color{black}SMs} @ 1.4Ghz\\
+%%\hline
+%%L1 Caches & 16kB/SM \\
+%%\hline
+%%L2 Caches & Memory Side 128kB/DRAM Channel\\
+%%\hline
+%%L2 MSHRs & 128 Entries/L2 Slice\\
+%%\hline
 %\hline
-%Simulator & GPGPU-Sim 3.x\\
+%\multicolumn{2}{|c|}{Memory system}\\
 %\hline
-%GPU Arch & NVIDIA GTX-480 Fermi-like\\
+%GPU-Local GDDR5 & 8-channels, 200GB/sec aggregate\\
 %\hline
-%GPU Cores& 15 {\color{black}SMs} @ 1.4Ghz\\
+%GPU-Remote DDR4& 4-channels, 80GB/sec aggregate\\
 %\hline
-%L1 Caches & 16kB/SM \\
+%DRAM Timings & \multicolumn{1}{|l|}{RCD=RP=12,RC=40,CL=WR=12}\\
 %\hline
-%L2 Caches & Memory Side 128kB/DRAM Channel\\
+%GPU-CPU &  100 GPU core cycles\\
+%Interconnect Latency & \\
 %\hline
-%L2 MSHRs & 128 Entries/L2 Slice\\
-%\hline
-\hline
-\multicolumn{2}{|c|}{Memory system}\\
-\hline
-GPU-Local GDDR5 & 8-channels, 200GB/sec aggregate\\
-\hline
-GPU-Remote DDR4& 4-channels, 80GB/sec aggregate\\
-\hline
-DRAM Timings & \multicolumn{1}{|l|}{RCD=RP=12,RC=40,CL=WR=12}\\
-\hline
-GPU-CPU &  100 GPU core cycles\\
-Interconnect Latency & \\
-\hline
-\end{tabular}
-\caption{Memory system configuration for heterogeneous CPU-GPU system.}
-\label{tab:mig-methodology}
-\end{center}
-\end{table}
+%\end{tabular}
+%\caption{Memory system configuration for heterogeneous CPU-GPU system.}
+%\label{tab:mig-methodology}
+%\end{center}
+%\end{table}
 
 We model a software page migration mechanism in which migrations are performed
 by the CPU based on hints provided asynchronously by the GPU\@.  The GPU tracks
