@@ -35,7 +35,8 @@ such systems that have not been studied before:
 Different memory technologies will typically have differences in their
 bandwidths, e.g., a GPU connected to on-board GDDR and host-side DDR memories
 can have a bandwidth differential of $\approx$ 2 -- 8 $\times$ between the two
-memory technologies. Since GPUs are sensitive to main memory bandwidth, the
+memory technologies. Since GPUs are sensitive to main memory bandwidth (due to
+massive thread-level parallelism), the
 metric to optimize for in such systems is the total available bandwidth to the
 GPU from the two memory sources. While prior work on Non-Uniform Memory Access
 (NUMA) has closely looked at data placement strategies to optimize the total
@@ -58,19 +59,21 @@ protocols in CPUs and GPUs, thus improving cross-vendor design cycle time.
 
 \item
 \textbf{Different costs per bit:}
-Different memory technologies can have different costs.  For example, recently
-announced non-volatile memory technology~\cite{xpoint} is projected to be
-significantly cheaper than regular DRAM, while also being significantly higher
-latency. Their lower cost per bit makes them a good candidate for use in
-data-centers, where main memory cost can be up to $\approx$ 30\% of the total
-cost of ownership (TCO). However, their low speed means that only {\it cold},
-i.e., infrequently accessed data can be placed in such memories. However, placing more
-cold data in the slower memories conflicts with efficient virtual memory usage
-by transparent huge page (THP), which can provide 10-15\% performance gains in
-large memory footprint data-center applications. We study how to reap the
-benefits of huge pages while also placing as much data in slow memory as
-possible, to improve performance per dollar in data-centers.
-\end{enumerate}
+Different memory technologies can have different monetary costs.  For example,
+recently announced non-volatile memory technology~\cite{xpoint} is projected to
+be significantly cheaper than regular DRAM, while also being significantly
+higher latency. Their lower cost per bit makes them a good candidate for use in
+data-centers, where main memory cost can be $\approx$ 30\% of the server machine
+cost (based on assembling a server class machine on newegg.com in January 2017),
+converting to $\approx 3-5\%$ of the total cost of ownership (TCO), amounting to
+bilions of dollars~\cite{borosso2013}. However, their low speed means that only
+{\it cold}, i.e., infrequently accessed data can be placed in such memories.
+However, placing more cold data in the slower memories conflicts with efficient
+virtual memory usage by transparent huge page (THP), which can provide up to 30\%
+performance gains in large memory footprint data-center
+applications as we show in Table~\ref{tab:thp-benefit}. We study how to reap the benefits of huge
+pages while also placing as much data in slow memory as possible, to improve
+performance per dollar in data-centers.  \end{enumerate}
 
 Below, we describe each of these three problems in detail and give a brief
 sketch of our proposed solution to these problems.
@@ -164,7 +167,7 @@ Despite the programmability benefits of CPU-GPU cache coherence, designing such
 a system can involve several hurdles. Prior studies~\cite{Hong2012} have shown
 that coherence implementations are a major source of hardware design bugs.
 Extending a CPU coherence implementation to a GPU over a long-latency
-interconnect ($approx$ 100ns)  will only increase the design cost of such a system.
+interconnect ($\approx$ 100ns)  will only increase the design cost of such a system.
 Also, if the CPUs and GPUs are to be manufactured by different vendors, a high
 level of coordination has to be done between those two vendors -- including
 coordination on the specification of coherence implementation and verification
@@ -205,7 +208,7 @@ coherence between the CPU and GPU.
 %latency tolerant nature of GPU architectures combined with upcoming low-latency
 %and high-bandwidth interconnects to enable the benefits of shared memory.
 
-\section{Proposal: Cheaper Memory Technologies}
+\section{Cheaper Memory Technologies}
 Upcoming memory technologies, such as Intel's recently-announced XPoint-3D
 memory~\cite{xpoint}, are projected to be $10x$ denser and $2x$ cheaper per
 bit than DRAM while providing the byte-addressable load-store interface of
