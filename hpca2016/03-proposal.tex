@@ -15,11 +15,12 @@ Historically, GPUs have not required hardware cache coherence because their
 programming model did not provide a coherent address space between threads running on separate
 SMs~\cite{CUDA7}.  CPUs however, support hardware cache coherence 
 because it is heavily relied upon by both system and application
-programmers to ensure correctness in multi-threaded programs. 
+programmers to ensure correctness in multi-threaded programs and to provide
+simpler programming models for multi-core systems.
 Existing GPU programming models do not guarantee data correctness when CPU and GPU accesses
 interleave on the same memory location while the GPU is executing. One way to
 provide such guarantees is to enforce CPU-GPU hardware cache coherence, albeit with significant implementation 
-complexity as previously discussed.
+complexity as previously discussed in Chapter~\ref{chap:background:hw-cc-is-hard}.
 
 Alternatively, if the GPU does not cache any data that is concurrently cached by the CPU,
 no hardware coherence messages need to be exchanged between the CPU and GPU, yet data correctness is still guaranteed. 
