@@ -13,7 +13,7 @@ THERMOSTAT = asplos2017/*.tex
 
 .PHONY: all clean
 
-$(PAPER).pdf: $(TEX) $(INTRO) $(ABS) $(BACKGROUND) $(ASPLOS2015)\
+$(PAPER).pdf: rac.sty $(TEX) $(INTRO) $(ABS) $(BACKGROUND) $(ASPLOS2015)\
 	$(METHODOLOGY) $(HPCA2015) $(HPCA2016) $(THERMOSTAT) $(BIB)
 	#echo $(FIGS)
 	pdflatex $(PAPER)

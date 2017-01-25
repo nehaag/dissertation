@@ -1,6 +1,7 @@
 % The packages used here are just a sample. You may need others, and may not need some of these. It doesn't hurt to leave them in, unless they start to conflict with other packages you've added. Chapter 2 has example code for equations, figures, tables, citations, abbreviations, etc. If there are sections labeled 'optional' that you don't want, just comment them out. -jg
 
-\documentclass[reqno,12pt,oneside]{umdiss2-proposal} % right-side equation numbering, 12 point font, print one-sided 
+%\documentclass[reqno,12pt,oneside]{umdiss2-proposal} % right-side equation numbering, 12 point font, print one-sided 
+\documentclass[reqno,12pt,oneside]{report} % right-side equation numbering, 12 point font, print two-sided, Chapters start on odd pages. Rackham only accepts one-sided, so this is for personal printings.
 %\documentclass[reqno,12pt,twoside,openright]{report} % right-side equation numbering, 12 point font, print two-sided, Chapters start on odd pages. Rackham only accepts one-sided, so this is for personal printings.
 
 \usepackage{rac}         % Use Rackham thesis style file
@@ -27,6 +28,7 @@
 \usepackage{hyphenat}
 \newcolumntype{d}{D{.}{.}{2.1}}
 \doublespacing           % \onehalfspacing for 1.5 spacing, \doublespacing for 2.0 spacing.
+%\onehalfspacing
 \newcommand{\sun}{\ensuremath{\odot}} % sun symbol is \sun
 \newcommand{\ignore}[1]{}
 \usepackage{pifont}
@@ -120,10 +122,10 @@
 \initializefrontsections
 
 % Optional Frontispiece
-\frontispiece{\includegraphics[width=6in]{figures/cool-picture.png}}
+%\frontispiece{\includegraphics[width=6in]{figures/cool-picture.png}}
 
 % Optional, but recommended, Copyright page
-%\copyrightpage{Neha Agarwal}
+\copyrightpage{Neha Agarwal}{nehaag@umich.edu}{ORCID iD: 0000-0001-9833-6538}
 
 % Page numbering. If you don't include a frontispiece or copyright page, you'll need to change this for two-sided printing.
 \makeatletter
@@ -131,7 +133,7 @@
 \makeatother
  
 % Optional Dedication page
-\dedicationpage{To Mummy--Papa}
+\dedicationpage{To Mummy--Papa and Bhaiya--Bhabhi}
 
 % Optional Acknowledgements page
 \startacknowledgementspage
@@ -149,7 +151,7 @@
 %\listoftables        % Required if there is more than one table
 %\listofmaps          % Required if there is more than one map
 %\listofappendices    % Required if there is more than one appendix
-\listofabbreviations % Optional. Abbreviations should be stored in a file named abbr.tex
+%\listofabbreviations % Optional. Abbreviations should be stored in a file named abbr.tex
 
 % Optional in-dissertation Abstract Page
 \startabstractpage
