@@ -29,6 +29,8 @@
 @string{ISPASS = {International Symposium on Performance Analysis of Systems and
 	Software (ISPASS)}}
 @string{DATE	 = {Design, Automation \& Test in Europe (DATE)}}
+@string{PLDI     = {International Conference on Programming Language Design and
+	Implementation (PLDI)}}
 
 @inproceedings{Sung2015,
  author = {Sung, Hyojin and Adve, Sarita V.},
@@ -94,7 +96,7 @@ pages={155-166}
  }
 
 
-@inproceedings{Lim2012workshop,
+@inproceedings{Lim2012sigplan,
  author = {Lim, Jieun and Kim, Hyesoon},
  title = "{Design Space Exploration of Memory Model for Heterogeneous Computing}",
  booktitle = {ACM SIGPLAN Workshop on Memory Systems Performance and Correctness},
@@ -331,7 +333,7 @@ pages={28.6.1-28.6.4},
  pages = {743-758}
 } 
 	
-@inproceedings{Agarwal2015b,
+@inproceedings{ref:agarwal:hpca2015,
 title="{Unlocking Bandwidth for GPUs in CC-NUMA Systems}",
 author={Agarwal, Neha and Nellans, David and O'Connor, Mike and Keckler,
 	Stephen W. and Wenisch, Thomas F.},
@@ -341,7 +343,7 @@ month = {February},
 pages = {354-365}
 }
 
-@inproceedings{Agarwal2015,
+@inproceedings{ref:agarwal:asplos2015,
 title="{Page Placement Strategies for GPUs within Heterogeneous Memory Systems}",
 author={Agarwal, Neha and Nellans, David and Stephenson, Mark and O'Connor, Mike and Keckler, Stephen W.},
 booktitle=ASPLOS,
@@ -428,7 +430,7 @@ pages = {193--200},
 }
 
 @misc{INTELPIN,
-  author = {{Intel Corporation}},
+  author = {{INTEL Corporation}},
   title = {{Pin - A Dynamic Binary Instrumentation Tool}},
   howpublished = "\url{https://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool}",
   year = {2012}, 
@@ -436,7 +438,7 @@ pages = {193--200},
 }
 
 @misc{INTELQPI,
-  author = {{Intel Corporation}},
+  author = {{INTEL Corporation}},
   title = {{An Introduction to the Intel QuickPath Interconnect}},
   howpublished = "\url{http://www.intel.com/content/www/us/en/io/quickpath-technology/quick-path-interconnect-introduction-paper.html}",
   year = {2009}, 
@@ -524,13 +526,12 @@ pages = {193--200},
  month = {October},
  year = {2009},
  pages = {44-54},
-} 
+}
 
 @misc{INTELXEON,
-  author = {{Intel Corporation}},
-  title = {{Intel Xeon Processor E7-4870 }},
-  howpublished =
-	  "\url{http://ark.intel.com/products/75260/Intel-Xeon-Processor-E7-8893-v2-37\_5M-Cache-3\_40-GHz}",
+  author = {{INTEL Corporation}},
+  title = {{Intel® Xeon® Processor E7-4870}},
+  howpublished = "\url{http://ark.intel.com/products/75260/Intel-Xeon-Processor-E7-8893-v2-37\_5M-Cache-3\_40-GHz}",
   year = {2014}, 
   note = "[Online; accessed 28-May-2014]"
 }
@@ -604,7 +605,7 @@ pages = {193--200},
 
 @article{zhao2013,
   author    = {Zhao, J. and Sun, G. and Loh, G. and Xie, Y.},
-  title     = "{Optimizing GPU Energy Efficiency with 3D Die-stacking Graphics Memory and Reconfigurable Memory Interface}",
+  title     = {{Optimizing GPU Energy Efficiency with 3D Die-stacking Graphics Memory and Reconfigurable Memory Interface}},
   journal   = {ACM Transactions on Architecture and Code Optimization},
   month = {December},
   year      = {2013},
@@ -1167,7 +1168,8 @@ author = {E. Ipek and J. Condit and E. Nightingale and D. Burger and T. Moscibro
 author = {M. Qureshi and J. Karidis and M. Franceschini and V. Srinivasan and L. Lastras and B. Abali},
   title = {{Enhancing Lifetime and Security of PCM-Based Main Memory with Start-Gap Wear Leveling}},
   year = {2009},
-  booktitle = {Proceedings of MICRO}
+  booktitle = MICRO,
+  month= nov,
 }
 
 @inProceedings{schechterloh10,
@@ -1389,7 +1391,7 @@ Computer Systems},
 }
 
 @article{intelpentium4processors,
-	author= {Intel Corporation},
+	author= {INTEL Corporation},
 	title= {Intel Pentium 4 Processors 570/571, 560/561, 550/551, 540/541, 530/531 and 520/521 Supporting Hyper-Threading Technology. pp. 76-81.}
 }
 
@@ -1758,12 +1760,16 @@ year={2003}
   booktitle = {Proceedings of ISCA}
 }
 
-@inProceedings{qureshisrinivasan09,
-  title = {{Scalable High performance Main Memory System Using Phase-Change Memory Technology}},
-  author = {M. Qureshi and V. Srinivasan and J. Rivers},
-  year = {2009},
-  booktitle = {Proceedings of ISCA}
-}
+@inproceedings{qureshi:twolm,
+	author = {Qureshi, Moinuddin K. and Srinivasan, Vijayalakshmi and
+		Rivers, Jude A.},
+	title = {{Scalable High Performance Main Memory System Using
+		Phase-change Memory Technology}},
+	booktitle = ISCA,
+	year = {2009},
+	pages = {24--33},
+	month = jun,
+} 
 
 @inProceedings{hwanglee05,
   title = {{20nm-Gate Bulk-FinFET SONOS Flash}},
@@ -1902,7 +1908,7 @@ year={2003}
   title = {{Compute Unified Device Architecture}},
   howpublished = "\url{https://developer.nvidia.com/cuda-zone}",
   year = {2014},
-  note = "[Online; accessed 28-May-2014]",
+  note = "[Online; accessed 31-July-2014]",
 }
 
 @Misc{upc,
@@ -2250,8 +2256,10 @@ note ={{http://www.vmware.com/pdf/hypervisor\_performance.pdf}}
 G. Lowney and S. Wallace and V. J. Reddi and K. Hazelwood},
   title = {{Pin: Building Customized Program Analysis Tools with Dynamic 
 Instrumentation}},
-  booktitle = {Proceedings of PLDI},
+  booktitle = PLDI,
   year = {2005},
+  month = jun,
+   pages = {190--200},
 }
 
 @MISC{sparcV9,
@@ -2541,13 +2549,13 @@ Berkeley}},
  institution = {EECS Department, UC Berkeley}
 }
 
-@CONFERENCE{limchang09,
- AUTHOR={Lim, Kevin and Chang, Jichuan and Mudge, Trevor and Ranganathan, Parthasarathy and Reinhardt, Steven K. and Wenisch, Thomas F.},
- TITLE={{Disaggregated Memory for Expansion and Sharing in Blade Servers}},
+@inproceedings{Lim2009,
+ author = {Lim, Kevin and Chang, Jichuan and Mudge, Trevor and Ranganathan, Parthasarathy and Reinhardt, Steven K. and Wenisch, Thomas F.},
+ title = {{Disaggregated Memory for Expansion and Sharing in Blade Servers}},
  booktitle = ISCA,
- YEAR={2009},
+ year = {2009},
  pages = {267--278},
- month = {June},
+ month = jun,
 }
 
 @CONFERENCE{warehampel06,
@@ -3410,8 +3418,8 @@ Local Voltage Dithering in 90nm CMOS}},
 
 @article{verghesedevine96,
  author = {B. Verghese and S. Devine and A. Gupta and M. Rosenblum},
- title = {{Operating system support for improving data locality on 
-CC-NUMA compute servers}},
+ title = {{Operating System Support for Improving Data Locality on 
+CC-NUMA Compute Servers}},
  journal = {SIGPLAN Not.},
  volume = {31},
  number = {9},
@@ -9284,8 +9292,10 @@ year={2008}
 @inproceedings{gpgpusim_ispass09,
         title={{Analyzing CUDA Workloads Using a Detailed GPU Simulator}},
 	author={Bakhoda, Ali and Yuan, George L. and Fung, Wilson W. L. and Wong, Henry and Aamodt, Tor M.},
-	booktitle={{IEEE International Symposium on Performance Analysis of Systems and Software}},
+	booktitle=ISPASS,
 	year={2009},
+	month = {April},
+	pages = {163--174},
 }
 
 @misc{opencv,
@@ -9332,8 +9342,8 @@ Williams and M. Rajan and E. Keiter and H. Thornquist and R. Numrich},
 author = {J. Mohd-Yusof and N. Sakharnykh},
 title = {{Optimizing CoMD: A Molecular Dynamics Proxy Application Study}},
 booktitle= {GPU Technology Conference (GTC)},
+year={2014},
 month = {March},
-year={2014}
 }
 
 @inproceedings{cns,
@@ -9580,8 +9590,17 @@ month = {June},
  title = "{System-level Implications of Disaggregated Memory}",
  booktitle = HPCA,
  year = {2012},
- pages = {1--12}
+ pages = {1--12},
+ month = feb,
 } 
+
+@misc{nvm:filesystem:lwn,
+  author = {{Jonathan Corbet}},
+  title = {{Supporting Filesystems in Persistent Memory}},
+  howpublished = "\url{http://http://lwn.net/Articles/610174/}",
+  year = {2014},
+  note = "[Online; accessed 11-October-2015]"
+}
 @INPROCEEDINGS{Nil2012, 
 	author={Chatterjee, N. and Shevgoor, M. and Balasubramonian, R. and
 		Davis, A and Zhen Fang and Illikkal, R. and Iyer, R.}, 
@@ -9591,6 +9610,25 @@ month = {June},
 	month = {December},
 	year={2012},
        pages = {13--24},	
+}
+
+@article{oltpbench,
+  title={Oltp-bench: An extensible testbed for benchmarking relational databases},
+  author={Difallah, Djellel Eddine and Pavlo, Andrew and Curino, Carlo and Cudre-Mauroux, Philippe},
+  journal={Proceedings of the VLDB Endowment},
+  volume={7},
+  number={4},
+  pages={277--288},
+  year={2013},
+  publisher={VLDB Endowment}
+}
+
+@misc{3dcrosspoint,
+	author = {{Intel}},
+    title = {{Intel and Micron Produce Breakthrough Memory Technology}},
+    howpublished="\url{https://newsroom.intel.com/news-releases/intel-and-micron-produce-breakthrough-memory-technology/}",
+	year = {2015},
+    note = "[Online; accessed 29-April-2016]",
 }
 
 @inproceedings{gpgpusimIspass09,
@@ -9669,25 +9707,12 @@ month = {June},
 	month={April},
 }
 
-@inproceedings{Lim2009,
-	author = {Lim, Kevin and Chang, Jichuan and Mudge, Trevor and
-		Ranganathan, Parthasarathy and Reinhardt, Steven K. and
-			Wenisch, Thomas F.},
-	title = {{Disaggregated Memory for Expansion and Sharing in Blade
-		Servers}},
-	booktitle = ISCA,
-	series = {ISCA '09},
-	year = {2009},
-	month = {June},
-	pages = {267--278},
-} 
-
-@misc{badgertrap,
-	author = {Gandhi, Jayneel and Basu, Arkaprava and Hill, Mark D. and
-		Swift, Michael M.},
-	title = {{BadgerTrap: A Tool to Instrument x86-64 TLB Misses}},
-	booktitle = {SIGARCH Computer Architecture News (CAN)},
-	year = {2014},
+@article{ref:badgertrap,
+  title={{A Tool to Instrument x86-64 TLB Misses}},
+  author={Gandhi, Jayneel and Basu, Arkaprava and Hill, Mark H. and Swift,
+	  Michael M.},
+  journal={SIGARCH Computer Architecture News (CAN)},
+  year={2014},
 }
 
 @misc{pgtable,
@@ -9722,4 +9747,309 @@ month = {June},
  pages = {26--35},
 } 
 
+@misc{kstaled,
+	author = {{Lespinasse, Michel}},
+    title = {{idle page tracking / working set estimation}},
+ howpublished="\url{https://lwn.net/Articles/460762/}",
+	year = {2011},
+    note = "[Online; accessed 29-April-2016]",
+}
 
+@misc{hughd-hugetmpfs,
+	author = {{Dickins, Hugh}},
+    title = {{huge tmpfs: THPagecache implemented by teams}},
+ howpublished="\url{https://lwn.net/Articles/682623/}",
+	year = {2016},
+    note = "[Online; accessed 30-April-2016]",
+}
+
+@article{vmware-mm,
+	author = {Waldspurger, Carl A.},
+	title = {{Memory Resource Management in VMware ESX Server}},
+	journal = {SIGOPS Operating Systems Review},
+	volume = {36},
+	number = {SI},
+	month = dec,
+	year = {2002},
+	pages = {181--194},
+} 
+
+
+@misc{Intel-sw-manual,
+	author = {{Intel}},
+    title = {{Intel® 64 and IA-32 Architectures Developer's Manual}},
+	year = {2016},
+    note = "[Online; accessed 2-May-2016]",
+}
+
+@misc{AMD-NPT,
+	author = {{AMD}},
+    title = {{AMD-V™ Nested Paging }},
+ howpublished="\url{http://developer.amd.com/wordpress/media/2012/10/NPT-WP-1%201-final-TM.pdf}",
+	year = {2008},
+    note = "[Online; accessed 2-May-2016]",
+}
+
+@misc{cgroups,
+	author = {{Menage, Paul}},
+    title = {{CGROUPS }},
+ howpublished="\url{http://lxr.free-electrons.com/source/Documentation/cgroup-v1/memory.txt}",
+    note = "[Online; accessed 4-May-2016]",
+}
+
+@misc{ref:sstable,
+	title = {{MemtableSSTable}},
+	howpublished="\url{https://wiki.apache.org/cassandra/MemtableSSTable}",
+	note = "[Online; accessed 8-May-2016]",
+}
+
+@inproceedings{ycsb,
+	author = {Cooper, Brian F. and Silberstein, Adam and Tam, Erwin and
+		Ramakrishnan, Raghu and Sears, Russell},
+	title = {{Benchmarking Cloud Serving Systems with YCSB}},
+	booktitle = {Proceedings of Symposium on Cloud
+		Computing},
+	year = {2010},
+	pages = {143--154},
+	month = jun,
+}
+
+@inproceedings{facebook-key-value,
+	author = {Atikoglu, Berk and Xu, Yuehai and Frachtenberg, Eitan and
+		Jiang, Song and Paleczny, Mike},
+	title = {{Workload Analysis of a Large-scale Key-value Store}},
+	booktitle = {Proceedings of the Joint
+		International Conference on Measurement and Modeling of
+			Computer Systems},
+	year = {2012},
+	pages = {53--64},
+	month = Jun,
+} 
+
+@inproceedings{ref:Dulloor:datatiering,
+	author = {Dulloor, Subramanya R. and Roy, Amitabha and Zhao, Zheguang
+		and Sundaram, Narayanan and Satish, Nadathur and Sankaran,
+		Rajesh and Jackson, Jeff and Schwan, Karsten},
+	title = {{Data Tiering in Heterogeneous Memory Systems}},
+	booktitle = {Proceedings of the European Conference on
+		Computer Systems (EuroSys)},
+	year = {2016},
+	pages = {15:1--15:16},
+	month = {April},
+} 
+
+@misc{tpcc,
+	title={{TPC-C}},
+	howpublished="\url{http://www.tpc.org/tpcc/}",
+	note = "[Online; accessed 8-May-2016]",
+}
+
+@misc{cassandra,
+	title={{Cassandra}},
+	howpublished="\url{http://cassandra.apache.org/}",
+	note = "[Online; accessed 8-May-2016]",
+}
+
+@misc{redis,
+	title = {{Redis}},
+	howpublished="\url{http://redis.io/}",
+	note = "[Online; accessed 8-May-2016]",
+}
+
+@misc{aerospike,
+	title = {{Aerospike}},
+	howpublished="\url{http://www.aerospike.com/}",
+	note = "[Online; accessed 8-Aug-2016]",
+}
+
+@misc{perfkitbenchmarker,
+	title = {{PerfKit Benchmarker}},
+	howpublished="\url{https://github.com/GoogleCloudPlatform/PerfKitBenchmarker}",
+	note = "[Online; accessed 8-May-2016]",
+}
+
+@inproceedings{ref:pin,
+	author = {Luk, Chi-Keung and Cohn, Robert and Muth, Robert and Patil,
+		Harish and Klauser, Artur and Lowney, Geoff and Wallace, Steven
+			and Reddi, Vijay Janapa and Hazelwood, Kim},
+	title = {{Pin: Building Customized Program Analysis Tools with Dynamic
+		Instrumentation}},
+	booktitle = {Proceedings of the Conference on
+		Programming Language Design and Implementation(PLDI)},
+	year = {2005},
+	pages = {190--200},
+} 
+
+
+@inproceedings{ref:Dulloor:PMFS,
+	author = {Dulloor, Subramanya R. and Kumar, Sanjay and Keshavamurthy,
+		Anil and Lantz, Philip and Reddy, Dheeraj and Sankaran, Rajesh
+			and Jackson, Jeff},
+	title = {{System Software for Persistent Memory}},
+	booktitle = {Proceedings of the European Conference on Computer
+		Systems(EuroSys)},
+	year = {2014},
+	pages = {15:1--15:15},
+	month = apr,
+} 
+
+@inproceedings{ref:Kannan:pVM,
+	author = {Kannan, Sudarsun and Gavrilovska, Ada and Schwan, Karsten},
+	title = {{pVM: Persistent Virtual Memory for Efficient Capacity Scaling
+		and Object Storage}},
+	booktitle = {Proceedings of the European Conference on
+		Computer Systems(EuroSys)},
+	year = {2016},
+	month = apr,
+	pages = {13:1--13:16},
+} 
+
+@INPROCEEDINGS{ref:ekman:costeffective, 
+	author={Ekman, Magbus and Stenstrom, Per}, 
+	booktitle=IPDPS, 
+	title={{A Cost-Effective Main Memory Organization for Future Servers}}, 
+	year={2005}, 
+	pages={45a-45a}, 
+	month={April},
+}
+
+@inproceedings{ref:memif:Lin:2016,
+	author = {Lin, Felix Xiaozhu and Liu, Xu},
+	title = {{Memif: Towards Programming Heterogeneous Memory
+		Asynchronously}},
+	booktitle = ASPLOS,
+	year = {2016},
+	pages = {369--383},
+	month = apr,
+} 
+
+@inproceedings{ref:chen:porple,
+	author = {Chen, Guoyang and Wu, Bo and Li, Dong and Shen, Xipeng},
+	title = {{PORPLE: An Extensible Optimizer for Portable Data Placement
+		on GPU}},
+	booktitle = MICRO,
+	year = {2014},
+	pages = {88--100},
+	month = dec,
+} 
+
+@inproceedings{ref:Guo:2015:PBL:2731186.2731187,
+	 author = {Guo, Fei and Kim, Seongbeom and Baskakov, Yury and Banerjee,
+		 Ishan},
+	  title = {{Proactively Breaking Large Pages to Improve Memory
+		  Overcommitment Performance in VMware ESXi}},
+	   booktitle = {International
+		   Conference on Virtual Execution Environments(VEE)},
+	     year = {2015},
+	        pages = {39--51},
+		month = mar,
+}
+
+@article{baskakov_identification_2016,
+	Author = {Baskakov, Yuri and Gao, Peng and Spencer, Joyce Kay},
+	Month = may,
+	Note = {US Patent 9,330,015},
+	Title = {{Identification of Low-activity Large Memory Pages}},
+	Url = {http://www.google.ch/patents/US9330015},
+	Year = {2016},
+}
+
+
+@inproceedings{cloudsuite,
+	Author = {Ferdman, Michael and Adileh, Almutaz
+		and Kocberber, Onur and Volos, Stavros
+			and Alisafaee, Mohammad and
+			Jevdjic, Djordje and Kaynak,
+		Cansu and Popescu, Adrian Daniel and
+			Ailamaki, Anastasia and Falsafi,
+		Babak},
+	Booktitle = ASPLOS,
+	Pages	= {37--48},
+	Title	= {{Clearing the Clouds:
+				A
+				Study
+				of
+				Emerging
+				Scale-out
+				Workloads
+				on
+				Modern
+				Hardware}},
+	Year	=
+		{2012},
+	month = mar,
+}
+
+@misc{hugepages,
+  author = {Gorman, Mel},
+  title = {{Huge pages part 4: benchmarking with huge pages}},
+  howpublished = "\url{http://lwn.net/Articles/378641/}",
+  year = {2010}, 
+  note = "[Online; accessed 11-Aug-2016]"
+}
+
+@misc{libvirt-numa,
+    title = {Libvirt virtualization API},
+    howpublished = "\url{http://libvirt.org/formatdomain.html#elementsCPU}",
+    note = "[Online; accessed 13-Aug-2016]"
+}
+
+@article{li2015managing,
+      title={{Managing Hybrid Main Memories with a Page-Utility Driven
+          Performance Model}},
+        author={Li, Yang and Choi, Jongmoo and Sun, Jin and Ghose, Saugata and
+            Wang, Hui and Meza, Justin and Ren, Jinglei and Mutlu, Onur},
+          journal={arXiv preprint arXiv:1507.03303},
+            year={2015}
+}
+
+@mastersthesis{walsh2009generating,
+      title={{Generating Miss Rate Curves with Low Overhead Using Existing
+          Hardware}},
+        author={Walsh, Thomas},
+          year={2009},
+            school={University of Toronto}
+}
+
+@inproceedings{Eranian:2008:PCM:1353522.1353531,
+     author = {Eranian, St{\'e}phane},
+      title = {{What Can Performance Counters Do for Memory Subsystem
+          Analysis?}},
+       booktitle = ASPLOS,
+         year = {2008},
+            pages = {26--30},
+	    month = mar,
+} 
+
+@inproceedings{Zhou:2004:DTP:1024393.1024415,
+	 author = {Zhou, Pin and Pandey, Vivek and Sundaresan, Jagadeesan and
+		 Raghuraman, Anand and Zhou, Yuanyuan and Kumar, Sanjeev},
+	  title = {{Dynamic Tracking of Page Miss Ratio Curve for Memory
+		  Management}},
+	   booktitle = ASPLOS,
+	     year = {2004},
+	        pages = {177--188},
+		month = oct,
+} 
+
+@inproceedings{azimi2007path,
+      title={{PATH: page access tracking to improve memory management}},
+        author={Azimi, Reza and Soares, Livio and Stumm, Michael and Walsh,
+            Thomas and Brown, Angela Demke},
+          booktitle={Proceedings of the International Symposium on Memory
+              Management},
+            pages={31--42},
+              year={2007},
+	      month = oct,
+}
+
+@BOOK{borosso2013, 
+	author={Barroso, Luiz Andre and Clidaras, Jimmy and Hoelzle, Urs}, 
+	title={{The Datacenter as a Computer:An Introduction to the Design of
+		Warehouse-Scale Machines}}, 
+	year={2013}, 
+	publisher={Morgan \& Claypool}, 
+	url={http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=6812618},
+}
+
+ 

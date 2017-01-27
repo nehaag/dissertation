@@ -86,7 +86,7 @@ changes.}
 As programming models supporting transparent CPU-GPU sharing become 
 more prevalent and sharing becomes more fine-grain and frequent, the 
 performance gap between page-level coherence and fine-grained hardware cache-coherent
-access will grow~\cite{Agarwal2015,Agarwal2015b,Lim2012}. 
+access will grow~\cite{ref:agarwal:hpca2015,ref:agarwal:asplos2015,Lim2012}. 
 On-chip caches, and thus HW cache coherence, are widely used in CPUs because they 
 provide substantial memory bandwidth and latency 
 improvements~\cite{Martin2012}.
@@ -103,7 +103,7 @@ enabling software management of the cache hierarchy adds significant system comp
 
 Prior work has shown that due to their many threaded design, GPUs are 
 insensitive to off-package memory latency but very sensitive to off-chip memory 
-bandwidth~\cite{Agarwal2015,Agarwal2015b}. Table~\ref{tab:gpuhitrate}
+bandwidth~\cite{ref:agarwal:hpca2015,ref:agarwal:asplos2015}. Table~\ref{tab:gpuhitrate}
 shows the L1 and L2 cache hit rates across a variety of workloads from the Rodinia 
 and United States Department of Energy application suites~\cite{Che2009,villa2014}.  These low hit 
 rates cause GPUs to also be fairly

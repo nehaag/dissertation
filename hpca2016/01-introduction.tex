@@ -15,7 +15,7 @@ can improve performance by allowing concurrent, fine-grained access to memory
 by both CPU and GPU.  If the CPU and GPU have separate physical
 memories, page migration may also be used to optimize page placement for
 latency or bandwidth by using both near and far 
-memory~\cite{Dashti2013,Agarwal2015b,Meswani2015,Chou2015}.
+memory~\cite{Dashti2013,ref:agarwal:hpca2015,Meswani2015,Chou2015}.
 
 \begin{figure}[t]
 \centering
@@ -38,7 +38,8 @@ NVLINK (NVIDIA), CAPI (IBM), HT (AMD), and QPI (INTEL) or implemented as
 multi-chip modules~\cite{NVLINK,CAPI,AMDHT,INTELQPI,Chen92}. The availability of these
 high speed off-chip interconnects has led both academic groups and vendors like NVIDIA
 to investigate how future GPUs may integrate into existing OS controlled 
-unified shared memory regimes used by CPUs~\cite{Pichai2014,Power2014,Agarwal2015,Agarwal2015b}.
+unified shared memory regimes used by
+CPUs~\cite{Pichai2014,Power2014,ref:agarwal:asplos2015,ref:agarwal:hpca2015}.
 
 %Current CPUs have up to 18 cores per socket~\cite{INTELXEONE5V3} but GPUs are
 %expected to have hundreds of streaming multiprocessors (SMs) each with its own
