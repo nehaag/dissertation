@@ -26,6 +26,10 @@
 \usepackage{tabularx}
 \usepackage{dcolumn}
 \usepackage{hyphenat}
+%Change font to Arial
+\renewcommand{\sfdefault}{phv} % Arial
+\renewcommand{\familydefault}{\sfdefault}
+
 \newcolumntype{d}{D{.}{.}{2.1}}
 \doublespacing           % \onehalfspacing for 1.5 spacing, \doublespacing for 2.0 spacing.
 %\onehalfspacing
@@ -45,12 +49,6 @@
 \do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X% 
 \do\Y\do\Z\do\*\do\-\do\~\do\'\do\"\do\-}%
 
-%\usepackage{helvet}
-%\renewcommand{\familydefault}{\sfdefault}
-%\renewcommand{\rmdefault}{phv} % Arial
-\renewcommand{\sfdefault}{phv} % Arial
-
-\renewcommand{\familydefault}{\sfdefault}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,7 +155,7 @@ Shyam Mohan Agarwal (Bhaiya)\\ Khyati Agarwal (Bhabhi)}
 % Table of contents, list of figures, etc.
 \tableofcontents     % Required
 \listoffigures       % Required if there is more than one figure
-%\listoftables        % Required if there is more than one table
+\listoftables        % Required if there is more than one table
 %\listofmaps          % Required if there is more than one map
 %\listofappendices    % Required if there is more than one appendix
 %\listofabbreviations % Optional. Abbreviations should be stored in a file named abbr.tex
