@@ -78,7 +78,7 @@ protocols in CPUs and GPUs, thus improving cross-vendor design cycle time.
 
 \item
 \textbf{Different costs per bit:}
-\fixme{Modify THP stuff and write about application-transparency.}
+%\fixme{Modify THP stuff and write about application-transparency.}
 Different memory technologies can have different monetary costs.  For example,
 recently announced non-volatile memory technology~\cite{xpoint} is projected to
 be significantly cheaper than regular DRAM, while also being significantly
@@ -87,11 +87,15 @@ data-centers, where main memory cost can be $\approx$ 30\% of the server machine
 cost, translating to $3-15\%$ of the total cost of ownership (TCO), amounting to
 bilions of dollars~\cite{borosso2013}. However, their low speed means that only
 {\it cold}, i.e., infrequently accessed data can be placed in such memories.
-However, placing more cold data in the slower memories conflicts with efficient
-virtual memory usage by transparent huge page (THP), which can provide up to
-30\% performance gains in large memory footprint data-center applications as we
-show in Table~\ref{tab:thp-benefit}. We study how to reap the benefits of huge
-pages while also placing as much data in slow memory as possible, to improve
+Detection of such cold data must be done {\it application-transparently}, since
+that allows cloud providers to transparently swap out slow memory in place of
+DRAM.
+%However, placing more cold data in the slower memories conflicts with efficient
+%virtual memory usage by transparent huge page (THP), which can provide up to
+%30\% performance gains in large memory footprint data-center applications as we
+%show in Table~\ref{tab:thp-benefit}.
+We study how to place as much data in slow memory as possible, while being
+completely application-transparent, to improve
 performance per dollar in data-centers.  \end{enumerate}
 
 Below, we describe each of these three problems in detail and give a brief
@@ -501,29 +505,30 @@ memories, for many years to come.
 %productivity.
 
 \textbf{Progammability with Performance:} Whereas cache-coherent access
-can boost programmer productivity significantly, it is difficulty to implement
+can boost programmer productivity significantly, it is difficult to implement
 cache coherent memory for discrete GPU systems, particularly when the CPU and
 GPU are supplied by different vendors (e.g., NVIDIA GPUs in IBM Power servers).
-Despite proposals, there are no generally supported industry standards for
-CPU--GPU hardware cache coherence, and bugs in coherence implementations are
-often due to subtle interactions that are difficult to get right without close
-interaction among implementation teams. Vendor-specific proprietary protocols
-hamper widespread product adoption.
-
-\fixme{compress following para and merge with previous}
-Instead, selective caching eliminates the need for a unified hardware cache
+%Despite proposals, there are no generally supported industry standards for
+%CPU--GPU hardware cache coherence, and bugs in coherence implementations are
+%often due to subtle interactions that are difficult to get right without close
+%interaction among implementation teams. Vendor-specific proprietary protocols
+%hamper widespread product adoption.
+%
+%\fixme{compress following para and merge with previous}
+Selective caching eliminates the need for a unified hardware cache
 coherence protocol, removing the most difficult aspect of providing a unified
-shared memory imple- mentation. We see selective caching occupying a feasibility
+shared memory implementation. We see selective caching occupying a feasibility
 sweet spot; sacrificing a small amount of performance for enormous wins in
-conceptual and implementation complexity. Selective caching + request
-coalescing (which provides 80\% of the performance of a hypothetical hardware
-cache-coherent system) requires no coherence coordination between the CPU and
-GPU vendors. Client-side caching calls for a straight-forward addition to the
-CPU design that can enable higher performance unified shared memory abstraction
-for a wide variety of third-party accelerators, in addition to GPUs. Again, the
-implementation choice of the CPU vendor is fully decoupled from a GPU vendor.
+conceptual and implementation complexity.
+%Selective caching + request
+%coalescing (which provides 80\% of the performance of a hypothetical hardware
+%cache-coherent system) requires no coherence coordination between the CPU and
+%GPU vendors. Client-side caching calls for a straight-forward addition to the
+%CPU design that can enable higher performance unified shared memory abstraction
+%for a wide variety of third-party accelerators, in addition to GPUs. Again, the
+%implementation choice of the CPU vendor is fully decoupled from a GPU vendor.
 
-\fixme{Merge time-to-market and Industry impact}
+%\fixme{Merge time-to-market and Industry impact}
 \textbf{Verification and Time-to-market:} Verification is a major factor in the total
 cost and time-to-market to ship a processor. CPU--GPU coherence increases
 verification overhead significantly, since it requires a combined validation of
@@ -553,14 +558,17 @@ reduce the time-to-market of new products.
 %many future accelerators are likely to share a unified memory abstraction,
 %thus making programming these accelerators significantly simpler.
 %
-\textbf{Industry Impact:} Because it is difficult to quantify, design simplicity
+%\textbf{Industry Impact:}
+Because it is difficult to quantify, design simplicity
 is rarely a focus of academic research. Yet, we argue that hidden complexities,
 such a validation efforts or the requirement for industry wide coordination are
 often key impediments that prevents practical adoption of otherwise laudable
-academic proposals. In this work we specifically seek to slash design complexity
-and reduce the coupling of system components, without sacrificing performance or
-loss of generality. As such, we see innovations like selective caching as
-disproportionately likely to impact industrial practice. We have partnered with
+academic proposals.
+%In this work we specifically seek to slash design complexity
+%and reduce the coupling of system components, without sacrificing performance or
+%loss of generality. As such, we see innovations like selective caching as
+%disproportionately likely to impact industrial practice.
+We have partnered with
 product groups both within NVIDIA and IBM while pursuing this research to ensure
 that practical implementation concerns are first and foremost throughout our
 research~\cite{coral2014}.
