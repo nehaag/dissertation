@@ -29,6 +29,7 @@
 %Change font to Arial
 \renewcommand{\sfdefault}{phv} % Arial
 \renewcommand{\familydefault}{\sfdefault}
+\newcommand{\fixme}[1]{\noindent \textbf{\textcolor{red}{[ Fixme: #1]}}}
 
 \newcolumntype{d}{D{.}{.}{2.1}}
 \doublespacing           % \onehalfspacing for 1.5 spacing, \doublespacing for 2.0 spacing.
@@ -202,7 +203,8 @@ Memory Systems}
 % \label{chap:thermostat}
 % \input{thermostat/thermostat}
 
- \chapter{Thermostat: Keeping your DRAM hot and NVRAM cool}
+ \chapter{Thermostat: Application-transparent Page Management for Two-tiered
+Main Memory}
  \label{chap:thermostat}
  \input{asplos2017/asplos2017}
 
