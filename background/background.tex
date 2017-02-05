@@ -32,12 +32,12 @@ respectively.
 \begin{figure}[t]
     \centering
     \subfloat[Bandwidth sensitivity] {
-        \includegraphics[width=0.8\columnwidth]{asplos2015/figures/bandwidth-1.png}
+        \includegraphics[width=0.7\columnwidth]{asplos2015/figures/bandwidth-1.png}
         \label{fig:bandwidth}
     }
     \\
     \subfloat[Latency sensitivity] {
-        \includegraphics[width=0.8\columnwidth]{asplos2015/figures/latency-1.png}
+        \includegraphics[width=0.7\columnwidth]{asplos2015/figures/latency-1.png}
         \label{fig:latency}
     }
     \caption{GPU performance sensitivity to bandwidth and latency changes.}
@@ -380,3 +380,5 @@ limited off-chip memory resources.  In the following sections, we show that by
 leveraging memory request coalescing, small CPU-side caches, improved
 interconnect efficiency, and promiscuous read-only caching, selective caching
 GPUs can perform nearly as well as HW cache-coherent CPU--GPU\@ systems.
+
+\input{thermostat/02-background.tex}

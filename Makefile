@@ -9,7 +9,7 @@ METHODOLOGY = methodology/methodology.tex
 ASPLOS2015 = asplos2015/*.tex
 HPCA2015 = hpca2015/*.tex
 HPCA2016 = hpca2016/*.tex
-THERMOSTAT = asplos2017/*.tex
+THERMOSTAT = asplos2017/*.tex thermostat/02-background.tex
 
 .PHONY: all clean
 

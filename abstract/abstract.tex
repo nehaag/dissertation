@@ -5,30 +5,30 @@
 %Insight into our proposal
 %What are the big/key takeaways
 
-Systems from smartphones, data-centers to supercomputers are increasingly
-heterogeneous, being composed of different memory technologies and core types.
-Heterogeneous memory systems provide an opportunity to suitably match different
-memory access patterns in the applications, reducing CPU time thus the cost to
-run the application. This drives up performance per dollar resulting in saving
-of billions of dollars in large-scale systems.  However, with increased
-provisioning of main memory capacity per machine and differences in memory
-characteristics (for example, bandwidth, latency, cost, and density), memory
-management in such hetereogeneous memory systems pose multi-fold challenges on
-system programmability and design. Decisions on data placement and movement have
-to be made at runtime -- in an application-transparent manner --
+Systems from smartphones to data-centers to supercomputers are increasingly
+heterogeneous, comprising various memory technologies and core types.
+Heterogeneous memory systems provide an opportunity to suitably match varying
+memory access patterns in applications, reducing CPU time and thus the cost to
+run the application.  CPU time savings increase performance per dollar resulting
+in aggregate savings of millions of dollars in large-scale systems. However,
+with increased provisioning of main memory capacity per machine and differences
+in memory characteristics (for example, bandwidth, latency, cost, and density),
+memory management in such heterogeneous memory systems poses multi-fold
+challenges on system programmability and design. Decisions on data placement and
+movement have to be made at runtime – in an application-transparent manner –
 while suitably matching application memory access patterns so as to utilize the
 heterogeneous resources efficiently.
 
-In this thesis we tackle memory management of two heterogeneous memory systems:
-a) CPU-GPU systems with a unified virtual address space, b) Cloud computing
-platforms that can deploy cheaper but slower memory technologies along with
-DRAMs.  We discuss the challenges presented by upcoming heterogeneous CPU-GPU
-memory systems and propose solutions to enable their adoption by simplifying the
-programming model and design efforts needed to build such complex systems.  We
-show that current page placement policies are not sufficient to maximize GPU
-performance in heterogeneous CPU-GPU memory systems and propose an application
-agnostic Bandwidth-Aware (BW-AWARE) placement policy that maximizes GPU
-throughput.
+In this thesis, we tackle memory management of two heterogeneous memory systems:
+(a) CPU-GPU systems with a unified virtual address space, and (b) Cloud
+computing platforms that can deploy cheaper but slower memory technologies
+alongside DRAMs. We discuss the challenges presented by upcoming heterogeneous
+CPU-GPU memory systems and propose solutions to enable their adoption by
+simplifying the programming model and design effort needed to build such complex
+systems. We show that current page placement policies are not sufficient to
+maximize GPU performance in heterogeneous CPU-GPU memory systems and propose an
+application agnostic Bandwidth-Aware (BW- AWARE) placement policy that maximizes
+GPU throughput.
 %by balancing page placement
 %across the memories based on the aggregate memory bandwidth available in a
 %system.
@@ -69,7 +69,7 @@ not require any programmer annotation.
 %placement, all while maintaining the relaxed memory semantics of modern GPUs.
 %
 To simplify implementing hardware cache
-coherence in heterogeneous CPU-GPU systems 
+coherence in heterogeneous CPU-GPU systems,
 %Cache coherence is ubiquitous in shared memory multi\hyp{}processors because it
 %provides a simple, high performance memory abstraction to programmers.  Recent
 %work suggests extending hardware cache coherence between CPUs and GPUs to help
@@ -91,26 +91,25 @@ decoupling the GPU from vendor-specific CPU coherence protocols.
 %integrate CPUs and GPUs under a single hardware coherence protocol.
 
 Heterogeneous memories are making inroads in large scale data-centers with the
-advent of denser/cheaper memory technologies such as Intel's 3D XPoint. We make
-a case for a two-tiered memory system where cheaper memories will be deployed
-alongside of DRAMs. Such a heterogeneous memory system will result in cutting
-DRAM provisioning per application by shifting infrequently accessed cold data to
-slow memory reducing spending on main memories in large scale systems.
-%Past research on two-tiered main memory
-%has assumed a 4KB page size.  However, we demonstrates that 2MB
-%(transparent) huge pages are performance critical in Cloud applications
-%especially in virtualized cloud environments.
-To enable such deployments we present Thermostat, an application-transparent
-huge-page-aware mechanism to place pages in a dual-technology hybrid memory
-system while achieving both the cost advantages of two-tiered memory and
-performance advantages of transparent huge pages.  We present an online page
-classification mechanism that accurately classifies both 4KB and 2MB pages as
-hot or cold while incurring no observable performance overhead across several
-representative cloud applications.  We implement Thermostat in Linux kernel
-version 4.5 and evaluate its effectiveness on representative cloud computing
-workloads running under KVM virtualization.  We show that Thermostat migrates up
-to 50\% of application footprint to slow memory while limiting performance
-degradation to 3\%, thereby reducing memory cost.
+advent of denser/cheaper memory technologies, such as Intel/Microns’s 3D XPoint.
+We make a case for a two-tiered memory system where cheaper (per bit) memories
+will be deployed alongside DRAM. Such a heterogeneous memory system can enable
+reduced DRAM provisioning per application by shifting infrequently accessed cold
+data to slow memory, reducing spending on main memory in large-scale systems.
+Past research on two-tiered main memory has assumed a 4KB page size.  However,
+we demonstrate that 2MB transparent huge pages are performance critical in
+cloud applications especially in virtualized cloud environments.  To enable such
+deployments, we present Thermostat, an application-transparent huge-page-aware
+mechanism to place pages in a dual-technology hybrid memory system while
+achieving both the cost advantages of two-tiered memory and performance
+advantages of transparent huge pages.  We present an online page classification
+mechanism that accurately classifies both 4KB and 2MB pages as hot or cold while
+incurring no observable performance overhead across several representative cloud
+applications. We implement Thermostat in Linux kernel version 4.5 and evaluate
+its effectiveness on representative cloud computing workloads running under KVM
+virtualization. We show that Thermostat migrates up to 50\% of application
+footprint to slow memory while limiting performance degradation to 3\%, thereby
+reducing memory cost.
 %We propose to develop a transparent huge-page-aware two-tiered memory solution,
 %targeting virtualized cloud applications, which integrates support for dynamic
 %page migration and transparent huge pages, achieving both the capacity/cost
