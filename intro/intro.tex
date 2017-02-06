@@ -573,4 +573,19 @@ product groups both within NVIDIA and IBM while pursuing this research to ensure
 that practical implementation concerns are first and foremost throughout our
 research~\cite{coral2014}.
 
-\fixme{add Thermostat's impact}
+\textbf{NVM technology in cloud deployments:} Slower but cheaper memory
+technologies such as NVRAMs hold great promise to lower the memory costs for
+cloud vendors. However, vendors have little control over the client
+applications, and have to guarantee SLAs. Also, dependence on hardware features
+only delays the adoption of such technologies due to the time required for
+rolling out new features in CPUs. Thermostat is the first policy to our
+knowledge that addresses these challenges by a software-only mechanism, thus
+paving the way towards large-scale deployments of such technologies in
+datacenters.
+
+Also, Thermostat's novel software-only sampling policy shows the potential for
+using software-only mechanisms for inferring application memory patterns in
+runtime at extremely low overhead ($<$ 1\%). We expect that Thermostat's
+sampling policy can be employed in other scenarios that require runtime
+monitoring of application access patterns, such as resource sharing between
+applications, memory access profile-guided optimizations etc.
