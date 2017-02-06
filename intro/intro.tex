@@ -34,19 +34,20 @@ main memories attached to them -- thus the term ``heterogeneous'' memory
 systems. An example of such system is the recently announced NVIDIA's Pascal
 GPU~\cite{pascal}, which is slated to have high bandwidth connection to the host
 CPU by NVLink~\cite{NVLINK} and thus can access host memory seamlessly.  Another
-example is Intel's 3-D XPoint technology~\cite{xpoint}, which provides a slow
+example is Intel/Micron's 3-D XPoint technology~\cite{xpoint}, which provides a slow
 but cheaper and large capacity non-volatile memory (NVRAM) along with a regular
 DRAM based memory attached to the same CPU node.
 
 Previous academic and commercial systems study Non-Uniform Memory Access (NUMA)
 extensively. However, the main optimization goal in such NUMA systems was to cut
 down on memory access latency as much as possible but ignore characteristics
-such as bandwidth or access cost per bit, which are critical in
-domains such as GPGPU computing or data-centers. In this thesis we study memory
-characteristics beyond memory access latency with the goal to simplify system
-design, easing programmability, while being able to squeeze the best possible
-performance out of such heterogeneous memory systems. Next we briefly discuss
-three key aspects of such systems that we have studied in this thesis:
+such as bandwidth or access cost per bit, which are critical in domains such as
+GPGPU computing or data-centers. In this thesis we study memory characteristics
+beyond memory access latency with the goal to simplify system design, easing
+programmability, while being able to squeeze the best possible performance out
+of such heterogeneous memory systems.  Next we briefly discuss key aspects that
+are relevant to modern incarnations of heterogeneous memory in GPUs and
+data-centers:
 
 \begin{enumerate}
 \item
@@ -68,13 +69,15 @@ for several GPU applications.
 
 \item
 \textbf{Different memory coherency domains:} 
-In a heterogeneous CPU--GPU memory system, implementing hardware cache coherence
-between the CPU and the GPU can lead to a significant challenges because of
-design and verification involved particularly if the two domains are designed by
-separate vendors. We introduce {\it Selective Caching}, a coherence policy that
-disallows GPU caching of any memory that would require coherence updates to
-propagate across the two domains. This approach decouples the cache-coherence
-protocols in CPUs and GPUs, thus improving cross-vendor design cycle time.
+In a heterogeneous CPU--GPU memory system, hardware cache coherence can improve
+performance by allowing concurrent, fine-grained access to memory by both CPU
+and GPU.  However, implementing hardware cache coherence between the CPU and the
+GPU can lead to a significant challenges because of design and verification
+involved particularly if the two domains are designed by separate vendors. We
+introduce {\it Selective Caching}, a coherence policy that disallows GPU caching
+of any memory that would require coherence updates to propagate across the two
+domains. This approach decouples the cache-coherence protocols in CPUs and GPUs,
+thus improving cross-vendor design cycle time.
 
 \item
 \textbf{Different costs per bit:}
@@ -452,7 +455,7 @@ with a 3\% slowdown, reducing memory provisioning cost up to 30\%.
 \end{itemize}
 
 \section{Impact Statement}
-Simple but effective page placement algorithms have enormous durability, with no
+Simple but effective page management algorithms have enormous durability, with no
 major changes to locality based page placement occurring in the last several
 decades. With the introduction of high bandwidth memory, heterogeneous memory
 CPU + GPU systems started shipping in 2016, yet operating systems today are ill
@@ -573,7 +576,7 @@ product groups both within NVIDIA and IBM while pursuing this research to ensure
 that practical implementation concerns are first and foremost throughout our
 research~\cite{coral2014}.
 
-\textbf{NVM technology in cloud deployments:} Slower but cheaper memory
+\textbf{Cheaper Memory Technology in Cloud Deployments:} Slower but cheaper memory
 technologies such as NVRAMs hold great promise to lower the memory costs for
 cloud vendors. However, vendors have little control over the client
 applications, and have to guarantee SLAs. Also, dependence on hardware features
