@@ -19,7 +19,7 @@
 Main memories contribute to $\approx$ 30\% of machine cost (based on assembling
 a server class machine on newegg.com in January 2017). The significant cost of
 main memories make them an important resource that should be utilized
-efficiently to justify their cost contribution. To cater the memory needs of
+efficiently to justify their cost contribution. To cater to the memory needs of
 applications from different domains (for example: data-centers, cloud computing,
 supercomputers) exhibiting different memory access patterns, systems are
 becoming heterogeneous to adapt to variations in memory access patterns
@@ -31,20 +31,20 @@ new memory management policies that are able to fully exploit these systems.
 While traditional memory management techniques largely assume a ``homogeneous''
 main memory, future systems are likely to have two or more different types of
 main memories attached to them -- thus the term ``heterogeneous'' memory
-systems. An example of such system is the recently announced NVIDIA's Pascal
-GPU~\cite{pascal}, which is slated to have high bandwidth connection to the host
-CPU by NVLink~\cite{NVLINK} and thus can access host memory seamlessly.  Another
-example is Intel/Micron's 3-D XPoint technology~\cite{xpoint}, which provides a slow
-but cheaper and large capacity non-volatile memory (NVRAM) along with a regular
-DRAM based memory attached to the same CPU node.
+systems. An example of such a system is the recently announced NVIDIA Pascal
+GPU~\cite{pascal}, which is slated to have a high bandwidth connection to the host
+CPU via NVLink~\cite{NVLINK} and thus can access host memory seamlessly.
+Another example is Intel/Micron's 3-D XPoint technology~\cite{xpoint}, which
+provides a slow but cheaper and large capacity non-volatile memory (NVRAM) along
+with a conventional DRAM memory attached to the same CPU node.
 
 Previous academic and commercial systems study Non-Uniform Memory Access (NUMA)
 extensively. However, the main optimization goal in such NUMA systems was to cut
-down on memory access latency as much as possible but ignore characteristics
+down on memory access latency as much as possible \fixme{but ignore characteristics
 such as bandwidth or access cost per bit, which are critical in domains such as
-GPGPU computing or data-centers. In this thesis we study memory characteristics
+GPGPU computing or data-centers.} In this thesis, we study memory characteristics
 beyond memory access latency with the goal to simplify system design, easing
-programmability, while being able to squeeze the best possible performance out
+programmability, while squeezing the best possible performance out
 of such heterogeneous memory systems.  Next we briefly discuss key aspects that
 are relevant to modern incarnations of heterogeneous memory in GPUs and
 data-centers:
@@ -54,12 +54,12 @@ data-centers:
 \textbf{Different memory bandwidths:}
 Different memory technologies will typically have differences in their
 bandwidths, e.g., a GPU connected to on-board GDDR and host-side DDR memories
-can have a bandwidth differential of $\approx$ 2 -- 8 $\times$ between the two
+can have a bandwidth differential of 2 -- 8$\times$ between the two
 memory technologies (example systems shown in Figure~\ref{fig:arch-hpca2015}).
 Since GPUs are sensitive to main memory bandwidth (due to massive thread-level
-parallelism), the metric to optimize for in such systems is the total available
+parallelism), the metric to optimize in such systems is the total available
 bandwidth to the GPU from the two memory sources. While prior work on
-Non-Uniform Memory Access (NUMA) has closely looked at data placement strategies
+Non-Uniform Memory Access has closely looked at data placement strategies
 to optimize the total memory {\it access latency} in the presence of different
 memory zones with different access latencies, we show that such policies are not
 suited to optimizing the total memory {\it bandwidth}. Instead, we propose {\it
@@ -72,12 +72,12 @@ for several GPU applications.
 In a heterogeneous CPU--GPU memory system, hardware cache coherence can improve
 performance by allowing concurrent, fine-grained access to memory by both CPU
 and GPU.  However, implementing hardware cache coherence between the CPU and the
-GPU can lead to a significant challenges because of design and verification
+GPU can lead to significant challenges because of design and verification
 involved particularly if the two domains are designed by separate vendors. We
 introduce {\it Selective Caching}, a coherence policy that disallows GPU caching
 of any memory that would require coherence updates to propagate across the two
 domains. This approach decouples the cache-coherence protocols in CPUs and GPUs,
-thus improving cross-vendor design cycle time.
+thus \fixme{has a potential to improve cross-vendor design cycle time.}
 
 \item
 \textbf{Different costs per bit:}
@@ -85,12 +85,12 @@ thus improving cross-vendor design cycle time.
 Different memory technologies can have different monetary costs.  For example,
 recently announced non-volatile memory technology~\cite{xpoint} is projected to
 be significantly cheaper than regular DRAM, while also being significantly
-higher latency. Their lower cost per bit makes them a good candidate for use in
+higher latency. Its lower cost per bit makes it a good candidate for use in
 data-centers, where main memory cost can be $\approx$ 30\% of the server machine
 cost, translating to $3-15\%$ of the total cost of ownership (TCO), amounting to
-bilions of dollars~\cite{borosso2013}. However, their low speed means that only
+bilions of dollars~\cite{borosso2013}. However, \fixme{their} low speed means that only
 {\it cold}, i.e., infrequently accessed data can be placed in such memories.
-Detection of such cold data must be done {\it application-transparently}, since
+Detection of such cold data \fixme{must} be done {\it application-transparently}, since
 that allows cloud providers to transparently swap out slow memory in place of
 DRAM.
 %However, placing more cold data in the slower memories conflicts with efficient
@@ -135,11 +135,11 @@ to have unified globally addressable memory systems in which both the GPU and
 CPU can access any portion of memory at any time, regardless of its physical
 location.  Today this unified view of memory is layered on top of legacy
 hardware designs by implementing software-based runtimes that dynamically copy
-data on demand between the GPU and CPU~\cite{cuda}. This results in significant
+data on demand between the GPU and CPU~\cite{cuda}. \fixme{This} results in significant
 throughput degradation as data copy time is not overlapped with GPU kernel
-launch latency, resulting in exposure of data copy latency to GPU kernel run
-time. Thus, systems with highest throughput requirements (i.e., majority of
-GPGPU systems) still use programmer-optimized code to run on the GPUs.
+launch latency, resulting in exposure of data copy latency to the GPU kernel run
+time. Thus, systems with the highest throughput requirements (i.e., majority of
+GPGPU systems) still use programmer-optimized code to run on GPUs.
 
 As depicted in Figure~\ref{fig:arch-hpca2015}, over the next several years it is
 expected that GPU and CPU systems will move away from the PCIe interface to a
@@ -152,7 +152,7 @@ NVLink~\cite{NVLINK}, Hypertransport~\cite{AMDHT}, or QPI~\cite{INTELQPI}.
 As heterogeneous CPU--GPU systems move to a transparent unified memory system,
 the OS and runtime systems need information about other aspects of memory zones
 such as their bandwidths instead of only the access latency information that is
-exposed today via Advanced Configuration and Power Interface (ACPI). In CC-NUMA
+exposed today via Advanced Configuration and Power Interface. In CC-NUMA
 systems today, latency information alone is adequate as CPUs are generally more
 performance sensitive to memory system latency rather than other memory
 characteristics. In contrast, massively parallel GPUs and their highly-threaded
@@ -198,13 +198,13 @@ allowing concurrent, fine-grained access to memory by both CPU and GPU.
 %CPUs~\cite{Pichai2014,Power2014,Agarwal2015,Agarwal2015b}.
 
 Despite the programmability benefits of CPU--GPU cache coherence, designing such
-a system can involve several hurdles. Prior
+a system can pose several hurdles. Prior
 studies~\cite{Hong2012,Vantrease:2011:ACL:2014698.2014902} have shown
 that coherence implementations are a major source of hardware design bugs.
 Extending a CPU coherence implementation to a GPU over a long-latency
 interconnect ($\approx$ 100ns)  will only increase the design cost of such a
 system.  Also, if the CPUs and GPUs are to be manufactured by different vendors,
-a high level of coordination has to be done between those two vendors --
+a high level of coordination is needed between those two vendors --
 including coordination on the specification of coherence implementation and
 verification efforts. Quoting George Bernard Shaw:
 
@@ -272,7 +272,7 @@ method to gauge the {\it page access rate}. Lack of accurate \textit{and}
 performant page access rate tracking in contemporary x86 hardware makes this
 task challenging.
 
-Making slow memory use application transparent is particularly critical for
+Making slow memory use application-transparent is particularly critical for
 cloud computing environments, where the cloud provider may wish to transparently
 substitute cheap memory for DRAM to reduce provisioning cost, but has limited
 visibility and control of customer applications.  Relatively few cloud customers
@@ -368,7 +368,7 @@ sub-optimal for placement in GPU-based systems, but simply do not have the
 appropriate information available to make informed decisions when optimizing for 
 bandwidth-asymmetric memory systems. Exposing additional bandwidth information 
 to the OS, as is done for latency today, will be required for optimized decision 
-making.
+making. (Chapter~\ref{chap:asplos2015})
 
 \item
 We show that placing all pages in the bandwidth optimized memory is not the best
@@ -376,7 +376,8 @@ performing page placement policy for GPU workloads.  We propose a new
 bandwidth-aware (BW-AWARE) page placement policy that can outperform Linux's
 current bandwidth-optimized INTERLEAVE placement by 35\% and the default latency
 optimized LOCAL allocation policy by as much as 18\%, when the application
-footprint fits within bandwidth-optimized memory capacity.  
+footprint fits within bandwidth-optimized memory capacity.
+(Chapter~\ref{chap:asplos2015})
 
 %\item
 %For \emph{memory capacity constrained} systems (i.e. bandwidth-optimized memory
@@ -393,7 +394,7 @@ CPU to GPU are insufficient for finding an optimal migration policy to exploit
 GPU memory bandwidth.  In streaming workloads, where each page may be accessed
 only a few times, waiting for $N$ accesses to occur before migrating a page will
 actually limit the number of accesses that occur after migration, reducing the
-efficacy of the page migration operation.
+efficacy of the page migration operation. (Chapter~\ref{chap:hpca2015})
 
 %\item
 %TLB shootdown and refill overhead can significantly degrade the performance of
@@ -414,6 +415,7 @@ outperforms CC-NUMA based accesses by 1.95$\times$, performs 6\% better than the
 legacy CPU to GPU {\tt memcpy} approach by intelligently using both CPU and GPU
 memory bandwidth, and comes within 28\% of oracular page placement, all while
 maintaining the relaxed memory semantics of modern GPUs.
+(Chpater~\ref{chap:hpca2015})
 
 %\vspace{-.025in}
 \item
@@ -423,21 +425,21 @@ protocols within the GPU or between CPU and GPU caches.
 We identify that much of the improvement from GPU caches is due to coalescing 
 memory accesses that are spatially contiguous within a cache line.  Leveraging
 aggressive request coalescing, GPUs can achieve much of the performance benefit
-of caching (80\%), without caches.
+of caching (80\%), without caches. (Chapter~\ref{chap:hpca2016})
 
 \item
 We propose a small on-die CPU cache specifically to handle uncached requests
 that will be issued at sub-cache line granularity from the GPU. This cache helps
 both shield the CPU memory system from the bandwidth hungry GPU and supports
 improved CPU--GPU interconnect efficiency by implementing variable-sized
-transfer granularity.
+transfer granularity. (Chapter~\ref{chap:hpca2016})
 
 \item
 We demonstrate that a large fraction (60\%) of GPU-accessed data is read-only.
 Allowing the GPU to cache this data and relying on page protection mechanisms
 rather than hardware coherence to ensure correctness closes the performance gap
 between a selective caching and hardware cache-coherent GPU for many
-applications.
+applications. (Chapter~\ref{chap:hpca2016})
 
 \item
 We propose Thermostat, an online low-overhead application-transparent page
@@ -445,6 +447,7 @@ management mechanism for estimating the performance degradation due to placing a
 particular page in slow memory for two-tiered main memory system.  We use this
 mechanism in an online, huge-page-aware hot/cold page classification system that
 {\it only} requires a target maximum tolerable slowdown as input.
+(Chapter~\ref{chap:thermostat})
 
 \item
 We propose an online method to detect mis-classifications and rectify them,
@@ -452,19 +455,20 @@ thereby minimizing the impact of such mis-classifications on application
 throughput.  By emulating slow memory in software, we demonstrate that
 Thermostat can migrate up to 50\% of cloud application footprints to slow memory
 with a 3\% slowdown, reducing memory provisioning cost up to 30\%.
+(Chapter~\ref{chap:thermostat})
 \end{itemize}
 
-\section{Impact Statement}
-Simple but effective page management algorithms have enormous durability, with no
+\section{Impact}
+Simple but effective page management algorithms have enormous \fixme{durability}, with no
 major changes to locality based page placement occurring in the last several
 decades. With the introduction of high bandwidth memory, heterogeneous memory
 CPU + GPU systems started shipping in 2016, yet operating systems today are ill
-prepared to take advantage of performance asymmetric memories. As these systems
+prepared to take advantage of performance-asymmetric memories. As these systems
 proliferate, OS page placement policies must fundamentally be re-architected to
 account for the underlying topology and technology differences that will be
-present in many, if not most, memory systems. While latency bound applications
+present in many, if not most, memory systems. While latency-bound applications
 (typically run on the CPU) will likely continue to use locality (and thus
-latency) to drive their page placement decisions, bandwidth bound applications
+latency) to drive their page placement decisions, bandwidth-bound applications
 (like GPU workloads) cannot maximize performance without the introduction of new
 BW-AWARE page placement algorithms. Similarly, without appropriate page
 placement strategies the energy efficiency opportunities presented by
@@ -576,15 +580,15 @@ product groups both within NVIDIA and IBM while pursuing this research to ensure
 that practical implementation concerns are first and foremost throughout our
 research~\cite{coral2014}.
 
-\textbf{Cheaper Memory Technology in Cloud Deployments:} Slower but cheaper memory
-technologies such as NVRAMs hold great promise to lower the memory costs for
-cloud vendors. However, vendors have little control over the client
-applications, and have to guarantee SLAs. Also, dependence on hardware features
-only delays the adoption of such technologies due to the time required for
-rolling out new features in CPUs. Thermostat is the first policy to our
-knowledge that addresses these challenges by a software-only mechanism, thus
-paving the way towards large-scale deployments of such technologies in
-datacenters.
+\textbf{Cheaper Memory Technology in Cloud Deployments:} Slower but cheaper
+memory technologies such as NVRAMs hold great promise to lower the memory costs
+for cloud vendors. However, vendors have little control over the client
+applications, and have to guarantee Service Level Agreements. Also, dependence
+on hardware features only delays the adoption of such technologies due to the
+time required for rolling out new features in CPUs. Thermostat is the first
+policy to our knowledge that addresses these challenges by a software-only
+mechanism, thus paving the way towards large-scale deployments of such
+technologies in datacenters.
 
 Also, Thermostat's novel software-only sampling policy shows the potential for
 using software-only mechanisms for inferring application memory patterns in
