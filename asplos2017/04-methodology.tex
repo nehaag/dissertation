@@ -97,7 +97,7 @@ host OS.
 
 \subsection{Benchmarks}
 \label{benchmarks}
-We evaluate Thermostat with applications from Google's Perfkit Benchkmarker and the Cloudsuite
+We evaluate Thermostat with applications from Google's Perfkit Benchmarker and the Cloudsuite
 benchmarks~\cite{perfkitbenchmarker, cloudsuite}. These applications are representative server workloads that have
 large memory footprints and are commonly run in virtualized cloud environments.
 
@@ -120,18 +120,18 @@ Cassandra is a wide-column database designed to offer a variable number of field
 (or columns) per key, while Redis and Aerospike are simpler key-value databases 
 that have higher peak throughput. Redis is single-threaded whereas Aerospike is
 multi-threaded.
-Cassandra performs substantial file I/O as it periodically compacts its SSTable
+Cassandra performs frequent file I/O as it periodically compacts its SSTable
 data structure on disk~\cite{ref:sstable}. So, Cassandra also benefits substantially
-from {\tt hugetmpfs}. Redis performs no file I/O after it loads its dataset into memory.
+from {\tt hugetmpfs}. Redis performs no file I/O after loading its dataset into memory.
 
 We tune Aerospike, Cassandra, and Redis based on the settings provided by
 Google's Perfkit Benchkmarker for measuring cloud
 offerings~\cite{perfkitbenchmarker}.  We use the YCSB traffic generator to drive
-both these NoSQL databases~\cite{ycsb}. For Aerospike we use 200M operations
+the NoSQL databases~\cite{ycsb}. For Aerospike we use 200M operations
 and for Cassandra we use 50M operations on 5M keys with 20 fields each with a
 Zipfian distribution.
-For both of these application, we evaluate two workload mixes: a read heavy load
-with 95:5 read/write ratio and a write heavy load with 5:95 read/write ratio. For Redis, we
+For both of these application, we evaluate two workload mixes: a read-heavy load
+with 95:5 read/write ratio and a write-heavy load with 5:95 read/write ratio. For Redis, we
 access keys with a hotspot distribution, wherein 0.01\% of the keys account for
 90\% of the traffic. We vary value sizes according to the
 distribution reported in~\cite{facebook-key-value}. We observe 176K

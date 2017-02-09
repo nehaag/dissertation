@@ -6,7 +6,7 @@
 The software-only page access counting mechanism described in
 Section~\ref{section:access-counting} is desirable since it can be run on {\it
 current} commodity x86 hardware. However it has two sources of inaccuracy: (i)
-we can only count TLB misses instead of LLC misses, and, (ii) the measurement
+we can only count TLB misses instead of LLC misses, and (ii) the measurement
 process itself throttles accesses to the poisoned pages, since the poison faults
 to the same page are serialized. We describe below two extensions to x86
 hardware that can address these shortcomings.
@@ -19,23 +19,23 @@ set in a translation entry, any LLC miss to that page will result in a software
 fault. The CM fault handler can
 then be used to track the number of cache misses to that page in the same way
 that BadgerTrap uses the reserved bit fault handler to track number of TLB
-misses.  The instruction triggering an CM fault should retire once the data is
-fetched, since replaying the instruction will lead to a cascade of CM faults.
+misses.  The instruction triggering a CM fault should retire once the data is
+fetched, since replaying the instruction could lead to a cascade of CM faults.
 During a CM fault, the actual memory (DRAM or NVRAM) access can be done in
-parallel to servicing the fault to partially or fully hide the CM fault service
+parallel with servicing the fault to partially or fully hide the CM fault service
 latency.
 
 \subsubsection{PEBS based access counting:}
-In this scheme, the PEBS (Precise Event Based Sampling) subsystem in x86
-architecture~\cite{Intel-sw-manual} can be extended to record page access information. In current PEBS
+In this scheme, the PEBS (Precise Event Based Sampling) subsystem in the x86
+architecture~\cite{Intel-sw-manual} can be extended to record page access information. In the current PEBS
 implementation, a PEBS record is stored in a pre-defined memory area on samples
 of specific events (LLC misses is one of them). When the area fills up, an
-interrupt is raised which the kernel can then service and inspect the
-instructions which led to those events.
+interrupt is raised, which the kernel can then service and inspect the
+instructions that led to those events.
 
 The maximum PEBS sampling frequency is limited by
-how fast the memory area can be filled up and the kernel interrupts serviced.
-Default values in the Linux kernel for PEBS sampling frequency is 1000Hz, which
+how fast the memory area can be filled and kernel interrupts serviced.
+The default value in the Linux kernel for PEBS sampling frequency is 1000Hz, which
 is far too low to support $\approx$ 30,000 slow memory accesses that can be done
 by a single thread for a 3\% performance slowdown. If the record entry {\it
 only} stores the physical page address of the access, it can be stored in 48b,
@@ -43,18 +43,20 @@ which is far less than the entire CPU state.
 %\fixme{Evaluation of such a system is left for future work.}
 
 
-\textbf{Merits to slow memory software-emulation}: One of the major challenges in
-deploying new hardware in data centers is to evaluate impact on throughput
-degradation and tail latency to avoid violating service level agreements
-(SLAs). Thermostat can be used in test nodes of production systems today to
-evaluate the performance implication of deploying slow memory in data centers.
-Thermostat does not need any specialized test hardware and is pluggable with
-a parameterized delay for simulating slow memory. Thus, using our evaluation system,
-we can easily evaluate the impact of using slow memory in an application for a given
-traffic pattern. For example, we experimented with a Zipfian traffic pattern for Redis
-and failed to place more that 10\% of memory in slow memory without significant
-throughput degradation. Thus, such a tool allows one to evaluate the potential
-usability of slow memory in production {\it without any extra software
+\textbf{Merits to slow memory software-emulation}: One of the major challenges
+in deploying new hardware in data centers is to evaluate impact on throughput
+degradation and tail latency to avoid violating service level agreements.
+Thermostat can be used in test nodes of production systems today to evaluate the
+performance implication of deploying slow memory in data centers.  Thermostat
+does not need any specialized test hardware and is pluggable with a
+parameterized delay for simulating slow memory. Approaches without extensive
+hardware changes are likely to receive more widespread adoption in the
+industry~\cite{ref:agarwal:hpca2016}. Thus, using our evaluation system, we can
+easily evaluate the impact of using slow memory in an application for a given
+traffic pattern. For example, we experimented with a Zipfian traffic pattern for
+Redis and failed to place more that 10\% of its footprint in slow memory without
+significant throughput degradation. Thus, such a tool allows one to evaluate the
+potential usability of slow memory in production {\it without any extra software
 instrumentation or hardware investment}.
 
 %~\textbf{Thermostat on guest vs host}: Running Thermostat on host offers
@@ -88,11 +90,11 @@ memory devices subject to wear~\cite{qureshikaridis09}. Table~\ref{tab:nvm-acces
 accesses to slow memory by Thermostat fall well below the
 expected endurance limits of future memory technologies. 
 
-~\textbf{Spreading a 4MB page across fast and slow memories}: In our scheme, the
-entirety of a 4MB is placed in slow or fast memory. This has the benefit of
-reducing TLB misses, but consumes extra fast memory space for 4MB pages with a
+~\textbf{Spreading a 2MB page across fast and slow memories}: In our scheme, the
+entirety of a 2MB is placed in slow or fast memory. This has the benefit of
+reducing TLB misses, but consumes extra fast memory space for 2MB pages with a
 small hot footprint. The evaluation of a scheme which selectively places only
-hot portions of an otherwise cold 4MB page in fast memory is left for future
+hot portions of an otherwise cold 2MB page in fast memory is left for future
 work.
 
 %implication on disaggregated

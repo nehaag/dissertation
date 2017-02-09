@@ -1,5 +1,17 @@
 \section{Introduction}
-\label{introduction}
+\label{asplos2017-introduction}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=1.0\columnwidth]{asplos2017/figures/kstaled-cold-data-10s}
+\caption{Fraction of 2MB pages idle/cold for 10s detected via per-page {\it Accessed} bits
+in hardware. Note that this technique cannot estimate the page access rate, and
+thus cannot estimate the performance degradation caused by placing
+these pages in slow memory (which exceeds 10\% for Redis).}
+\label{fig:motivation}
+%\vspace{-0.225in}
+\end{figure}
+
 
 %Here is a problem
 Upcoming memory technologies, such as Intel/Micron's recently-announced 3D XPoint
@@ -7,17 +19,22 @@ memory~\cite{3dcrosspoint}, are projected to be denser and cheaper per bit than 
 providing the byte-addressable load-store interface of conventional main memory.
 Improved capacity and cost per bit come at the price of higher access latency,
 projected to fall somewhere in the range of 400ns to several
-microseconds~\cite{3dcrosspoint} as opposed to $\approx$ 50--100ns for DRAM. The impending commercial availability of such
+microseconds~\cite{3dcrosspoint} as opposed to 50--100ns for DRAM. The impending commercial availability of such
 devices has renewed interest in two-tiered physical memory, wherein part of a
 system's physical address space is implemented with the slower, cheaper memory
-technology~\cite{ref:Dulloor:datatiering,qureshi:twolm}.  Slow memory can result in a net cost win if the cost savings of
+technology~\cite{ref:Dulloor:datatiering,qureshi:twolm}.  
+
+Slow memory can result in a net cost win if the cost savings of
 replaced DRAM outweigh cost increase due to reduced program performance or by
 enabling a higher peak memory capacity per server than is economically viable
-with DRAM alone. For a 50\% occupied data center the capital expenditure is
-estimated to be 17\%\cite{borosso2013}. If we assume that slow memory is 1/3 as cheap as
-DRAM and that main memory is 30\% of the machine cost, then the maximum
-cost that can be saved from deploying such memory technology is 3\%. For this reason, we set tolerable performance
-degradation to at most 3\% of the performance of a DRAM-only system in this study.
+with DRAM alone. 
+%For a 50\% occupied data center the capital expenditure is estimated to be 17\%\cite{borosso2013}. 
+%If we assume that slow memory is 3\texttimes~cheaper (per GB) than DRAM 
+%and that main memory comprises 30\% of server cost~\cite{borosso2013}, then the maximum
+%cost savings from deploying such memory technology is 3\% \fixme{Shouldn't this be 10\%?}.
+To realize cost savings,
+in this study, we set an objective of at most 3\% performance degradation relative to a DRAM-only system.
+
 
 %This is of especial interest to cloud service providers since
 %DRAM costs are a significant part of overall data center total cost of ownership
@@ -32,30 +49,16 @@ degradation to at most 3\% of the performance of a DRAM-only system in this stud
 %%Section~\ref{analytic-model}) suggests these pages could be shifted to a memory
 %%with a 3us access time with negligible (<3\%) performance degradation.}
 %
-\begin{figure}[t]
-\centering
-\includegraphics[width=1.0\columnwidth]{asplos2017/figures/kstaled-cold-data-10s}
-\caption{Amount of 2MB pages idle for 10sec detected by per-page {\it Accessed} bit
-in hardware. Note that this technique cannot estimate the page access rate, and
-is thus incapable of estimating the performance degradation caused by placing
-these pages in slow memory (in fact the performance degradation can be greater
-than 10\% for Redis).}
-\label{fig:motivation}
-%\vspace{-0.225in}
-\end{figure}
 
 %It's an interesting problem
-However, deploying such memories by a cloud service provider for use by its
-customers is riddled with several problems. It is important for cloud providers
-to be able to provide service-level-agreements (SLAs) to customers about
-performance of the cloud platform. To provide such SLAs in the presence of slow
-memory, any memory placement policy must estimate the performance degradation
+However, making effective, transparent use of slow memory to reduce cost without substantial performance loss is challenging.
+Any memory placement policy must estimate the performance degradation
 associated with placing a given memory page in slow memory, which in turn requires some
 method to gauge the {\it page access rate}. Lack of accurate page access
 rate tracking in contemporary x86 hardware makes this task challenging.
 Moreover, as we will show, naive policies to place pages into slow memory based
 on existing hardware-maintained {\it Accessed} bits are insufficient and can lead to severe
-performance degradations, which can result in broken SLAs.
+performance degradations.
 %on their estimated access frequency can lead to severe performance degradations
 %which can result in broken SLAs.
 
@@ -68,7 +71,7 @@ technology if they must redesign their applications to explicitly allocate and
 manage hot and cold memory footprints. A host-OS-based cold memory detection and
 placement mechanism is a natural candidate for such a system.
 Figure~\ref{fig:motivation} shows the amount of data idle for 10s as detected at
-runtime by an OS-based hardware {\it Accessed} bit monitoring technique for various
+runtime by an existing Linux mechanism to monitor hardware-managed {\it Accessed} bits in the page tables for various
 cloud applications. We observe that substantial cold data (more
 than 50\% for MySQL) can be detected by application-transparent mechanisms.
 
@@ -79,15 +82,15 @@ Furthermore, prior work on two-tiered memory has assumed migration/paging at 4KB
 page granularity~\cite{qureshi:twolm,ref:Dulloor:datatiering}. However,
 huge pages (2MB pages) are now ubiquitous and critical, especially for cloud
 platforms where virtualization magnifies the costs of managing 4KB pages.
-We observe a performance improvement that is as high as 30\% from huge pages under
+We observe performance improvements as high as 30\% from huge pages under
 virtualization (Table~\ref{tab:thp-benefit}).
 Our proposal, {\it Thermostat}, manages two-tiered main memory
 transparently to applications while preserving the benefits of huge pages 
 and dynamically enforcing limits on performance degradation (e.g., limiting 
 slowdown to 3\%).
- In Section~\ref{proposal} we show that Thermostat is huge-page-aware and can
-place/migrate pages at huge page granularity with a minimal overhead, and
-furthermore satisfies performance degradation guarantees, thereby meeting SLAs.
+We will show that Thermostat is huge-page-aware and can
+place/migrate 4KB and huge pages while limiting
+performance degradation within a target bound.
 %Indeed, huge pages are so performance critical that some cloud vendors report
 %mapping {\tt temps} file systems to huge pages as
 %well~\cite{Linux-mailing-list} \fixme{it's not obvious to me why tmpfs is
@@ -100,26 +103,21 @@ furthermore satisfies performance degradation guarantees, thereby meeting SLAs.
 %It's an unsolved problem
 Prior work has considered two approaches to two-tiered memory: (i) a paging
 mechanism~\cite{Lim2012,Lim2009}, wherein accesses to slow memory invoke a page
-fault that must transfer data to fast memory before an access may proceed, and,
+fault that must transfer data to fast memory before an access may proceed, and
 (ii)
 via a migration mechanism (as in cache coherent NUMA
 multiprocessors)~\cite{AUTONUMA}, wherein no software fault is required.  In the
 latter scenario, a migration mechanism seeks to shuffle pages between tiers to
 maximize fast-memory accesses. Dulloor et al.~\cite{ref:Dulloor:datatiering}
 have described a programmer-guided data placement scheme in NVRAM. Such
-techniques are impractical in many cases like closed-source database engines,
-where the source code for customer applications are unavailable to the customers
-themselves. Li et al.~\cite{li2015managing} describe a
+techniques are inapplicable when cloud customers run third-party software and do not have access to source code.
+Li et al.~\cite{li2015managing} describe a
 hardware-based technique to accurately gauge the impact of moving a page from
 NVRAM to DRAM. However, such hardware requires significant changes to
-contemporary x86 architecture. Requiring extra architectural changes to an
-established platform such as x86 will only delay the adoption of a technique
-due to the long lead-time in ordering and installation of custom components. We
-do not require {\it any} extra hardware changes apart from the availability of a
-slow memory interface, which makes our technique easily applicable to any
-architecture with such support.
+contemporary x86 architecture.  In contrast, Thermostat does not require {\it any} additional hardware support
+apart from the availability of slow memory.
 
-To design a low overhead cold page detection mechanism Thermostat continuously samples a
+To provide a low overhead cold-page detection mechanism, Thermostat continuously samples a
 small fraction of pages and estimates page access rate by spatial extrapolation
 (described in Section~\ref{page-sampling}).
 This strategy makes Thermostat both low overhead and fast-reacting. The single

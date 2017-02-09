@@ -1,6 +1,6 @@
 \section{Conclusion}
 \label{conclusion}
-With recent announcements of XPoint 3D memory by Intel/Micron there is an
+With recent announcements of 3D XPoint memory by Intel/Micron there is an
 opportunity of cutting cost of memories in data centers with improved capacity
 and cost per bit. However, due to projected higher access latencies of these new
 memory technologies it is not feasible to completely replace main memory DRAM
@@ -8,7 +8,7 @@ technology. To address the renewed interest in two-tiered physical memory we
 presented and evaluated Thermostat, an application-transparent huge-page-aware
 mechanism to place pages in a dual technology hybrid memory system, while
 achieving both the cost advantages of two-tiered memory and performance
-advantages of transparent huge pages. Huge page being performance critical in
+advantages of transparent huge pages. Huge pages, being performance critical in
 cloud applications with large memory footprints, especially in virtualized cloud
 environments, need to be supported in this two-tier memory system. We present a
 new hot/cold classification mechanism to distinguish frequently accessed pages
@@ -19,8 +19,11 @@ cold page identification mechanism incurs no observable performance overhead and
 can migrate up to 50\% of application footprint to slow memory while limiting
 performance degradation to 3\%, thereby reducing memory cost up to 30\%.
 %
-%\section{Acknowledgement}
-%We would like to thank Google Inc. for providing insightful feedback on the
-%usability and possible deployment scenarios for Thermostat. We would also like to
-%thank Subhasis Das and Akshitha Sriraman for their valuable feedback in
-%reviewing the manuscript.
+%
+%can perform dynamic page
+%placement/migration that incurs a slowdown of $<$ 10\% while reducing DRAM
+%provisioning by $>$ 40\% thus cutting memory cost by 30\%.
+%
+%\section{Acknowledgements}
+%We would like to thank Google for providing financial support for this work. We would also like to
+%thank Subhasis Das and Akshitha Sriraman for their valuable feedback on drafts of this manuscript.

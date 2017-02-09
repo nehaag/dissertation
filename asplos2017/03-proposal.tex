@@ -10,23 +10,9 @@ to estimate the access rate to each page with tightly controlled overhead. The
 estimated page access rate is then used to select a set of pages to
 place in cold memory, such that their aggregate access rate will not result in 
 slowdown exceeding the target
-performance degradation.  These cold pages are then continually monitored to
+degradation.  These cold pages are then continually monitored to
 detect and rapidly correct any mis-classifications or behavior changes.
 In the following sections, we describe the Thermostat in more detail.
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=1.0\textwidth]{asplos2017/figures/new-policy-sampling-figure.pdf}
-\caption{Thermostat operation: Thermostat classifies huge pages into hot and cold by randomly splitting a
-fraction of pages and estimating huge page access rate by poisoning a fraction of 4K
-pages within a huge page. The sampling policy is described in
-Section~\ref{page-sampling}, Section~\ref{section:access-counting} describes our
-approach to page access counting, and Section~\ref{page-classification} describes
-the page classification policy. Note that the sampling and poisoning fractions here
-are for illustration purposes only. In our evaluation we sample 5\% of huge pages
-and poison at most 50 4KB pages from a sampled huge page.}
-\label{fig:sampling}
-\end{figure*}
 
 \subsection{Overview}
 We implement Thermostat in the Linux 4.5 kernel. Thermostat can be controlled at
@@ -34,10 +20,10 @@ runtime via the Linux memory control group (cgroup) mechanism~\cite{cgroups}.
 All processes in the same cgroup share Thermostat parameters, such as the
 sampling period and maximum tolerable slowdown.
 
-The Thermostat mechanism consists of four components: (i) a sampling mechanism
-that randomly selects a subset of pages for access rate monitoring, (ii) a monitoring
+The Thermostat mechanism comprises four components: (i) a sampling mechanism
+that randomly selects a subset of pages for access-rate monitoring, (ii) a monitoring
 mechanism that counts accesses to sampled pages while limiting maximum overhead, 
-(iii) a classification policy to select pages to place in slow memory, and,
+(iii) a classification policy to select pages to place in slow memory, and
 (iv) a mechanism to monitor and detect mis-classified pages or behavior changes and migrate 
 pages back to conventional (fast) memory.
 
@@ -60,8 +46,7 @@ latency for OS fault handling. To tightly control application performance
 slowdown, {\it we split a random sample of huge pages (5\% in our case)
 into 4KB pages, and poison only a fraction of these 4KB pages in each sampling interval}.
 Below, we detail the strategy used to select which 4KB pages to poison, and how
-we estimate the total access rate from the access rates of the sampled 4KB
-pages.
+we estimate the total access rate from the access rates of the sample.
 
 A simple strategy to select 4KB pages from a set of huge pages is to select $K$
 random 4KB pages, for some fixed $K$ ($K = 50$ in our evaluation). However, when only a few 4KB
@@ -72,8 +57,7 @@ We first rely on the hardware-maintained {\it Accessed} bits to monitor all 512 
 and identify those with a  non-zero access rate.  We then monitor a sample of these 
 pages using our more costly
 software mechanism to accurately estimate the aggregate access rate of 
-the 2MB page. With our strategy, {\it only 0.5\% of overall 4KB pages are
-sampled at any time} -- which makes the performance overhead due to sampling
+the 2MB page. With our strategy, {\it only 0.5\% of memory is sampled at any time}, which makes the performance overhead due to sampling
 $<$ 1\%.
 
 To compute the aggregate access rate at 2MB granularity from the access rates of the sampled
@@ -88,7 +72,7 @@ Current x86 hardware does not support access counting at a per-page granularity.
 Thus, we design a software-only solution to track page access rates with very
 low overhead ($<$1\%) by utilizing PTE reserved bits. In
 Section~\ref{counting_hardware}, we discuss two extensions to existing x86
-mechanisms that might enable lower overhead page access counting.
+mechanisms that might enable lower overhead page-access counting.
 
 To approximate the number of accesses to a page, we use BadgerTrap, a kernel
 extension for intercepting TLB misses~\cite{ref:badgertrap}. When a page is
@@ -104,7 +88,7 @@ page, which we use as a proxy for the number of memory accesses.
 Note that our approach assumes that the number of TLB misses and 
 cache misses to a 4KB page are similar.  For hot pages, this assertion does not
 hold.  However, Thermostat has no need to accurately estimate the access rate
-to hot pages; it is sufficient to know that they are hot.  Conversely, for cold pages
+to hot pages; it is sufficient to know that they are hot.  Conversely, for cold pages,
 nearly all accesses incur both TLB and cache misses as there is no temporal
 locality for such accesses, and, therefore, tracking
 TLB misses is sufficient to estimate the page access rate. We validated our 
@@ -114,6 +98,30 @@ our benchmark suite using hardware performance counters via the Linux {\tt perf}
 utility. For pages we identify as cold, the TLB miss rate is typically higher (but
 always within a factor of two) of the last-level cache miss rate measured
 without BadgerTrap, indicating that our approach is reasonable.
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\columnwidth]{asplos2017/figures/faults.pdf}
+\caption{Slow memory access rate over time. For a 3\% tolerable slowdown and 1us
+slow memory access latency, the target slow memory access rate is 30K accesses/sec.
+Thermostat tracks this 30K accesses/sec target. Note that different benchmarks
+have different run times; we plot the x-axis for 1200 seconds.} 
+\label{fig:fault-rate}
+\end{figure}
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{asplos2017/figures/new-policy-sampling-figure.pdf}
+\caption{Thermostat operation: Thermostat classifies huge pages into hot and cold by randomly splitting a
+fraction of pages and estimating huge page access rate by poisoning a fraction of 4K
+pages within a huge page. The sampling policy is described in
+Section~\ref{page-sampling}, Section~\ref{section:access-counting} describes our
+approach to page access counting, and Section~\ref{page-classification} describes
+the page classification policy. Note that the sampling and poisoning fractions here
+are for illustration purposes only. In our evaluation we sample 5\% of huge pages
+and poison at most 50 4KB pages from a sampled huge page.}
+\label{fig:sampling}
+\end{figure*}
 
 \subsection{Page classification}
 \label{page-classification}
@@ -158,25 +166,17 @@ accesses being made to each cold huge page, using the software
 mechanism mentioned in Section~\ref{section:access-counting}.  Since the access
 rate to these pages is slow by design, the performance impact of this monitoring is low.
 In every sampling period we sort the huge pages in slow memory by their access
-counts. All the huge pages in slow memory are migrated back to fast memory which
-exceed the cumulative tolerable access rate to slow memory. In addition to the
-mis-classified pages we also identify pages that become hot over time, adapting
-to the change in application's hot working set.
+counts and their aggregate access count is compared to the target access rate to slow
+memory. The most frequently accessed pages are then migrated back to fast memory 
+until the  access rate to the remaining cold pages is below the threshold.
+In addition to any mis-classified pages, this mechanism also identifies pages that become hot over time, adapting
+to changes in the application's hot working set.
 %A huge page in slow memory is migrated back to fast memory if its actual access rate 
 %exceeds its previously estimated access rate. 
 %In addition, we do not migrate back a page if its actual rate is less than 50
 %accesses/second to prevent thrashing behavior for cold pages with
 %unstable access rates.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=1.0\columnwidth]{asplos2017/figures/faults.pdf}
-\caption{Slow memory access rate over time. For a 3\% tolerable slowdown and 1us
-slow memory access latency, the target slow memory access rate is 30K accesses/sec.
-Thermostat tracks this 30K accesses/sec target. Note that different benchmarks
-have different run times; we plot x-axis for 1200 seconds.} 
-\label{fig:fault-rate}
-\end{figure}
 
 \subsection{Migration of cold pages to slow memory}
 Once cold pages have been identified by the guest, they must be migrated to 
@@ -190,12 +190,12 @@ Figure~\ref{fig:sampling} illustrates Thermostat's page classification for an
 example application with eight huge pages. Each sampling period comprises 
 three stages: (i) split a fraction of huge pages, (ii) poison a fraction of split and
 accessed 4KB pages, record the access count to 4KB pages to estimate access rate
-of the huge pages, and, (iii) classify pages as hot/cold. In this example, we sample 25\% of
+of the huge pages, and (iii) classify pages as hot/cold. In this example, we sample 25\% of
 huge pages (two huge pages out of eight are sampled). In the first sampling
 period, Thermostat splits and records 4KB-grain accesses to two pages (page 1
-and 5) in the first scan period. In the second scan period 4KB pages 1 and 4
+and 5) in the first scan period. In the second scan period, 4KB pages 1 and 4
 of the first huge page and 3 and 8 of the fifth huge page are selected to be poisoned.
-Thermostat then estimates the access rate to huge page 1 and 5 by from the access rates
+Thermostat then estimates the access rate to huge page 1 and 5 from the access rates
 of the 4KB pages.  Finally, Thermostat sorts the estimated access rates of the huge pages
 and classifies page 1 as cold, as its estimated access rate is below
 the threshold tolerable slow memory access rate. However, because the sum of the

@@ -36,8 +36,8 @@ We refer to this infrequently accessed data as ``cold'' data.
 \begin{figure}[t]
 \centering
 \includegraphics[width=1.0\columnwidth]{asplos2017/figures/redis-plot-3.png}
-\caption{Memory access rate vs hardware {\it Accessed} bit distribution of 4KB
-pages within 2MB pages for Redis. Single hardware {\it Accessed} bit per page
+\caption{Memory access rate vs. hardware {\it Accessed} bit distribution of 4KB
+regions within 2MB pages for Redis. The single hardware {\it Accessed} bit per page
 does not correlate with memory access rate per page, and thus cannot
 estimate page access rates with low overhead.}
 \label{fig:redis-access-bit}
@@ -64,7 +64,7 @@ monitoring at 4KB granularity by temporarily splitting a huge page and monitorin
 the accessed bits of the 512 constituent 4KB pages (monitoring at 2MB granularity
 without splitting provides even worse hot/cold
 differentiation~\cite{ref:Guo:2015:PBL:2731186.2731187}). The horizontal axis 
-represents the number of detected ``hot'' 4KB pages
+represents the number of detected ``hot'' 4KB regions
 in a given 2MB page when monitoring at the maximum frequency that meets our slowdown target. Here
 ``hot'' refers to pages that were accessed in three consecutive scan intervals.
 The vertical axis represents the ground-truth memory access rate for each 2MB page. 
@@ -117,14 +117,14 @@ cannot identify cold pages with low overhead.
 %application performance is much lower than the simple analytical model predicts
 %($\leq 5\%$ for MySQL and Cassandra, and $\leq 10\%$ for Redis).
 %
-\subsection{THP: benefits in virtualization}
+\subsection{Benefits of transparent huge pages}
 Intel's IA-64 x86 architecture mandates a 4-level page table structure for 4KB
 memory pages.  So, a TLB miss may incur up to four memory accesses to walk the page table. 
 Under virtualization, with two-dimensional page table walks (implemented in Intel's
 Extended Page Tables and AMD's Nested Page Tables), the cost of a page walk can be as high as
-24 memory accesses\cite{Intel-sw-manual, AMD-NPT}.  When memory is mapped to a 2MB 
+24 memory accesses~\cite{Intel-sw-manual, AMD-NPT}.  When memory is mapped to a 2MB 
 huge page in both the guest and host, the worst-case page walk is reduced to 15 accesses, which 
-leads to a significant reduction in the performance overhead of virtualization. Moreover,
+significantly lowers the performance overhead of virtualization. Moreover,
 2MB huge pages increase the TLB reach and improve the cacheability of intermediate
 levels of the page tables, as fewer total entries compete for cache capacity. 
 

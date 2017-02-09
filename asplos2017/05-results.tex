@@ -13,7 +13,7 @@ than memory). Thermostat's slowdown threshold can be
 changed at runtime through the Linux cgroup mechanism. Hence,
 application administrators can
 dynamically tune the threshold based on service level agreements
-(SLAs) for latency-critical applications or for the throughput requirements of
+for latency-critical applications or for the throughput requirements of
 batch jobs.  We show that, for our application suite, Thermostat meets the
 target 3\% slowdown while placing a significant fraction of application footprint in slow memory
 dynamically at runtime.
@@ -41,7 +41,7 @@ fraction over the benchmark's runtime.
 \begin{figure}[t]
 \centering
 %\includegraphics[width=1.0\columnwidth]{figures/cassandra-capacity.pdf}
-\includegraphics[width=1.0\columnwidth]{asplos2017/figures/cassandra-new-set-policy-kstaled10-sample5-period3-capacity_over_time.pdf}
+\includegraphics[width=0.8\columnwidth]{asplos2017/figures/cassandra-new-set-policy-kstaled10-sample5-period3-capacity_over_time.pdf}
 \caption{Amount of cold data in Cassandra identified at run time with 2\%
 throughput degradation for a write-heavy workload (5:95 read/write ratio).}
 \label{fig:cassandra-capacity}
@@ -50,7 +50,7 @@ throughput degradation for a write-heavy workload (5:95 read/write ratio).}
 \begin{figure}[t]
 \centering
 %\includegraphics[width=1.0\columnwidth]{figures/tpcc-capacity.pdf}
-\includegraphics[width=1.0\columnwidth]{asplos2017/figures/tpcc-clipped-new-policy-capacity_over_time.pdf}
+\includegraphics[width=0.8\columnwidth]{asplos2017/figures/tpcc-clipped-new-policy-capacity_over_time.pdf}
 \caption{Amount of cold data in MySQL-TPCC identified at run time with 1.3\%
 throughput degradation.}
 \label{fig:tpcc-capacity}
@@ -58,7 +58,7 @@ throughput degradation.}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=1.0\columnwidth]{asplos2017/figures/aero-new-policy-24perSlow-capacity_over_time.pdf}
+\includegraphics[width=0.8\columnwidth]{asplos2017/figures/aero-new-policy-24perSlow-capacity_over_time.pdf}
 \caption{Amount of cold data in Aerospike identified at run time with 1\%
 throughput degradation for a read-heavy workload (95:5 read/write ratio).}
 \label{fig:aerospike-capacity}
@@ -66,7 +66,7 @@ throughput degradation for a read-heavy workload (95:5 read/write ratio).}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=1.0\columnwidth]{asplos2017/figures/redis-skewed-kstaled5-sample5-capacity_over_time.pdf}
+\includegraphics[width=0.8\columnwidth]{asplos2017/figures/redis-skewed-kstaled5-sample5-capacity_over_time.pdf}
 \caption{Amount of cold data in Redis identified at run time with 2\%
 throughput degradation.}
 \label{fig:redis-skewed-hotspot-capacity}
@@ -82,7 +82,7 @@ throughput degradation.}
 %
 \begin{figure}[t]
 \centering
-\includegraphics[width=1.0\columnwidth]{asplos2017/figures/ina-6g-new-policy-capacity_over_time.pdf}
+\includegraphics[width=0.8\columnwidth]{asplos2017/figures/ina-6g-new-policy-capacity_over_time.pdf}
 \caption{Amount of cold data in in-memory analytics benchmark identified at run
 time with 3\% runtime overhead.}
 \label{fig:in-memory-analytics-capacity}
@@ -90,7 +90,7 @@ time with 3\% runtime overhead.}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=1.0\columnwidth]{asplos2017/figures/wb-hugetmpfs-capacity_over_time.pdf}
+\includegraphics[width=0.8\columnwidth]{asplos2017/figures/wb-hugetmpfs-capacity_over_time.pdf}
 \caption{Amount of cold data in web-search benchmark identified at run
 time with 1\% throughput and no 99th percentile latency degradation.}
 \label{fig:web-search-capacity}
@@ -106,7 +106,7 @@ time with 1\% throughput and no 99th percentile latency degradation.}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=1.0\columnwidth]{asplos2017/figures/slowdown-capacity-sweep.pdf}
+\includegraphics[width=0.8\columnwidth]{asplos2017/figures/slowdown-capacity-sweep.pdf}
 \caption{Amount of cold data in identified at run
 time varying with the specified tolerable slowdown. All the benchmarks meet
 their performance targets (not shown in the figure) while placing cold data in
@@ -118,7 +118,7 @@ the slow memory.}
 %\label{sec:cassandra}
 \textbf{Cassandra}:
 We report the breakdown of hot and cold 2MB and 4KB pages over time for 
-Cassandra in Figure~\ref{fig:cassandra-capacity} for write-heavy workload. 
+Cassandra in Figure~\ref{fig:cassandra-capacity} for the write-heavy workload. 
 Thermostat identifies between 40-50\% of Cassandra's footprint
 (including both 4KB and 2MB pages) as cold. Note that the cold 4KB pages are
 solely due to splitting of cold huge pages during profiling ($\approx$ 5\% of
@@ -162,10 +162,10 @@ limiting performance degradation to 1.3\%.
 %\subsection{Aerospike}
 \textbf{Aerospike}:
 In Figure~\ref{fig:aerospike-capacity} we show a similar footprint graph for
-Aerospike for read-heavy workload. We see a small fraction of footprint (about 15\%) identified
+Aerospike for the read-heavy workload. We see a small fraction of the footprint (about 15\%) identified
 as cold while maintaining the tolerable slowdown. The average, 95th and 99th
-read/write latencies are all within 3\% of the baseline. For write-heavy
-workload also, Thermostat identifies about 15\% of data as cold while satisfying
+read/write latencies are all within 3\% of the baseline. For the write-heavy
+workload, Thermostat identifies about 15\% of data as cold while satisfying
 tolerable slowdown (we omit figure due to space constraints).
 
 %\subsection{Redis}
@@ -195,9 +195,9 @@ The average read/write latency is 3.5\% higher than the baseline.
 We also evaluate in-memory analytics benchmark from
 Cloudsuite~\cite{cloudsuite}.  In Figure~\ref{fig:in-memory-analytics-capacity}
 we show Thermostat detects about 15-20\% data as cold. As application footprint
-grows, Thermostat scans more pages and thus the cold page fraction also grow with time.
+grows, Thermostat scans more pages and thus the cold page fraction also grows with time.
 We run this benchmark to completion, however, the benchmark runtime is much shorter
-than the previous data serving applications (Cloudsuite is 
+than the previous data serving applications. (Cloudsuite is 
 designed for tractable runtimes under expensive instrumentation and/or simulation). 
 Nevertheless,  Thermostat successfully identifies cold data while meeting the
 slowdown target.  We expect the cold memory footprint of this application to 
@@ -205,8 +205,7 @@ reach steady state if a larger input were available.
 
 %\subsection{Web search}
 \textbf{Web search}:
-In Figure~\ref{fig:web-search-capacity} we show footprint graph for the web search
-. We see about 40\% of footprint identified as cold. 
+In Figure~\ref{fig:web-search-capacity} we show the footprint graph for the web search workload. We see about 40\% of the footprint identified as cold. 
 We observe $<$ 1\% degradation in throughput and no observable degradation in 99th
 percentile latency of 200ms.
 
@@ -265,26 +264,24 @@ percentile latency of 200ms.
 
 \subsection{Sensitivity to tolerable slowdown target}
 Next we show the sensitivity of Thermostat to the single input parameter
-specified by a system administrator. In our evaluation we set it to 3\% based on
-the calculation in Section~\ref{introduction}. However, due to changes in the
+specified by a system administrator, the tolerable slowdown. In our baseline evaluation, we set this parameter to 3\%. However, due to changes in the
 price point of the memory technology or changes in data-center cost structure
-it may be  possible to tolerate slowdown more than 3\%. To study the adaptability of
-Thermostat in such scenarios we use two other tolerable slowdown specifications: 6\%
-and 10\%. We show the variation in amount of cold data identified by
+it may be  possible to tolerate higher slowdown. To study the adaptability of
+Thermostat in such scenarios we also evaluate 6\% and 10\% slowdown targets. We show the variation in amount of cold data identified by
 Thermostat at run time with tolerable slowdown in Figure~\ref{fig:slowdown-capacity}.
 
-We observe that with increase in tolerable slowdown Thermostat can place higher
+We observe that with increase in tolerable slowdown Thermostat can place a higher
 fraction of memory footprint in slow memory. We also observe
-that performance targets of all applications are met (we omit data due to space
-constraints). However, in several cases the achieved slowdown is less than the
+that the performance targets of all applications are met (we omit data due to space
+constraints). However, in several cases, the achieved slowdown is less than the
 specified slowdown.
 %For Redis, Thermostat is able to identify higher
 %fraction of cold data for higher tolerable slowdown as well as observed slowdown
 %tracks the specified tolerable slowdown.
 
-For MySQL-TPCC Thermostat is not able to identify additional cold data even with
-increase in tolerable slowdown (cold data fraction saturates at $approx$ 45\%).
-This happens since all the remaining pages for TPCC are highly accessed, and
+For MySQL-TPCC, Thermostat is not able to identify additional cold data even with
+an increase in tolerable slowdown (cold data fraction saturates at $approx$ 45\%).
+This saturation happens because all remaining pages for TPCC are highly accessed, and
 placing any of them in slow memory results in an unacceptable application
 slowdown.
 %due to a sharp increase in memory access rate of pages in the application, which
@@ -292,8 +289,8 @@ slowdown.
 %performance guarantees.
 For Aerospike, Thermostat is able to scale the cold data
 with varying tolerable slowdown. However, the actual slowdown doesn't reach the
-target slowdown due to a) Aerospike's performance being insensitive to cold page
-accesses, and, b) the average OS fault handler latency for emulation being lower
+target slowdown due to (a) Aerospike's performance being insensitive to cold page
+accesses, and (b) the average OS fault handler latency for emulation being lower
 than the assumed latency of 1us used in Thermostat.
 %We attribute this observation to the fact that slow memory latency
 %emulated in our platform depends on the page fault handler latency whose latency
@@ -301,8 +298,8 @@ than the assumed latency of 1us used in Thermostat.
 %pessimestically place smaller fraction of application data in slow memory. Note
 %that on a platform with physical slow memory this problem will not be exhibited.
 
-In summary, Thermostat places higher fraction of data in slow memory if
-application can tolerate higher amounts of performance slowdown. This feature
+In summary, Thermostat places a higher fraction of data in slow memory if
+the user can tolerate more slowdown. This feature
 allows system administrators to better utilize expensive DRAM capacity by moving
 as much cold data to slow memory as possible via Thermostat.
 
