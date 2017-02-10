@@ -124,7 +124,7 @@ involved particularly if the two domains are designed by separate vendors. We
 introduce {\it Selective Caching}, a coherence policy that disallows GPU caching
 of any memory that would require coherence updates to propagate across the two
 domains. This approach decouples the cache-coherence protocols in CPUs and GPUs,
-thus \fixme{has a potential to improve cross-vendor design cycle time.}
+thus has a potential to improve cross-vendor design cycle time.
 
 \item
 \textbf{Different costs per bit:}
@@ -135,9 +135,10 @@ be significantly cheaper than regular DRAM, while also being significantly
 higher latency. Its lower cost per bit makes it a good candidate for use in
 data-centers, where main memory cost can be $\approx$ 30\% of the server machine
 cost, translating to $3-15\%$ of the total cost of ownership (TCO), amounting to
-bilions of dollars~\cite{borosso2013}. However, \fixme{their} low speed means that only
+bilions of dollars~\cite{borosso2013}. However, higher memory access latency means that only
 {\it cold}, i.e., infrequently accessed data can be placed in such memories.
-Detection of such cold data \fixme{must} be done {\it application-transparently}, since
+Detection of such cold data should be done {\it
+application-transparently} , since
 that allows cloud providers to transparently swap out slow memory in place of
 DRAM.
 %However, placing more cold data in the slower memories conflicts with efficient
@@ -182,7 +183,7 @@ to have unified globally addressable memory systems in which both the GPU and
 CPU can access any portion of memory at any time, regardless of its physical
 location.  Today this unified view of memory is layered on top of legacy
 hardware designs by implementing software-based runtimes that dynamically copy
-data on demand between the GPU and CPU~\cite{cuda}. \fixme{This} results in significant
+data on demand between the GPU and CPU~\cite{cuda}. This on-demand copying results in significant
 throughput degradation as data copy time is not overlapped with GPU kernel
 launch latency, resulting in exposure of data copy latency to the GPU kernel run
 time. Thus, systems with the highest throughput requirements (i.e., majority of
@@ -506,7 +507,7 @@ with a 3\% slowdown, reducing memory provisioning cost up to 30\%.
 \end{itemize}
 
 \section{Impact}
-Simple but effective page management algorithms have enormous \fixme{durability}, with no
+Simple but effective page management algorithms have enormous sustainability, with no
 major changes to locality based page placement occurring in the last several
 decades. With the introduction of high bandwidth memory, heterogeneous memory
 CPU + GPU systems started shipping in 2016, yet operating systems today are ill
