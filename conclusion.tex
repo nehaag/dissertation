@@ -5,10 +5,10 @@ policies need to account for difference in bandwidth, coherence domains, cost
 per dollar of different memory technologies, deployed to use concurrently by the
 computing agents.
 
-In this thesis we have examined a pressing problem that the GPU industry is
+The first problem we examine is one that the GPU industry is
 facing on how to best handle memory placement for upcoming cache coherent
 GPU-CPU systems.  While the problem of page placement in heterogeneous memories
-has been examined extensively in the context of CPU-only systems, the
+has been studied extensively in the context of CPU-only systems, the
 integration of GPUs and CPUs provides several unique challenges.  First, GPUs
 are extremely sensitive to memory bandwidth, whereas traditional memory
 placement decisions for CPU-only systems have tried to optimize latency as their
@@ -63,18 +63,18 @@ migration may not be feasible.
 %CC-NUMA access alone by 1.95$\times$, legacy application {\tt memcpy} data
 %transfer by 6\%, and come within 28\% of oracular page placement.
 
-These memory migration policies optimize the performance of GPU workloads with
-little regard for CPU performance.  We have shown that intelligent use of the
-high bandwidth memory on the GPU can account for as much as a 5-fold performance
-increase over traditional DDR memory systems.  While this is appropriate for
-applications where GPU performance dominates Amdahl's optimization space,
-applications with greater data sharing between the CPU and GPU are likely to
-evolve.  Understanding what these sharing patterns look like and
-balancing the needs of a latency-sensitive CPU versus a bandwidth-hungry GPU is
-an open problem. Additionally, with memory capacities growing ever larger and
-huge pages becoming more commonly used, evaluating the trade-off between
-reducing TLB shootdowns and longer page copy times will be necessary to maintain
-the high memory bandwidth critical for good GPU performance.
+%These memory migration policies optimize the performance of GPU workloads with
+%little regard for CPU performance.  We have shown that intelligent use of the
+%high bandwidth memory on the GPU can account for as much as a 5-fold performance
+%increase over traditional DDR memory systems.  While this is appropriate for
+%applications where GPU performance dominates Amdahl's optimization space,
+%applications with greater data sharing between the CPU and GPU are likely to
+%evolve.  Understanding what these sharing patterns look like and
+%balancing the needs of a latency-sensitive CPU versus a bandwidth-hungry GPU is
+%an open problem. Additionally, with memory capacities growing ever larger and
+%huge pages becoming more commonly used, evaluating the trade-off between
+%reducing TLB shootdowns and longer page copy times will be necessary to maintain
+%the high memory bandwidth critical for good GPU performance.
 
 Introducing globally visible shared memory in future CPU/GPU systems improves
 programmer productivity and significantly reduces the barrier to entry of using
@@ -108,3 +108,32 @@ cache-coherent system.
 %cache coherence into the GPU memory system, allowing decoupled designs that can
 %maximize CPU and GPU performance, while still maintaining the CPU's traditional
 %view of the memory system.
+
+%\todo{Thermostat}
+The second major avenue we look at is the usage of cheaper (per-bit) but slower
+memory technologies in cloud deployments. Upcoming technologies such as
+Intel/Micron's 3D-XPoint can significantly reduce datacenter costs by reducing
+provisioning of costly DRAM. However, the higher latencies of these memory
+technologies mean that they can not replace DRAM fully. Thus, heterogeneous
+memory systems with both slow and fast memory interfaces are likely to be
+deployed by cloud vendors. To address the renewed interest in two-tiered
+physical memory we present and evaluate Thermostat, an application-transparent
+huge-page-aware mechanism to place pages in a dual technology hybrid memory
+system, while achieving both the cost advantages of two-tiered memory and
+performance advantages of transparent huge pages. Huge pages, being performance
+critical in cloud applications with large memory footprints, especially in
+virtualized cloud environments, need to be supported in this two-tier memory
+system. We present a new hot/cold classification mechanism to distinguish
+frequently accessed pages (hot) from infrequently accessed ones (cold).  We
+implement Thermostat in Linux kernel version 4.5 and show that it can
+transparently move cold data to slow memory while satisfying a 3\% tolerable
+slowdown. We show that our online cold page identification mechanism incurs no
+observable performance overhead and can migrate up to 50\% of application
+footprint to slow memory while limiting performance degradation to 3\%, thereby
+reducing memory cost up to 30\%.
+
+%\todo{Practical adoption}
+%
+%\todo{Design simplicity}
+%
+%\todo{Application agnostic}

@@ -35,44 +35,45 @@
 %with a conventional DRAM memory attached to the same CPU node.
 %%%%% BORING INTRO ENDS :) %%%%%
 
-Heterogenity is ubiqutous in systems ranging from supercomputers, data-centers
-to smartphones. Fastest supercomupters in the world are comprised of graphics
+Heterogeneity is ubiquitous in systems ranging from supercomputers, data-centers
+to smartphones. Fastest supercomputers in the world are comprised of graphics
 processing units (GPUs), Xeon Phi processors alongside central processing units
-(CPUs)~\cite{XXXXX}. Similarly, data-centers deploy GPUs and field-programmable
-gate arrays (FPGA) for accelerating applications like web search, machine
-learning~\cite{XXXXX}. Largest cloud provider Amazon Web Services (AWS) offers
-instances with GPUs and FPGAs as well~\cite{XXXXX}, indicating that such
+(CPUs)~\cite{top500nov}. Similarly, data-centers deploy GPUs and field-programmable
+gate arrays (FPGA) for accelerating applications like web search and machine
+learning~\cite{catapultmicrosoft}. Largest cloud provider Amazon Web Services (AWS) offers
+instances with GPUs and FPGAs as well~\cite{awsinstances}, indicating that such
 heterogeneous platforms are desirable for running contemporary and future
-computing applications. 
+computing applications.
 
-Applications having varying memory access patterns and heterogeneous memory
-systems provide an opportunity to match application characteristics with that of
-different memory technologies in a heterogeneous memory system. For example,
-when an embarassingly parallel application like matrix multiplication is run on
-a machine installed with low bandwidth main memory technology, then memory-level
-parallelism (MLP) present in the application is wasted. Due to the mis-match in
-application memory access pattern and memory technology installed on the
-machine, the application will take longer time to finish. Alternatively, if the
-same application runs on a machine installed with high bandwidth memory
-technology then MLP in application can be matched with the higher memory
-bandwidth and thus application can run faster reducing the CPU time needed for
-completion. And this reduction in CPU time implies reduction in cost to run the
-application.  This cost reduction can trickle down to the reduced cost seen by
-the customer either running such applications as a service or paying for such
-services~\cite{AWS-pricing-model}.
+%Applications having varying memory access patterns and heterogeneous memory
+%systems provide an opportunity to match application characteristics with that of
+%different memory technologies in a heterogeneous memory system. For example,
+%when an embarassingly parallel application like matrix multiplication is run on
+%a machine installed with low bandwidth main memory technology, then memory-level
+%parallelism (MLP) present in the application is wasted. Due to the mis-match in
+%application memory access pattern and memory technology installed on the
+%machine, the application will take longer time to finish. Alternatively, if the
+%same application runs on a machine installed with high bandwidth memory
+%technology then MLP in application can be matched with the higher memory
+%bandwidth and thus application can run faster reducing the CPU time needed for
+%completion. And this reduction in CPU time implies reduction in cost to run the
+%application.  This cost reduction can trickle down to the reduced cost seen by
+%the customer either running such applications as a service or paying for such
+%services~\cite{AWS-pricing-model}.
 
-Heterogeneous memory systems though lucarative pose several challenges on system
+Heterogeneous memory systems, though lucrative, pose several challenges on system
 design and programmability. Even more so, if such heterogeneous systems are built by
-separate vendors like machines with separate graphics cards~\cite{XXXXX}. With a
+separate vendors like machines with separate graphics cards (e.g., P2 and G2
+instances in AWS EC2~\cite{awsinstances}). With a
 trend in data-center/cloud applications to map large datasets in memory,
-installed memory capacity per machine is rapidly growing~\cite{Spark}. The
+installed memory capacity per machine is rapidly growing~\cite{spark}. The
 challenge is to scale existing or formulate new memory management policies that
 can manage the rapidly growing memory capacity and also support differences in
 characteristics of different memory tecnologies.
 
-With the advancement of interconnect technologies like NVIDIA
-NVLINK~\cite{}, existing heterogeneous CPU--GPU systems present an opportunity
-to maximize bandwidth available to GPUs from...
+%With the advancement of interconnect technologies like NVIDIA
+%NVLINK~\cite{}, existing heterogeneous CPU--GPU systems present an opportunity
+%to maximize bandwidth available to GPUs from...
 
 Differences in memory charateristics and rapid growth in memory capacity make
 memory management of such heterogeneous systems challenging. Decisions about
@@ -80,20 +81,20 @@ data placement and movement have to be made in an application transparent manner
 while simplifying system design and programmability of already complex
 heterogeneous systems. Application transparent policies are desirable as they do
 not require any extra effort from the programmer, which enables the adoption of
-such policies easier. Simple but effective designs can reduce design and
+such policies easier. Simple but effective designs can reduce development and
 verification efforts, thus the time to market, enabling easier adoption of
 heterogeneous memories in production systems.
 
-Previous academic and commercial systems study Non-Uniform Memory Access (NUMA)
-extensively. However, the main optimization goal in such NUMA systems was to cut
-down on memory access latency as much as possible \fixme{but ignore characteristics
-such as bandwidth or access cost per bit, which are critical in domains such as
-GPGPU computing or data-centers.} In this thesis, we study memory characteristics
+Previous academic and commercial systems study Non-Uniform Memory Access~(NUMA)
+extensively. The main optimization goal in such NUMA systems was to cut
+down on memory access latency as much as possible. However, in domains such as
+GPGPU computing or data-centers, characteristics
+such as bandwidth or access cost per bit are far more critical. In this thesis, we study memory characteristics
 beyond memory access latency with the goal to simplify system design, easing
 programmability, while squeezing the best possible performance out
 of such heterogeneous memory systems.  Next we briefly discuss key aspects that
 are relevant to modern incarnations of heterogeneous memory in GPUs and
-data-centers:
+data-centers.
 
 \begin{enumerate}
 \item
