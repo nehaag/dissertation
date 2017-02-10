@@ -1,42 +1,88 @@
-%{\color{red}
-%\begin{itemize}
-%\item New memory technologies
-%\item Why is virtual address shared space is a challenge with the advent of
-%these new technologies
-%
-%\item How is CPU--GPU space changing in terms
-%of high bandwidth but lower latency interconnects
-%\item Present opportunities and challenges
-%\item Combine intro of first 3 GPU papers
-%
-%\item Google Proposal
-%\item How cheaper but slower mem technologies can lead to boosting perf/dollar
-%in data-centers
-%\item Present opportunities and challenges
-%\end{itemize}
-%}
+%Why heterogenous memory systems
 
-Main memories contribute to $\approx$ 30\% of machine cost (based on assembling
-a server class machine on newegg.com in January 2017). The significant cost of
-main memories make them an important resource that should be utilized
-efficiently to justify their cost contribution. To cater to the memory needs of
-applications from different domains (for example: data-centers, cloud computing,
-supercomputers) exhibiting different memory access patterns, systems are
-becoming heterogeneous to adapt to variations in memory access patterns
-(differnces in bandwidth requirements, latency tolerance) with the aim to reduce
-the cost to run the applications.
+%Memory access pattern matching to reduce cost
 
-The emergence of {\it heterogeneous memory systems} has resulted in a need for
-new memory management policies that are able to fully exploit these systems.
-While traditional memory management techniques largely assume a ``homogeneous''
-main memory, future systems are likely to have two or more different types of
-main memories attached to them -- thus the term ``heterogeneous'' memory
-systems. An example of such a system is the recently announced NVIDIA Pascal
-GPU~\cite{pascal}, which is slated to have a high bandwidth connection to the host
-CPU via NVLink~\cite{NVLINK} and thus can access host memory seamlessly.
-Another example is Intel/Micron's 3-D XPoint technology~\cite{xpoint}, which
-provides a slow but cheaper and large capacity non-volatile memory (NVRAM) along
-with a conventional DRAM memory attached to the same CPU node.
+%Trends in heterogeneous memory systems
+
+%Challenges associated with the trend
+
+%Differences on memory characteristics make MM challenging
+
+%Argue for adoption in production systems
+
+
+%%%%% BORING INTRO :P %%%%%
+%Main memories contribute to $\approx$ 30\% of machine cost (based on assembling
+%a server class machine on newegg.com in January 2017). The significant cost of
+%main memories make them an important resource that should be utilized
+%efficiently to justify their cost contribution. To cater to the memory needs of
+%applications from different domains (for example: data-centers, cloud computing,
+%supercomputers) exhibiting different memory access patterns, systems are
+%becoming heterogeneous to adapt to variations in memory access patterns
+%(differnces in bandwidth requirements, latency tolerance) with the aim to reduce
+%the cost to run the applications.
+%
+%The emergence of {\it heterogeneous memory systems} has resulted in a need for
+%new memory management policies that are able to fully exploit these systems.
+%While traditional memory management techniques largely assume a ``homogeneous''
+%main memory, future systems are likely to have two or more different types of
+%main memories attached to them -- thus the term ``heterogeneous'' memory
+%systems. An example of such a system is the recently announced NVIDIA Pascal
+%GPU~\cite{pascal}, which is slated to have a high bandwidth connection to the host
+%CPU via NVLink~\cite{NVLINK} and thus can access host memory seamlessly.
+%Another example is Intel/Micron's 3-D XPoint technology~\cite{xpoint}, which
+%provides a slow but cheaper and large capacity non-volatile memory (NVRAM) along
+%with a conventional DRAM memory attached to the same CPU node.
+%%%%% BORING INTRO ENDS :) %%%%%
+
+Heterogenity is ubiqutous in systems ranging from supercomputers, data-centers
+to smartphones. Fastest supercomupters in the world are comprised of graphics
+processing units (GPUs), Xeon Phi processors alongside central processing units
+(CPUs)~\cite{XXXXX}. Similarly, data-centers deploy GPUs and field-programmable
+gate arrays (FPGA) for accelerating applications like web search, machine
+learning~\cite{XXXXX}. Largest cloud provider Amazon Web Services (AWS) offers
+instances with GPUs and FPGAs as well~\cite{XXXXX}, indicating that such
+heterogeneous platforms are desirable for running contemporary and future
+computing applications. 
+
+Applications having varying memory access patterns and heterogeneous memory
+systems provide an opportunity to match application characteristics with that of
+different memory technologies in a heterogeneous memory system. For example,
+when an embarassingly parallel application like matrix multiplication is run on
+a machine installed with low bandwidth main memory technology, then memory-level
+parallelism (MLP) present in the application is wasted. Due to the mis-match in
+application memory access pattern and memory technology installed on the
+machine, the application will take longer time to finish. Alternatively, if the
+same application runs on a machine installed with high bandwidth memory
+technology then MLP in application can be matched with the higher memory
+bandwidth and thus application can run faster reducing the CPU time needed for
+completion. And this reduction in CPU time implies reduction in cost to run the
+application.  This cost reduction can trickle down to the reduced cost seen by
+the customer either running such applications as a service or paying for such
+services~\cite{AWS-pricing-model}.
+
+Heterogeneous memory systems though lucarative pose several challenges on system
+design and programmability. Even more so, if such heterogeneous systems are built by
+separate vendors like machines with separate graphics cards~\cite{XXXXX}. With a
+trend in data-center/cloud applications to map large datasets in memory,
+installed memory capacity per machine is rapidly growing~\cite{Spark}. The
+challenge is to scale existing or formulate new memory management policies that
+can manage the rapidly growing memory capacity and also support differences in
+characteristics of different memory tecnologies.
+
+With the advancement of interconnect technologies like NVIDIA
+NVLINK~\cite{}, existing heterogeneous CPU--GPU systems present an opportunity
+to maximize bandwidth available to GPUs from...
+
+Differences in memory charateristics and rapid growth in memory capacity make
+memory management of such heterogeneous systems challenging. Decisions about
+data placement and movement have to be made in an application transparent manner
+while simplifying system design and programmability of already complex
+heterogeneous systems. Application transparent policies are desirable as they do
+not require any extra effort from the programmer, which enables the adoption of
+such policies easier. Simple but effective designs can reduce design and
+verification efforts, thus the time to market, enabling easier adoption of
+heterogeneous memories in production systems.
 
 Previous academic and commercial systems study Non-Uniform Memory Access (NUMA)
 extensively. However, the main optimization goal in such NUMA systems was to cut
