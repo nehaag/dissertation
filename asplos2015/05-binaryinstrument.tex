@@ -103,7 +103,7 @@ information table, programmatic discovery of memory zone bandwidth is also possi
 mechanism~\cite{McCalpin1995}. In our implementation, memory hints are honored unless the memory pool is 
 filled to capacity, in which case the allocator will fall back to the alternate domain. 
 If no placement hint is provided, the CUDA runtime will fall back to using the application 
-agnostic BW-AWARE placement for unannotated memory allocations.
+agnostic BW-AWARE placement for un-annotated memory allocations.
 {\color{black} When a hint is supplied, the {\tt cudaMalloc} routine uses the
 {\tt mbind} system call in Linux to perform placement of the data structure in
 the corresponding memory.}
