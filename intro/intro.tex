@@ -158,7 +158,7 @@ sketch of our proposed solution to these problems.
 
 \section{Bandwidth-asymmetric Systems}
 GPU-attached Bandwidth-Optimized (BO) memory (e.g., GDDR5) has been allocated
-and managed primarily through explicit, programmer-directed function calls for
+and managed primarily through explicit, programmer-inserted function calls for
 obtaining maximum throughput out of GPUs.  To make best use of the bandwidth
 available to GPU programs, programmers have to explicitly call memory copy
 functions to copy the data over the relatively slow PCIe bus to the GPU memory,
@@ -177,7 +177,7 @@ application execution.
     \label{fig:arch-hpca2015}
 \end{figure}
 
-Recognizing the obstacle programmer-directed programming model poses to the
+Recognizing the obstacle that explicit, programmer-inserted function call poses to the
 wider adoption of GPUs in more parallel applications, programming systems like
 NVIDIA's CUDA, OpenCL, and OpenACC are evolving to shared virtual address space
 between CPU and GPU~\cite{UVM}. With the availability of Unified Virtual Memory
@@ -259,11 +259,10 @@ system.  Also, if the CPUs and GPUs are to be manufactured by different vendors,
 a high level of coordination is needed between those two vendors --
 including coordination on the specification of coherence implementation and
 verification efforts. Quoting George Bernard Shaw:
-
-\begin{centering}
+%\begin{centering}
 \textit{``The single biggest problem in communication is the illusion it has already
 taken place.''}
-\end{centering}
+%\end{centering}
 Such hurdles make CPU--GPU cache coherence an unattractive option to
 deploy in a product.
 
@@ -486,13 +485,13 @@ both shield the CPU memory system from the bandwidth hungry GPU and supports
 improved CPU--GPU interconnect efficiency by implementing variable-sized
 transfer granularity. (Chapter~\ref{chap:hpca2016})
 
-\item
-We demonstrate that a large fraction (60\%) of GPU-accessed data is read-only.
-Allowing the GPU to cache this data and relying on page protection mechanisms
-rather than hardware coherence to ensure correctness closes the performance gap
-between a selective caching and hardware cache-coherent GPU for many
-applications. (Chapter~\ref{chap:hpca2016})
-
+%\item
+%We demonstrate that a large fraction (60\%) of GPU-accessed data is read-only.
+%Allowing the GPU to cache this data and relying on page protection mechanisms
+%rather than hardware coherence to ensure correctness closes the performance gap
+%between a selective caching and hardware cache-coherent GPU for many
+%applications. (Chapter~\ref{chap:hpca2016})
+%
 \item
 We propose Thermostat, an online low-overhead application-transparent page
 management mechanism for estimating the performance degradation due to placing a
@@ -538,14 +537,14 @@ heterogeneous memories will not be realized.
 %more flexible system development.
 
 BW-AWARE page placement and application aware page placement works seamlessly
-across systems where bandwidth ratios vary from $1–1$ up to $1–N$ because the
+across systems with varying memory bandwidth ratios, because the
 underlying operating system and runtime environment actively query the available
-bandwidth of hardware at execution time. Alternatively, approaches like hardware
+bandwidth of hardware at execution time. On the other hand, approaches like hardware
 DRAM cache approaches are fixed at runtime and optimal cache design is typically
 a function of cache capacity to backing memory capacity as well as the relative
 bandwidths between the high bandwidth cache memory and backing memory bandwidth.
-This combination of conceptual and design simplicity makes operating system page
-placement likely to be used in all but the most hardened system designs,
+The combination of conceptual and design simplicity makes BW-AWARE page
+placement likely to be used in most systems,
 cementing its place as the standard management policy for heterogeneous
 memories, for many years to come.
 
