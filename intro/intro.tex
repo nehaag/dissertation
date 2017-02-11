@@ -79,7 +79,7 @@ data-center/cloud applications~\cite{spark}.
 %NVLINK~\cite{}, existing heterogeneous CPU--GPU systems present an opportunity
 %to maximize bandwidth available to GPUs from...
 
-Differences in memory charateristics and rapid growth in memory capacity make
+Differences in memory characteristics and rapid growth in memory capacity make
 memory management of such heterogeneous systems challenging. Decisions about
 data placement and movement have to be made in an application-transparent manner
 while simplifying system design and programmability of already complex
@@ -139,7 +139,7 @@ be significantly cheaper than regular DRAM, while also being significantly
 higher latency. Its lower cost per bit makes it a good candidate for use in
 data-centers, where main memory cost can be $\approx$ 30\% of the server machine
 cost, translating to $3-15\%$ of the total cost of ownership (TCO), amounting to
-bilions of dollars~\cite{borosso2013}. However, higher memory access latency means that only
+billions of dollars~\cite{borosso2013}. However, higher memory access latency means that only
 {\it cold}, i.e., infrequently accessed data can be placed in such memories.
 Detection of such cold data should be done {\it
 application-transparently} , since
@@ -160,7 +160,7 @@ sketch of our proposed solution to these problems.
 GPU-attached Bandwidth-Optimized (BO) memory (e.g., GDDR5) has been allocated
 and managed primarily through explicit, programmer-directed function calls for
 obtaining maximum throughput out of GPUs.  To make best use of the bandwidth
-available to GPU programs, programmers have to explicity call memory copy
+available to GPU programs, programmers have to explicitly call memory copy
 functions to copy the data over the relatively slow PCIe bus to the GPU memory,
 and --- only then --- launch their GPU kernels.  This up-front data allocation
 and transfer has been necessary since transferring data over the PCIe bus is a
@@ -218,7 +218,7 @@ investigate the effect on GPU performance of exposing memory system bandwidth
 information to the operating system/runtime and user applications to improve the
 quality of dynamic page placement and migration decisions. We propose
 Bandwidth-Aware (BW-AWARE) page placement and dynamic page migration to fully
-utilize memory bandwith for throughput-oriented CPU--GPU heterogeneous memory
+utilize memory bandwidth for throughput-oriented CPU--GPU heterogeneous memory
 systems~\cite{ref:agarwal:hpca2015,ref:agarwal:asplos2015}.
 
 \section{Different Coherence Domains}
@@ -467,7 +467,7 @@ outperforms CC-NUMA based accesses by 1.95$\times$, performs 6\% better than the
 legacy CPU to GPU {\tt memcpy} approach by intelligently using both CPU and GPU
 memory bandwidth, and comes within 28\% of oracular page placement, all while
 maintaining the relaxed memory semantics of modern GPUs.
-(Chpater~\ref{chap:hpca2015})
+(Chapter~\ref{chap:hpca2015})
 
 %\vspace{-.025in}
 \item
@@ -563,7 +563,7 @@ memories, for many years to come.
 %considerable performance overhead. These impediments hinder programmer
 %productivity.
 
-\textbf{Progammability with Performance:} Whereas cache-coherent access
+\textbf{Programmability with Performance:} Whereas cache-coherent access
 can boost programmer productivity significantly, it is difficult to implement
 cache coherent memory for discrete GPU systems, particularly when the CPU and
 GPU are supplied by different vendors (e.g., NVIDIA GPUs in IBM Power servers).
