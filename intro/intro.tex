@@ -414,21 +414,40 @@ In this thesis we make following contributions:
 
 \begin{itemize}
 \item
-We show that existing CPU-oriented page placement policies are not only 
-sub-optimal for placement in GPU-based systems, but simply do not have the 
-appropriate information available to make informed decisions when optimizing for 
-bandwidth-asymmetric memory systems. Exposing additional bandwidth information 
-to the OS, as is done for latency today, will be required for optimized decision 
-making. (Chapter~\ref{chap:asplos2015})
-
-\item
-We show that placing all pages in the bandwidth optimized memory is not the best
-performing page placement policy for GPU workloads.  We propose a new
-bandwidth-aware (BW-AWARE) page placement policy that can outperform Linux's
-current bandwidth-optimized INTERLEAVE placement by 35\% and the default latency
-optimized LOCAL allocation policy by as much as 18\%, when the application
-footprint fits within bandwidth-optimized memory capacity.
+We show that existing CPU-oriented page placement policies are 
+sub-optimal for placement in bandwidth-asymmetric GPU-based memory systems and do not have enough
+infomration to make informed decisions when optimizing for GPU applications that run thousands of
+threads launching multiple memory requests in parallel.
+%Existing placement policies do not have the 
+%appropriate information available to make informed decisions when optimizing for 
+%bandwidth-asymmetric memory systems.
+%Exposing additional bandwidth information to the OS, as is done for latency
+%today, will be required for optimized decision making.
+We show that placing all pages in the highest bandwidth memory is not the best
+performing page placement policy for GPU workloads and propose a new
+bandwidth-aware (BW-AWARE) page placement policy that can concurrently maximize
+the bandwidth available from different memory technologies.
+%outperform Linux's
+%current bandwidth-optimized INTERLEAVE placement by 35\% and the default latency
+%optimized LOCAL allocation policy by as much as 18\%, when the application
+%footprint fits within bandwidth-optimized memory capacity.
 (Chapter~\ref{chap:asplos2015})
+
+%We show that existing CPU-oriented page placement policies are not only 
+%sub-optimal for placement in GPU-based systems, but simply do not have the 
+%appropriate information available to make informed decisions when optimizing for 
+%bandwidth-asymmetric memory systems. Exposing additional bandwidth information 
+%to the OS, as is done for latency today, will be required for optimized decision 
+%making. (Chapter~\ref{chap:asplos2015})
+
+%\item
+%We show that placing all pages in the bandwidth optimized memory is not the best
+%performing page placement policy for GPU workloads.  We propose a new
+%bandwidth-aware (BW-AWARE) page placement policy that can outperform Linux's
+%current bandwidth-optimized INTERLEAVE placement by 35\% and the default latency
+%optimized LOCAL allocation policy by as much as 18\%, when the application
+%footprint fits within bandwidth-optimized memory capacity.
+%(Chapter~\ref{chap:asplos2015})
 
 %\item
 %For \emph{memory capacity constrained} systems (i.e. bandwidth-optimized memory
@@ -440,12 +459,22 @@ footprint fits within bandwidth-optimized memory capacity.
 %within 90\% of oracle page placement performance.
 
 \item
-We show that counter-based metrics to determine when to migrate pages from the
-CPU to GPU are insufficient for finding an optimal migration policy to exploit
-GPU memory bandwidth.  In streaming workloads, where each page may be accessed
-only a few times, waiting for $N$ accesses to occur before migrating a page will
-actually limit the number of accesses that occur after migration, reducing the
-efficacy of the page migration operation. (Chapter~\ref{chap:hpca2015})
+In regards to page migration policies, we show that counter-based metrics to
+determine when to migrate pages from the CPU to GPU are insufficient for finding
+an optimal migration policy to exploit GPU memory bandwidth.  In streaming
+workloads, where each page may be accessed only a few times, waiting for $N$
+accesses to occur before migrating a page will actually limit the number of
+accesses that occur after migration, reducing the efficacy of the page migration
+operation. We propose a page migration policy which is aware of bandwidth
+differential and balances migration with CC-NUMA link utilization that
+outperforms either CPU or GPU memory being used in isolation.
+(Chapter~\ref{chap:hpca2015})
+%The legacy intuition to migrate all data to the GPU local memory in an attempt
+%to maximize bandwidth fails to leverage the bandwidth available via the new
+%CC-NUMA interface.  A page migration policy which is aware of this differential
+%and balances migration with CC-NUMA link utilization will outperform either GPU
+%or GPU memory being used in isolation. (Chapter~\ref{chap:hpca2015})
+
 
 %\item
 %TLB shootdown and refill overhead can significantly degrade the performance of
@@ -460,30 +489,38 @@ efficacy of the page migration operation. (Chapter~\ref{chap:hpca2015})
 %and balances migration with CC-NUMA link utilization will outperform either GPU
 %or GPU memory being used in isolation.
 
-\item 
-We present a software based memory migration system that, on average,
-outperforms CC-NUMA based accesses by 1.95$\times$, performs 6\% better than the
-legacy CPU to GPU {\tt memcpy} approach by intelligently using both CPU and GPU
-memory bandwidth, and comes within 28\% of oracular page placement, all while
-maintaining the relaxed memory semantics of modern GPUs.
-(Chapter~\ref{chap:hpca2015})
+%\item 
+%We present a software based memory migration system that, on average,
+%outperforms CC-NUMA based accesses by 1.95$\times$, performs 6\% better than the
+%legacy CPU to GPU {\tt memcpy} approach by intelligently using both CPU and GPU
+%memory bandwidth, and comes within 28\% of oracular page placement, all while
+%maintaining the relaxed memory semantics of modern GPUs.
+%(Chapter~\ref{chap:hpca2015})
 
 %\vspace{-.025in}
 \item
 We propose GPU selective caching, which can provide a CPU--GPU system that
 provides a unified shared memory without requiring hardware cache-coherence
-protocols within the GPU or between CPU and GPU caches.
-We identify that much of the improvement from GPU caches is due to coalescing 
-memory accesses that are spatially contiguous within a cache line.  Leveraging
-aggressive request coalescing, GPUs can achieve much of the performance benefit
-of caching (80\%), without caches. (Chapter~\ref{chap:hpca2016})
+protocols within the GPU or between CPU and GPU caches.  We identify that much
+of the improvement from GPU caches is due to the request filtering to lower
+memory hierarchy. We capture spatial locality by coalescing requests in miss
+status handling registers (MSHRs) and propose a small on-die CPU cache
+specifically to handle uncached requests that will be issued at sub-cache line
+granularity from the GPU. This cache helps both shield the CPU memory system
+from the bandwidth hungry GPU and supports improved CPU--GPU interconnect
+efficiency by implementing variable-sized transfer granularity.
+(Chapter~\ref{chap:hpca2016})
+%We identify that much of the improvement from GPU caches is due to coalescing
+%memory accesses that are spatially contiguous within a cache line.  Leveraging
+%aggressive request coalescing, GPUs can achieve much of the performance benefit
+%of caching (80\%), without caches. (Chapter~\ref{chap:hpca2016})
 
-\item
-We propose a small on-die CPU cache specifically to handle uncached requests
-that will be issued at sub-cache line granularity from the GPU. This cache helps
-both shield the CPU memory system from the bandwidth hungry GPU and supports
-improved CPU--GPU interconnect efficiency by implementing variable-sized
-transfer granularity. (Chapter~\ref{chap:hpca2016})
+%\item
+%We propose a small on-die CPU cache specifically to handle uncached requests
+%that will be issued at sub-cache line granularity from the GPU. This cache helps
+%both shield the CPU memory system from the bandwidth hungry GPU and supports
+%improved CPU--GPU interconnect efficiency by implementing variable-sized
+%transfer granularity. (Chapter~\ref{chap:hpca2016})
 
 %\item
 %We demonstrate that a large fraction (60\%) of GPU-accessed data is read-only.
@@ -493,20 +530,29 @@ transfer granularity. (Chapter~\ref{chap:hpca2016})
 %applications. (Chapter~\ref{chap:hpca2016})
 %
 \item
-We propose Thermostat, an online low-overhead application-transparent page
-management mechanism for estimating the performance degradation due to placing a
-particular page in slow memory for two-tiered main memory system.  We use this
-mechanism in an online, huge-page-aware hot/cold page classification system that
-{\it only} requires a target maximum tolerable slowdown as input.
+To reduce cost of memory in large scale data-centers and cloud platforms, we
+make a case for using upcoming cheaper but slower memory technologies, such as
+Intel's/Micron's 3D XPoint. We propose Thermostat, an online low-overhead
+application-transparent page management mechanism for controlling performance
+degradation due to placing infrequently accessed pages (cold pages) in slow
+memory for two-tiered main memory system. Thermostat supports huge pages, which
+are performance critical to applications running on cloud platforms under
+virtualization. With Thermostat, cloud vendors can move infrequently accessed
+pages to cheaper/slower memory and keep the application slowdown in control
+meeting customer's throughput demands. By moving pages to chepaer memory, DRAM's
+capacity can be freed up to pack more virtual machines on the same machine
+reducing the amount of machines required for large footprint applications,
+thereby reducing the cost reflected on cloud customers.
 (Chapter~\ref{chap:thermostat})
 
-\item
-We propose an online method to detect mis-classifications and rectify them,
-thereby minimizing the impact of such mis-classifications on application
-throughput.  By emulating slow memory in software, we demonstrate that
-Thermostat can migrate up to 50\% of cloud application footprints to slow memory
-with a 3\% slowdown, reducing memory provisioning cost up to 30\%.
-(Chapter~\ref{chap:thermostat})
+%
+%\item
+%We propose an online method to detect mis-classifications and rectify them,
+%thereby minimizing the impact of such mis-classifications on application
+%throughput.  By emulating slow memory in software, we demonstrate that
+%Thermostat can migrate up to 50\% of cloud application footprints to slow memory
+%with a 3\% slowdown, reducing memory provisioning cost up to 30\%.
+%(Chapter~\ref{chap:thermostat})
 \end{itemize}
 
 \section{Impact}

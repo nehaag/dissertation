@@ -8,113 +8,152 @@
 Systems from smartphones to data-centers to supercomputers are increasingly
 heterogeneous, comprising various memory technologies and core types.
 Heterogeneous memory systems provide an opportunity to suitably match varying
-memory access patterns in applications, reducing CPU time and thus the cost to
-run the application.  CPU time savings increase performance per dollar resulting
+memory access patterns in applications, reducing CPU time thus increasing performance per dollar resulting
 in aggregate savings of millions of dollars in large-scale systems. However,
 with increased provisioning of main memory capacity per machine and differences
 in memory characteristics (for example, bandwidth, latency, cost, and density),
 memory management in such heterogeneous memory systems poses multi-fold
-challenges on system programmability and design. Decisions on data placement and
-movement have to be made at runtime – in an application-transparent manner –
-while suitably matching application memory access patterns so as to utilize the
-heterogeneous resources efficiently.
+challenges on system programmability and design.
+%Decisions on data placement and
+%movement have to be made at runtime – in an application-transparent manner –
+%while suitably matching application memory access patterns so as to utilize the
+%heterogeneous resources efficiently.
 
 In this thesis, we tackle memory management of two heterogeneous memory systems:
 (a) CPU-GPU systems with a unified virtual address space, and (b) Cloud
 computing platforms that can deploy cheaper but slower memory technologies
-alongside DRAMs. We discuss the challenges presented by upcoming heterogeneous
-CPU-GPU memory systems and propose solutions to enable their adoption by
-simplifying the programming model and design effort needed to build such complex
-systems. We show that current page placement policies are not sufficient to
-maximize GPU performance in heterogeneous CPU-GPU memory systems and propose an
-application agnostic Bandwidth-Aware (BW- AWARE) placement policy that maximizes
-GPU throughput.
-%by balancing page placement
-%across the memories based on the aggregate memory bandwidth available in a
-%system.
-%Our results show that BW-AWARE placement outperforms the existing Linux
-%INTERLEAVE and LOCAL policies by 35\% and 18\% on average for GPU compute
-%workloads.  We build upon BW-AWARE placement by developing a compiler-based
-%profiling mechanism that provides programmers with information about GPU
-%application data structure access patterns.  Combining this information with
-%simple program-annotated hints about memory placement, our hint-based page
-%placement approach performs within 90\% of oracular page placement on average,
-%largely mitigating the need for costly dynamic page tracking and migration.
-%
-%Historically, GPU-based HPC applications have had a substantial memory
-%bandwidth advantage over CPU-based workloads due to using GDDR rather than DDR
-%memory.  However, past GPUs required a restricted programming model where
-%application data was allocated up front and explicitly copied into GPU memory
-%before launching a GPU kernel by the programmer. Recently, GPUs have eased this
-%requirement and now can employ on-demand software page migration between CPU
-%and GPU memory to obviate explicit copying.  In the near future, CC-NUMA
-%GPU-CPU systems will appear where software page migration is an optional choice
-%and hardware cache-coherence can also support the GPU accessing CPU memory
-%directly.
-To enhance programmability we explore dynamic page migration policies that do
-not require any programmer annotation.
-%We describe the trade-offs and considerations in relying on hardware
-%cache-coherence mechanisms versus using software page migration to optimize the
-%performance of memory-intensive GPU workloads.
-%We show that page migration decisions based on page access frequency
-%alone are a poor solution and that a broader solution exploiting locality in virtual
-%address-based program
-%%to enable aggressive memory prefetching
-%%combined with bandwidth balancing
-%is desirable to maximize performance.
-%We present a software runtime system requiring minimal hardware support that,
-%on average, outperforms CC-NUMA-based accesses by 1.95$\times$, performs 6\%
-%better than the legacy CPU to GPU {\tt memcpy} regime by intelligently using
-%both CPU and GPU memory bandwidth, and comes within 28\% of oracular page
-%placement, all while maintaining the relaxed memory semantics of modern GPUs.
-%
-To simplify implementing hardware cache
-coherence in heterogeneous CPU-GPU systems,
-%Cache coherence is ubiquitous in shared memory multi\hyp{}processors because it
-%provides a simple, high performance memory abstraction to programmers.  Recent
-%work suggests extending hardware cache coherence between CPUs and GPUs to help
-%support programming models with tightly coordinated sharing between CPU and GPU
-%threads.  However, implementing hardware cache coherence is particularly
-%challenging in systems with discrete CPUs and GPUs that may not be produced by
-%a single vendor. Instead,
-we propose selective caching, wherein we disallow GPU caching of any memory that
-would require coherence updates to propagate between the CPU and GPU, thereby
-decoupling the GPU from vendor-specific CPU coherence protocols.
-%We propose several architectural improvements to offset the performance penalty
-%of selective caching including aggressive request coalescing, CPU-side coherent
-%caching for GPU-uncacheable requests, and CPU--GPU interconnect optimizations.
-%Moreover, current GPU workloads access many read-only memory pages; we exploit
-%this property to allow promiscuous GPU caching of these pages, relying on
-%page-level protection, rather than hardware cache coherence, to ensure
-%correctness.   These optimizations bring a selective caching GPU implementation
-%to within 93\% of a hardware cache-coherent implementation without the need to
-%integrate CPUs and GPUs under a single hardware coherence protocol.
+alongside DRAMs to reduce cost of memory in data-centers.
+%We discuss the challenges presented by upcoming heterogeneous
+%CPU-GPU memory systems and propose solutions to enable their adoption by
+%simplifying the programming model and design effort needed to build such complex
+%systems.
+First, we show that operating systems do not have sufficient information to optimally
+manage pages in bandwidth-asymmetric systems and thus fail to maximize
+bandwidth to massively-threaded GPU applications sacrificing GPU
+throughput. We present BW-AWARE placement/migration policies to support OS to
+make optimal data management decisions. Second, we present a CPU-GPU cache coherence design where CPU and GPU need not
+implement same cache coherence protocol but provide cache-coherent memory interface to
+the programmer.
+%, which simplifies programmability of such complex heterogeneous
+%memory systems while not sacrificing performance.
+Our proposal is first practical approach
+to provide a unified, coherent CPU--GPU address space without requiring hardware
+cache coherence, with a potential to enable an explosion in algorithms that leverage tightly
+coupled CPU--GPU coordination.
+%We show that current page placement policies are not sufficient to
+%maximize GPU performance in heterogeneous CPU-GPU memory systems and propose an
+%application agnostic Bandwidth-Aware (BW- AWARE) placement policy that maximizes
+%GPU throughput.
+%%by balancing page placement
+%%across the memories based on the aggregate memory bandwidth available in a
+%%system.
+%%Our results show that BW-AWARE placement outperforms the existing Linux
+%%INTERLEAVE and LOCAL policies by 35\% and 18\% on average for GPU compute
+%%workloads.  We build upon BW-AWARE placement by developing a compiler-based
+%%profiling mechanism that provides programmers with information about GPU
+%%application data structure access patterns.  Combining this information with
+%%simple program-annotated hints about memory placement, our hint-based page
+%%placement approach performs within 90\% of oracular page placement on average,
+%%largely mitigating the need for costly dynamic page tracking and migration.
+%%
+%%Historically, GPU-based HPC applications have had a substantial memory
+%%bandwidth advantage over CPU-based workloads due to using GDDR rather than DDR
+%%memory.  However, past GPUs required a restricted programming model where
+%%application data was allocated up front and explicitly copied into GPU memory
+%%before launching a GPU kernel by the programmer. Recently, GPUs have eased this
+%%requirement and now can employ on-demand software page migration between CPU
+%%and GPU memory to obviate explicit copying.  In the near future, CC-NUMA
+%%GPU-CPU systems will appear where software page migration is an optional choice
+%%and hardware cache-coherence can also support the GPU accessing CPU memory
+%%directly.
+%To enhance programmability we explore dynamic page migration policies that do
+%not require any programmer annotation.
+%%We describe the trade-offs and considerations in relying on hardware
+%%cache-coherence mechanisms versus using software page migration to optimize the
+%%performance of memory-intensive GPU workloads.
+%%We show that page migration decisions based on page access frequency
+%%alone are a poor solution and that a broader solution exploiting locality in virtual
+%%address-based program
+%%%to enable aggressive memory prefetching
+%%%combined with bandwidth balancing
+%%is desirable to maximize performance.
+%%We present a software runtime system requiring minimal hardware support that,
+%%on average, outperforms CC-NUMA-based accesses by 1.95$\times$, performs 6\%
+%%better than the legacy CPU to GPU {\tt memcpy} regime by intelligently using
+%%both CPU and GPU memory bandwidth, and comes within 28\% of oracular page
+%%placement, all while maintaining the relaxed memory semantics of modern GPUs.
+%%
+%To simplify implementing hardware cache
+%coherence in heterogeneous CPU-GPU systems,
+%%Cache coherence is ubiquitous in shared memory multi\hyp{}processors because it
+%%provides a simple, high performance memory abstraction to programmers.  Recent
+%%work suggests extending hardware cache coherence between CPUs and GPUs to help
+%%support programming models with tightly coordinated sharing between CPU and GPU
+%%threads.  However, implementing hardware cache coherence is particularly
+%%challenging in systems with discrete CPUs and GPUs that may not be produced by
+%%a single vendor. Instead,
+%we propose selective caching, wherein we disallow GPU caching of any memory that
+%would require coherence updates to propagate between the CPU and GPU, thereby
+%decoupling the GPU from vendor-specific CPU coherence protocols.
+%%We propose several architectural improvements to offset the performance penalty
+%%of selective caching including aggressive request coalescing, CPU-side coherent
+%%caching for GPU-uncacheable requests, and CPU--GPU interconnect optimizations.
+%%Moreover, current GPU workloads access many read-only memory pages; we exploit
+%%this property to allow promiscuous GPU caching of these pages, relying on
+%%page-level protection, rather than hardware cache coherence, to ensure
+%%correctness.   These optimizations bring a selective caching GPU implementation
+%%to within 93\% of a hardware cache-coherent implementation without the need to
+%%integrate CPUs and GPUs under a single hardware coherence protocol.
 
-Heterogeneous memories are making inroads in large scale data-centers with the
-advent of denser/cheaper memory technologies, such as Intel/Micron’s 3D XPoint.
-We make a case for a two-tiered memory system where cheaper (per bit) memories
-will be deployed alongside DRAM. Such a heterogeneous memory system can enable
-reduced DRAM provisioning per application by shifting infrequently accessed cold
-data to slow memory, reducing spending on main memory in large-scale systems.
-Past research on two-tiered main memory has assumed a 4KB page size.  However,
-we demonstrate that 2MB transparent huge pages are performance critical in
-cloud applications especially in virtualized cloud environments.  To enable such
-deployments, we present Thermostat, an application-transparent huge-page-aware
-mechanism to place pages in a dual-technology hybrid memory system while
+Finally, to reduce the cost of memory in cloud platforms where the trend has
+been to map datasets in memory, we make a case for a two-tiered memory system
+where cheaper (per bit) memories, such as Intel/Micron’s 3D XPoint, will be deployed alongside DRAM. We present
+Thermostat, an application-transparent huge-page-aware
+software mechanism to place pages in a dual-technology hybrid memory system
+while
 achieving both the cost advantages of two-tiered memory and performance
-advantages of transparent huge pages.  We present an online page classification
-mechanism that accurately classifies both 4KB and 2MB pages as hot or cold while
-incurring no observable performance overhead across several representative cloud
-applications. We implement Thermostat in Linux kernel version 4.5 and evaluate
-its effectiveness on representative cloud computing workloads running under KVM
-virtualization. We show that Thermostat migrates up to 50\% of application
-footprint to slow memory while limiting performance degradation to 3\%, thereby
-reducing memory cost.
-%We propose to develop a transparent huge-page-aware two-tiered memory solution,
-%targeting virtualized cloud applications, which integrates support for dynamic
-%page migration and transparent huge pages, achieving both the capacity/cost
-%advantages of two-tiered memory and performance advantages of huge pages. Hot
-%regions within otherwise cold huge pages present a central challenge to our
-%objective. We propose translation facades, a 4KB translation that remaps a
-%portion of a 2MB mapping with an alternate physical address or permissions, to
-%facilitate remapping hot portions of cold huge pages.
+advantages of transparent huge pages. With Thermostat's capability to control
+the application slowdown on a per application basis, cloud providers can realize
+cost savings from upcoming
+cheaper memory technologies by shifting infrequently accessed cold data to slow
+memory, while satisfying throughput demand of the customers.
+
+%Trend in applications running on cloud platforms has been to increasingly map
+%datasets in memory. Major cloud vendors have been offering high-memory cloud
+%instances to meet such large memory footprint application demands, which cost
+%2x-10x more than standard instances. With the
+%advent of denser/cheaper memory technologies, such as Intel/Micron’s 3D XPoint,
+%there is an opportunity to reduce the cost of memory in large scale
+%data-centers.
+%We make a case for a two-tiered memory system where cheaper (per bit) memories
+%will be deployed alongside DRAM.
+%Such a heterogeneous memory system can enable
+%reduced DRAM provisioning per application by shifting infrequently accessed cold
+%data to slow memory, reducing spending on main memory in large-scale systems.
+%%Past research on two-tiered main memory has assumed a 4KB page size.  However,
+%%we demonstrate that 2MB transparent huge pages are performance critical in
+%%cloud applications especially in virtualized cloud environments. 
+%To enable such
+%deployments, we present Thermostat, an application-transparent huge-page-aware
+%software mechanism to place pages in a dual-technology hybrid memory system while
+%achieving both the cost advantages of two-tiered memory and performance
+%advantages of transparent huge pages. With Thermostat's capability to control
+%the application slowdown on a per application basis, cloud providers can realize cost savings from upcoming
+%cheaper memory technologies by shifting infrequently accessed cold data to slow
+%memory, while satisfying throughput demand of the customers.
+%We present an online page classification
+%mechanism that accurately classifies both 4KB and 2MB pages as hot or cold while
+%incurring no observable performance overhead across several representative cloud
+%applications. We implement Thermostat in Linux kernel version 4.5 and evaluate
+%its effectiveness on representative cloud computing workloads running under KVM
+%virtualization. We show that Thermostat migrates up to 50\% of application
+%footprint to slow memory while limiting performance degradation to 3\%, thereby
+%reducing memory cost.
+%%We propose to develop a transparent huge-page-aware two-tiered memory solution,
+%%targeting virtualized cloud applications, which integrates support for dynamic
+%%page migration and transparent huge pages, achieving both the capacity/cost
+%%advantages of two-tiered memory and performance advantages of huge pages. Hot
+%%regions within otherwise cold huge pages present a central challenge to our
+%%objective. We propose translation facades, a 4KB translation that remaps a
+%%portion of a 2MB mapping with an alternate physical address or permissions, to
+%%facilitate remapping hot portions of cold huge pages.
