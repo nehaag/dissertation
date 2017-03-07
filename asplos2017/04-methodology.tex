@@ -97,12 +97,14 @@ host OS.
 
 \subsection{Benchmarks}
 \label{benchmarks}
-We evaluate Thermostat with applications from Google's Perfkit Benchmarker and the Cloudsuite
-benchmarks~\cite{perfkitbenchmarker, cloudsuite}. These applications are representative server workloads that have
-large memory footprints and are commonly run in virtualized cloud environments.
-Since non-volatile memory technologies are not scheduled to be incorporated into
-GPUs in the near future, we have not evaluated GPU-targeted Rodinia benchmarks
-with Thermostat.
+We evaluate Thermostat with applications from Google's Perfkit Benchmarker and
+the Cloudsuite benchmarks~\cite{perfkitbenchmarker, cloudsuite}. These
+applications are representative server workloads that have large memory
+footprints and are commonly run in virtualized cloud environments.  We do not
+evaluate Thermostat for general-purpose GPU applications since non-volatile memory
+technologies are expected to have much lower bandwidth than high-bandwidth
+graphics memories -- even lower than DDR memory technologies -- thus are not a
+suitable match to memory bandwidth-sensitive platforms like GPUs.
 
 {\bf TPCC on MySQL:} TPCC is a widely-used database benchmark, which aims to measure
 the transaction processing throughput of a relational database~\cite{tpcc}. We 
